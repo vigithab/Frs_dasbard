@@ -15,7 +15,7 @@ import datetime
 import os
 import pandas as pd
 import gc
-
+import tkinter as tk
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.INI import memory
 from Bot_FRS_v2.INI import ini
@@ -26,6 +26,12 @@ PUT = ini.PUT
 class SET:
     def Set_obrabotka(self):
         BOT.BOT().bot_mes_html(mes="Получение данных сетретеил....", silka=0)
+        root = tk.Tk()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        root.destroy()
+        print("Ширина экрана:", screen_width)
+        print("Высота экрана:", screen_height)
         def spisok_dat():
             # region СПИСОК ДАТ
             today = datetime.datetime.now()
@@ -53,20 +59,40 @@ class SET:
                 dates_list.append(start_date.strftime('%d.%m.%Y'))
                 start_date += delta
                 spisok_d = dates_list"""
-
-            spisok_d = ['03.06.2023','04.06.2023','05.06.2023','06.06.2023']
+            #spisok_d = ['01.01.2023']
+            spisok_d = ['09.06.2023','10.06.2023','11.06.2023']
             print(spisok_d)
             return spisok_d
         # region СКАЧИВАНИЕ С САЙТА
         warnings.filterwarnings('ignore')  ##отключаем warnings
         ua = UserAgent()
         options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+
+        # Включение автоматического скачивания файлов без запроса подтверждения
+        options.add_experimental_option("prefs", {
+            "download.default_directory": ini.PUT_download,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True
+        })
         options.add_argument("user_agent=" + ua.random)
         driver = webdriver.Chrome(chrome_options=options)
         url = 'http://10.32.2.51:8443/operday/checks'
         driver.get(url)
         t.sleep(3)
-        driver.set_window_size(1024, 600)
+        if screen_width > screen_height:
+            print('Горизонтальная')
+            driver.set_window_size(screen_width,screen_height)
+        else:
+            print('Вертикальная')
+            driver.set_window_size(screen_height,screen_width)
         driver.maximize_window()
         t.sleep(1)
         id_box = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/form/div/div[1]/div/input')

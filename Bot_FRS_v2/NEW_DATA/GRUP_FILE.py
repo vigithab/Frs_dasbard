@@ -6,6 +6,7 @@ import numpy as np
 from Bot_FRS_v2.INI import ini
 from Bot_FRS_v2.INI import memory
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
+from Bot_FRS_v2.INI import log
 
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
@@ -212,9 +213,8 @@ class Grup():
         for i in all_files:
             memory.MEMORY().mem_total(x=i)
             x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
-            ln = ["Количество вес", "Количество", "Сумма"]
 
-            # Отбор фокусных позиций
+            ln = ["Количество вес", "Количество", "Сумма"]
             FLOAT().float_colms(name_data=x, name_col=ln)
             do = x["Сумма"].sum()
             x.loc[x["Аналитика хозяйственной операции"] == "Хозяйственные товары", "отбор"] = "Хозы"
@@ -257,14 +257,17 @@ class Grup():
                     do = x["Стоимость позиции"].sum()
                     x = x.groupby(["!МАГАЗИН!", "ID", "Дата/Время чека"],
                                   as_index=False).agg(
-                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"}).reset_index(drop=True)
+                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"})\
+                        .reset_index(drop=True)
                     posslw = x["Стоимость позиции"].sum()
 
                     print(str(os.path.basename(file_path)),"  Разница Продажи:", do - posslw)
-                    x = x.rename(columns={"!МАГАЗИН!": "магазин", "Стоимость позиции": "выручка", "Количество": "количество_продаж",
+                    x = x.rename(columns={"!МАГАЗИН!": "магазин", "Стоимость позиции": "выручка",
+                                          "Количество": "количество_продаж",
                                           "Сумма скидки": "скидка", "Дата/Время чека":"дата"})
                     x = x[["дата", "ID", "магазин", "выручка", "количество_продаж", "скидка"]]
-                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-5]) + ".csv", encoding="utf=8", sep='\t',
+                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" +
+                             str(os.path.basename(file_path)[:-5]) + ".csv", encoding="utf=8", sep='\t',
                              index=False,
                              decimal=',')
     def sebes_new(self):
@@ -307,20 +310,14 @@ class Grup():
                 gc.collect()
     # обрабока данных за последний месяц
     def grups(self):
+        print("групировка файлов")
         #Grup().spisania_nistory()
         #Grup().sebes_history()
         #Grup().sales_history()
-        # Обновление всей истории
-        Grup().sales_new()
-        Grup().sebes_new()
-        Grup().spisania_new()
-        #Spr().Shahlik()
         # Обновление тлько последнего месяца и справочника
         def sales():
-            #Grup().sales_new()
-            #Grup().sebes_new()
-            #Grup().spisania_new()
             BOT.BOT().bot_mes_html(mes="Групировка файлов....", silka=0)
+            # Файлы Продаж
             folder1 = PUT + "♀Продажи\\Сгрупированные файлы по дням\\"
             # Получение списка всех файлов в папках и подпапках
             all_files = []
@@ -330,9 +327,15 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for i in all_files:
-                x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
-                sales = pd.concat([sales, x], ignore_index=True)
+                print(i)
+                try:
+                    x = pd.read_csv(i, sep=";", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
+                    sales = pd.concat([sales, x], ignore_index=True)
+                except:
+                    x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
+                    sales = pd.concat([sales, x], ignore_index=True)
 
+            # Файлы СИЕСТОЙМОСТИ
             folder1 = PUT + "♀Сибестоемость\\Сгрупированные файлы по дням\\"
             # Получение списка всех файлов в папках и подпапках
             all_files = []
@@ -345,18 +348,21 @@ class Grup():
                 x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
                 sebes = pd.concat([sebes, x], ignore_index=True)
             sales = pd.concat([sales, sebes], ignore_index=True)
+
             ln  = ["выручка","прибыль","себестоимость","вес_продаж","количество_продаж","скидка"]
             FLOAT().float_colms(name_data=sales,name_col=ln)
-
             do = sales["выручка"].sum()
-
             sales = sales.groupby(["магазин", "дата"],
                           as_index=False).agg(
                 {"выручка": "sum", "прибыль": "sum", "себестоимость": "sum","вес_продаж": "sum","количество_продаж": "sum","скидка": "sum"}).reset_index(drop=True)
             posslw =sales["выручка"].sum()
-            print("  разница После гарупировки себес и продажи:", do - posslw)
 
+            # запись в лог
+            txt = f'до - {do:.1f}, после - {posslw:.1f},' \
+                  f' разница {(do - posslw):.1f}'
+            log.LOG().log_obrabotka(mes=txt, priznak="Сводная выручка", name_file="0")
 
+            # Файлы Списания
             folder1 = PUT + "♀Списания\\Сгрупированные файлы по дням\\"
             # Получение списка всех файлов в папках и подпапках
             all_files = []
@@ -378,7 +384,11 @@ class Grup():
                 {"Количество": "sum", "Количество вес": "sum","Списания": "sum"}).reset_index(
                 drop=True)
             posslw  = spis_pocaz["Списания"].sum()
-            print("  разница После гарупировки Показатель:", do - posslw)
+            # запись в лог
+            txt = f'до - {do:.1f}, после - {posslw:.1f},' \
+                  f' разница {(do - posslw):.1f}'
+            log.LOG().log_obrabotka(mes=txt, priznak="Сводная Списания", name_file="0")
+
             spis_pocaz = spis_pocaz.rename(columns={"Списания": "списания_оказатель"})
 
             spis_hoz = spis.loc[spis["отбор"] == "Хозы"]
@@ -387,9 +397,11 @@ class Grup():
                 {"Количество": "sum", "Количество вес": "sum", "Списания": "sum"}).reset_index(
                 drop=True)
             posslw = spis_hoz["Списания"].sum()
-            print("  разница После гарупировки хозы:", do - posslw)
+            # запись в лог
+            txt = f'до - {do:.1f}, после - {posslw:.1f},' \
+                  f' разница {(do - posslw):.1f}'
+            log.LOG().log_obrabotka(mes=txt, priznak="Сводная Хозы", name_file="0")
             spis_hoz = spis_hoz.rename(columns={"Списания": "списания_хозы"})
-            print(spis_pocaz)
 
             sales = pd.merge(sales,spis_pocaz[["магазин","дата","списания_оказатель"]],on=["магазин","дата"], how="left")
             sales = pd.merge(sales, spis_hoz[["магазин", "дата", "списания_хозы"]], on=["магазин", "дата"],how="left")
@@ -405,8 +417,11 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
-
-                x = pd.read_excel(file_path, parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
+                try:
+                    x = pd.read_excel(file_path, parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
+                except:
+                    x = pd.read_csv(file_path,sep=";",encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
+                print(file_path)
                 x = x.rename(columns={"!МАГАЗИН!": "магазин"})
                 chek = pd.concat([chek, x], ignore_index=True)
             # Получение списка всех файлов в папках и подпапках
@@ -416,12 +431,16 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
-
-                x = pd.read_excel(file_path, parse_dates=["Дата"], date_format='%d.%m.%Y')
+                try:
+                    x = pd.read_excel(file_path, parse_dates=["Дата"], date_format='%d.%m.%Y')
+                except:
+                    x = pd.read_csv(file_path, sep=";", encoding="utf-8", parse_dates=["дата"],
+                                    date_format='%Y-%m-%d %H:%M:%S')
+                print(file_path)
                 x  = x.rename(columns={"Магазин": "магазин","Дата": "дата","Чеков":"Количество чеков",
                                         "SKU в чеке": "количество уникальных товаров в чеке", "Длина":"количество товаров в чеке"})
                 chek = pd.concat([chek, x], ignore_index=True)
-
+            chek['дата'] = pd.to_datetime(chek['дата'])
             sales = pd.merge(sales, chek[["магазин", "дата", "Количество чеков","количество уникальных товаров в чеке","Средний чек","количество товаров в чеке"]], on=["магазин", "дата"], how="left")
 
 
@@ -456,7 +475,8 @@ class Grup():
             sales_itog= sales_itog.drop(columns="выручка_y")
             sales_itog = sales_itog.rename(columns={"выручка_x": "выручка"})
             # добавление панов прдаж
-            x = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx", parse_dates=["дата"], date_format='%d.%m.%Y')
+            x = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
+            x['дата'] = pd.to_datetime(x['дата'], format='%d.%m.%Y')
             x = x[["!МАГАЗИН!", "ПЛАН", "дата", "Показатель"]]
             FLOAT().float_colm(name_data=x, name_col="ПЛАН")
             x["месяц"] = pd.to_datetime(x["дата"]).dt.month
@@ -483,7 +503,7 @@ class Grup():
 
             sales_itog["дневной_план_выручка"] = (sales_itog["план_выручка"] -sales_itog["накопительный_итог_выручка_месяц"])/sales_itog["осталось дней"]
             sales_itog["дневной_план_кол_чеков"] = ( sales_itog["план_кол_чеков"] - sales_itog["накопительный_итог_Количество чеков_месяц"])/sales_itog["осталось дней"]
-
+            sales_itog.loc[sales_itog["год"] != 2023, "LFL"] = np.nan
 
             sales_itog = sales_itog[["магазин","LFL","дата","год","месяц","Прошло дней","осталось дней","дней в месяце",
             "выручка",

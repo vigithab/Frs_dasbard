@@ -13,11 +13,20 @@ def log_file(n1, n2, n3,n4, razdel):
             n00 = ini.dat_seychas
             n01 = ini.time_seychas
             file.write(f'{n00}  {n01}////---{n1}---{n2}---{n3}---{n4}\n')
-            print("запись в лог")
-
         else:
             n00 = ini.dat_seychas
             n01 = ini.time_seychas
             file.write(f'{n00}  {n01}////---{n1}---{n2}---{n3}---{n4}\n')
-            print("запись в лог")
+
+class LOG:
+    def log_data(self):
+        with open(PUT + 'Log\\Лог_обработки.txt', 'a') as file:
+                file.write(f'----------------------------------------\n')
+                n00 = ini.dat_seychas
+                n01 = ini.time_seychas
+                file.write(f'{n00}  {n01}\n')
+    def log_obrabotka(self, mes, priznak,name_file):
+        with open(PUT + 'Log\\Лог_обработки.txt', 'a') as file:
+                file.write(f'{priznak} || Имя файла: {name_file} ||  {mes}\n')
+
 

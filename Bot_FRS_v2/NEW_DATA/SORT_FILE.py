@@ -16,9 +16,7 @@ class SORT:
             god = datetime.datetime.now().strftime(date_pattern)[6:]
             if d == "day":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[:-5]
-                    print(file_date)
-                    print(day)
+                    file_date = filename[:-4]
                     if file_date == day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
@@ -26,27 +24,23 @@ class SORT:
                         shutil.move(src, dst)
             if d == "month":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[:-5]
-                    print(file_date)
-                    print(day)
+                    file_date = filename[:-4]
+
                     if file_date != day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
-                        print("переборка текущего месяца ", file_date, " ", file_date == day)
                         shutil.move(src, dst)
             if d == "god":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[3:-5]
+                    file_date = filename[3:-4]
                     if file_date != mouth_god:
-                        print("переборка текущего месяца в год ",file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
             if d == "History":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[6:-5]
+                    file_date = filename[6:-4]
                     if file_date != god:
-                        print("переборка текущего месяца в history ",file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
@@ -70,7 +64,7 @@ class SORT:
             god = datetime.datetime.now().strftime(date_pattern)[6:]
             if d == "day":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[:-5]
+                    file_date = filename[:-4]
                     if file_date == day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
@@ -78,7 +72,7 @@ class SORT:
                         shutil.move(src, dst)
             if d == "month":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[:-5]
+                    file_date = filename[:-4]
                     if file_date != day:
                         print("переборка текущего дня ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
@@ -86,7 +80,7 @@ class SORT:
                         shutil.move(src, dst)
             if d == "god":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[3:-5]
+                    file_date = filename[3:-4]
                     if file_date != mouth_god:
                         print("переборка текущего месяца в год ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
@@ -94,7 +88,9 @@ class SORT:
                         shutil.move(src, dst)
             if d == "History":
                 for filename in os.listdir(source_folder):
-                    file_date = filename[6:-5]
+                    file_date = filename[6:-4]
+                    print(god)
+                    print(file_date)
                     if file_date != god:
                         print("переборка текущего месяца в history ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
@@ -118,11 +114,9 @@ class SORT:
             if d == "month":
                 for filename in os.listdir(source_folder):
                     file_date = filename[3:-4]
-                    #file_date_object = datetime.datetime.strptime(file_date, "%d.%m.%Y")[:]
                     print(file_date)
                     print(mouth_god)
-                    if file_date != mouth_god:
-                        print("переборка текущего дня ",file_date, " ", file_date == day)
+                    if file_date == mouth_god:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
@@ -142,7 +136,6 @@ class SORT:
                 for filename in os.listdir(source_folder):
                     file_date = filename[3:-4]
                     if file_date != mouth_god:
-                        print("переборка текущего дня ",file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
@@ -168,6 +161,6 @@ class SORT:
                 copy_file_path = os.path.join(copy_files_path, filename)
                 # Копируем файл
                 shutil.move(original_file_path, copy_file_path)
-                print(f"Файл {filename} скопирован в {copy_files_path}")
 
-SORT.sort_files_spis()
+
+#SORT.sort_files_spis()

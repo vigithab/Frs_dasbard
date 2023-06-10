@@ -9,7 +9,8 @@ PUT = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\"
 PUT_download = r"C:\Users\Lebedevvv\Downloads"
 #PUT_download = r"C:\Users\виталий\Downloads"
 PUT_python = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\PYTHON\\"
-PUT_public = "\\tw1\\PUBLIC\\"
+#PUT_public = "\\tw1\\PUBLIC\\"
+PUT_public = "P:\\"
 
 # Текущее дата и время #############################
 dat_seychas = datetime.date.today()
@@ -27,7 +28,7 @@ test_not = keys_dict.get('testovaya')
 TY_id = keys_dict.get('TY_id')
 
 # Время рассылки сообщений
-time_bot_vrem = "23:30:00"
+time_bot_vrem = "10:30:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10
