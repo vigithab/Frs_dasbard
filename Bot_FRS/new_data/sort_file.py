@@ -5,7 +5,9 @@ from Bot_FRS.inf import NASTROYKA as setting
 PUT = setting.PUT
 
 def sort_file():
+    print("запуск сортировки")
     def sales():
+        print("запуск сортировки продаж")
         # Путь до папки текущего месяца
         month_folder_path = PUT + "♀Продажи\\текущий месяц\\"
         # Путь до папки текущего дня
