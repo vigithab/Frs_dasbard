@@ -68,13 +68,13 @@ class NEW_data:
 
                     # сохранение Сгрупированного файла чеков
                     sales_day_cehk.to_csv(PUT + "♀Чеки\\2023\\" + new_filename[:-5] + ".csv", encoding="utf-8",
-                                          sep=';',index=False,
+                                          sep='\t',index=False,
                                           decimal=",")
 
                     # сохранение Сгрупированного файла продаж;
                     sales_day_sales = NEW_data().Set_sales(name_datafreme=sales_day, name_file=str(new_filename))
                     sales_day_sales.to_csv(PUT + "♀Продажи\\текущий месяц\\" + new_filename[:-5] + ".csv", encoding="utf-8",
-                                          sep=';', index=False,
+                                          sep='\t', index=False,
                                           decimal=",")
 
                     del sales_day_cehk
@@ -86,7 +86,7 @@ class NEW_data:
                     sales_day_VEN = table[mask_VEN]
                     sales_day_VEN.to_csv(PUT + "Selenium\\Вейдинги и микромаркет\\" + new_filename[:-5] + ".csv",
                                            encoding="utf-8",
-                                           sep=';', index=False,
+                                           sep='\t', index=False,
                                            decimal=",")
 
                     del sales_day_VEN
@@ -100,7 +100,7 @@ class NEW_data:
 
                     sales_day_Podarok.to_csv(PUT + "Selenium\\Подарочные карты\\" + new_filename[:-5] + ".csv",
                                            encoding="utf-8",
-                                           sep=';', index=False,
+                                           sep='\t', index=False,
                                            decimal=",")
                     del sales_day_Podarok
                     gc.collect()
@@ -110,7 +110,7 @@ class NEW_data:
                         sales_null.to_csv(PUT + "Selenium\\Анулированные и возврат чеки\\" +
                                             new_filename[:-5] + ".csv",
                                              encoding="utf-8",
-                                             sep=';', index=False,
+                                             sep='\t', index=False,
                                              decimal=",")
                         del sales_null
                         gc.collect()
@@ -123,13 +123,13 @@ class NEW_data:
                         noch.to_csv(PUT + "Selenium\\Анулированные и возврат чеки\\" +
                                           new_filename[:-5] + ".csv",
                                           encoding="utf-8",
-                                          sep=';', index=False,
+                                          sep='\t', index=False,
                                           decimal=",")
 
                         noch.to_csv(ini.PUT_public + "Фирменная розница\\ФРС\\Данные из 1 С\\Ночные_магазины_set\\" +
                                     new_filename[:-5] + ".csv",
                                     encoding="utf-8",
-                                    sep=';', index=False,
+                                    sep='\t', index=False,
                                     decimal=",")
                         del noch, table
                         gc.collect()
@@ -145,6 +145,7 @@ class NEW_data:
         SORT_FILE.SORT().sort_files_sebes()
         SORT_FILE.SORT().original()
         GRUP_FILE.Grup().grups()
+        SORT_FILE.SORT().sashl_sezn()
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
         # групировка файлов продаж по дням
@@ -366,7 +367,7 @@ class NEW_data:
                             day_df = df.loc[df["дата"] == pd.to_datetime(date, format="%d.%m.%Y")]
 
                             file_name = os.path.join(PUT + "♀Списания\\История\\", date + ".csv")
-                            day_df.to_csv(file_name, sep="\t", encoding="utf-8", decimal=",", index=False)
+                            day_df.to_csv(file_name, sep=";", encoding="utf-8", decimal=",", index=False)
 
                             ln = ["Количество вес", "Количество", "Сумма"]
                             Float.FLOAT().float_colms(name_data=day_df, name_col=ln)
@@ -426,7 +427,7 @@ class NEW_data:
                         df["Дата/Время чека"] = pd.to_datetime(df["Дата/Время чека"], format="%d.%m.%Y")
                         day_df = df.loc[df["Дата/Время чека"] == pd.to_datetime(date, format="%d.%m.%Y")]
                         file_name = os.path.join(PUT + "♀Сибестоемость\\Текущий месяц\\", date + ".csv")
-                        day_df.to_csv(file_name, sep="\t", encoding="utf-8", decimal=".", index=False)
+                        day_df.to_csv(file_name, sep=";", encoding="utf-8", decimal=".", index=False)
                         x = day_df
                         ln = ["Сибистоемость", "Вес_продаж", "прибыль"]
                         Float.FLOAT().float_colms(name_data=x, name_col=ln)
@@ -458,17 +459,13 @@ class NEW_data:
                                  encoding="utf=8", sep='\t', index=False,
                                  decimal=',')
                         gc.collect()
-
                         memory.MEMORY().mem_total(x="Сибестоемость")
                     os.remove(PUT + "NEW\\Сибестоемость\\" +file)
                 gc.collect()
     # Обработка сиестомости
 
 
+#NEW_data().Obrabotka()
 
-NEW_data().Obrabotka()
-#run_NEW_DATA_sd()
-#NEW_data().selenium_day_Spisania()
-#SORT_FILE.SORT().sort_files_spis()
 
 

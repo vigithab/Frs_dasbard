@@ -28,7 +28,7 @@ test_not = keys_dict.get('testovaya')
 TY_id = keys_dict.get('TY_id')
 
 # Время рассылки сообщений
-time_bot_vrem = "10:30:00"
+time_bot_vrem = "22:30:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10

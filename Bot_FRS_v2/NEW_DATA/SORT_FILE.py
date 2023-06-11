@@ -20,7 +20,6 @@ class SORT:
                     if file_date == day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
-                        print("переборка текущего месяца ",file_date, " ", file_date == day)
                         shutil.move(src, dst)
             if d == "month":
                 for filename in os.listdir(source_folder):
@@ -68,13 +67,11 @@ class SORT:
                     if file_date == day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
-                        print("переборка текущего месяца ", file_date, " ", file_date == day)
                         shutil.move(src, dst)
             if d == "month":
                 for filename in os.listdir(source_folder):
                     file_date = filename[:-4]
                     if file_date != day:
-                        print("переборка текущего дня ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
@@ -82,17 +79,13 @@ class SORT:
                 for filename in os.listdir(source_folder):
                     file_date = filename[3:-4]
                     if file_date != mouth_god:
-                        print("переборка текущего месяца в год ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
             if d == "History":
                 for filename in os.listdir(source_folder):
                     file_date = filename[6:-4]
-                    print(god)
-                    print(file_date)
                     if file_date != god:
-                        print("переборка текущего месяца в history ", file_date, " ", file_date == day)
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
                         shutil.move(src, dst)
@@ -114,8 +107,6 @@ class SORT:
             if d == "month":
                 for filename in os.listdir(source_folder):
                     file_date = filename[3:-4]
-                    print(file_date)
-                    print(mouth_god)
                     if file_date == mouth_god:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
@@ -127,23 +118,32 @@ class SORT:
         move_files(history,tudey_month, "%d.%m.%Y", "month")
         #move_files(history,tudey_month,  "%d.%m.%Y", "month")
     def sort_files_sebes(self):
-        def move_files(source_folder, destination_folder, date_pattern, d):
+        def move_files(tudey_month, history, date_pattern, d):
             day = datetime.datetime.now().strftime(date_pattern)
             mouth_god = datetime.datetime.now().strftime(date_pattern)[3:]
             god = datetime.datetime.now().strftime(date_pattern)[6:]
 
             if d == "month":
+                for filename in os.listdir(tudey_month):
+                    file_date = filename[3:-4]
+
+                    if file_date != mouth_god:
+                        src = os.path.join(tudey_month, filename)
+                        dst = os.path.join(history, filename)
+                        shutil.move(src, dst)
+            """if d == "history":
                 for filename in os.listdir(source_folder):
                     file_date = filename[3:-4]
                     if file_date != mouth_god:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
-                        shutil.move(src, dst)
+                        shutil.move(src, dst)"""
         # Сортировка файлов продаж
         tudey_month = PUT + "♀Сибестоемость\\Текущий месяц\\"
         history = PUT + "♀Сибестоемость\\Архив\\"
         # Перемещение файлов из текущий месяц в текущего дня
         move_files(tudey_month, history, "%d.%m.%Y", "month")
+        #move_files(history,tudey_month, "%d.%m.%Y", "history")
     def original(self):
         # Путь до папки с оригинальными файлами
         original_files_path = PUT + "Selenium\\Оригинальные файлы\\"
@@ -161,6 +161,19 @@ class SORT:
                 copy_file_path = os.path.join(copy_files_path, filename)
                 # Копируем файл
                 shutil.move(original_file_path, copy_file_path)
+    def sashl_sezn(self):
+        if ini.time_seychas < ini.time_bot_vrem:
+            print("перемещение шашлычного файда")
+            p_palic = ini.PUT_public + "Фирменная розница\\ФРС\\Данные из 1 С\\Шашлык\\"
+            p_local = r"C:\Users\Lebedevvv\Desktop\FRS\Шашлычный"
+            for filename in os.listdir(p_palic):
+                pabl = os.path.join(p_palic, filename)
+                local = os.path.join(p_local, filename)
+                shutil.copy(pabl, local)
 
 
-#SORT.sort_files_spis()
+
+
+
+
+SORT().sashl_sezn()
