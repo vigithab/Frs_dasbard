@@ -172,8 +172,3 @@ class SORT:
                 shutil.copy(pabl, local)
 
 
-
-
-
-
-SORT().sashl_sezn()

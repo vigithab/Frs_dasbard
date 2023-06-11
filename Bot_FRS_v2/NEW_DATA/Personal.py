@@ -132,6 +132,7 @@ class PERSONAL():
     def tudey(self):
         def open_goggle():
             try:
+                print("скачтвание Файла")
                 date_weck = pd.read_excel("https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",skiprows=1)
             except:
                 try:
@@ -141,14 +142,32 @@ class PERSONAL():
                 except:
                     return
             return date_weck
-
         def new_magain(name):
-            x = name
-            sprav_magaz = sprav_magaz[["МАГАЗИН"]]
+
+            name = name[["МАГАЗИН"]].copy()
+            name["Датафрейм"] = name["МАГАЗИН"]
+            spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
+            open_mag = open_mag[["МАГАЗИН"]]
 
 
-        spqr, sprav_magaz = rename.RENAME().magazin_info()
-        print(sprav_magaz)
+            new_magaz= pd.merge(name,  open_mag, on='МАГАЗИН', how='outer')
+            l_mag = ["Томск", "Северск"]
+            for w in l_mag:
+                new_magaz = new_magaz[~new_magaz["МАГАЗИН"].str.contains(w)].reset_index(drop=True)
+            print(new_magaz)
+            new_magaz_null = new_magaz[new_magaz["Датафрейм"].isnull()]["МАГАЗИН"]
+            print(new_magaz_null)
+
+
+
+
+
+        df_personal = open_goggle()
+        new_magain(df_personal)
+
+
+
+
 
 
         """# Первый датафрейм
@@ -186,5 +205,5 @@ class PERSONAL():
 
 
 
-PERSONAL().history()
-#PERSONAL().tudey()
+#PERSONAL().history()
+PERSONAL().tudey()

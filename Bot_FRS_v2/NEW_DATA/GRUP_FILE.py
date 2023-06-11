@@ -417,10 +417,16 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
+                print(file_path)
                 try:
                     x = pd.read_excel(file_path, parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
                 except:
-                    x = pd.read_csv(file_path,sep=";",encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
+                    try:
+                        x = pd.read_csv(file_path,sep=";",encoding="utf-8", parse_dates=["дата"],
+                                        date_format='%Y-%m-%d %H:%M:%S')
+                    except:
+                        x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["дата"],
+                                        date_format='%Y-%m-%d %H:%M:%S')
                 print(file_path)
                 x = x.rename(columns={"!МАГАЗИН!": "магазин"})
                 chek = pd.concat([chek, x], ignore_index=True)

@@ -48,12 +48,15 @@ class RENAME:
             try:
                 sprav_magaz = pd.read_excel("https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx")
                 spqr = sprav_magaz[['ID', '!МАГАЗИН!']]
+                open_mag =  sprav_magaz.loc[ (sprav_magaz["Старые/Новые"] == "Новые ТТ") |
+                                          (sprav_magaz["Старые/Новые"] == "Релокация")|
+                                          (sprav_magaz["Старые/Новые"] == "Без новых ТТ")]
                 break
             except:
                 print("Не удалось загрузить справочник магазинов, данные с пк")
                 sprav_magaz = pd.read_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
                 spqr = sprav_magaz[['ID', '!МАГАЗИН!']]
-        return spqr, sprav_magaz
+        return spqr, sprav_magaz , open_mag
     """функция магазины для мердж"""
     def TY(self):
         # загрузка файла справочника териториалов
