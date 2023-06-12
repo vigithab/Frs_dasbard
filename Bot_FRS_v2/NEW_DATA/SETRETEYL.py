@@ -1,3 +1,7 @@
+import sys
+from Bot_FRS_v2.INI import ini
+PUT = ini.PUT
+sys.path.append(ini.PUT_python)
 import selenium
 import warnings
 import time as t

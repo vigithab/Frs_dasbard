@@ -1,3 +1,8 @@
+import sys
+from Bot_FRS_v2.INI import ini
+PUT = ini.PUT
+sys.path.append(ini.PUT_python)
+
 import pandas as pd
 import os
 from Bot_FRS_v2.INI import ini
@@ -72,7 +77,7 @@ class RENAME:
         except:
             print("Не удалось загрузить справочник магазинов, данные с пк")
             ty = pd.read_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
-        ty = ty[["!МАГАЗИН!","Менеджер"]]
+
         Ln_tip = {'Турова Анна Сергеевна': 'Турова А.С',
                   'Баранова Лариса Викторовна': 'Баранова Л.В',
                   'Геровский Иван Владимирович': 'Геровский И.В',
@@ -83,8 +88,16 @@ class RENAME:
                   'Сергеев Алексей Сергеевич': 'Сергеев А.С',
                   'Карпова Екатерина Эдуардовна': 'Карпова Е.Э'}
         ty["Менеджер"] = ty["Менеджер"].map(Ln_tip)
-        ty  = ty.rename(columns={"!МАГАЗИН!": "магазин"})
-        return ty
+        ty = ty.rename(columns={"!МАГАЗИН!": "магазин"})
+
+        # только открытые
+        ty_open_magaz = ty.loc[(ty["Старые/Новые"] == "Новые ТТ") |
+                        (ty["Старые/Новые"] == "Релокация") |
+                        (ty["Старые/Новые"] == "Без новых ТТ")]
+        ty_open_magaz = ty_open_magaz[["магазин", "Менеджер"]]
+        ty = ty[["магазин","Менеджер"]]
+
+        return ty, ty_open_magaz
         # переименование магазинов справочник ТУ
     def nomenklatura_rename(self):
         sp = pd.read_excel(PUT +"Справочники\\Найти_заменить\\Копия Номенклатра.xlsx")

@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import datetime
 import os
 import pandas as pd
@@ -5,10 +8,12 @@ import gc
 import time
 from Bot_FRS_v2.INI import ini
 import numpy as np
+from datetime import datetime, timedelta
 from Levenshtein import distance
 from Bot_FRS_v2.INI import rename
 from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.GooGL_TBL import Google as g
+from Bot_FRS_v2.BOT_TELEGRAM import BOT
 
 
 pd.set_option("expand_frame_repr", False)
@@ -73,137 +78,56 @@ class PERSONAL():
              "м/о", "Стажеровка", "студентов работает", "Причина некомплекта"]]
         personal.to_csv(PUT + "Персонал\\Data\\персонал.csv", sep=";",encoding="utf-8",index=False)
         print(personal[50:])
-    def new_data(self):
-        spqr, sprav_magaz = rename.RENAME().magazin_info()
-        sprav_magaz = sprav_magaz.loc[sprav_magaz["Старые/Новые"] != "ЗАКРЫТЫЕ"]
-        sprav_magaz = sprav_magaz.loc[sprav_magaz['Ответственный за персонал'].notnull()]
-        sprav_magaz = sprav_magaz[['Ответственный за персонал', '!МАГАЗИН!']]
-
-
-        folder1 = PUT + "Персонал\\Data\\"
-        folders = [folder1]
-        # Получение списка всех файлов в папках и подпапках
-        personal_all  = pd.DataFrame()
-        all_files = []
-        for folder in folders:
-            for root, dirs, files in os.walk(folder):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    all_files.append(file_path)
-            for i in all_files:
-                print(i)
-                x = pd.read_csv(i, sep=";",encoding="utf-8")
-                x = x[["Неделя","Ответственный за персонал",
-                       "!МАГАЗИН!", "Плановая численность", "Фактическая численность", "Принято", "Уволено",
-                       "Кол-во вакансий",
-                       "м/о", "Стажеровка", "студентов работает", "Причина некомплекта"]]
-                personal_all = pd.concat([personal_all, x], axis=0)
-            print(personal_all)
-            personal_all= personal_all.rename(columns={})
-
-
-
-
-
-            """x1 = x.loc[x["Неделя"] == 22]
-            x2 = x.loc[x["Неделя"] != 22]
-            x1.to_csv(PUT + "Персонал\\Data\\23.csv", sep=";", encoding="utf-8", index=False)
-            x2.to_csv(PUT + "Персонал\\Data\\1-21.csv", sep=";", encoding="utf-8", index=False)"""
-            """ x1  = x .loc[x ["Неделя"] == "23"]
-            x1.to_csv(PUT + "Персонал\\Data\\23.csv", sep=";", encoding="utf-8", index=False)
-            x2 = x.loc[x["Неделя"] != "23"]
-            x2.to_csv(PUT + "Персонал\\Data\\1-22.csv", sep=";", encoding="utf-8", index=False)"""
-
-
-        week_number, start_of_week_str, end_of_week_str = ini.weck()
-
-
-        print(week_number)
-        #print(x)
-
-        """ln = ["Плановая численность","Фактическая численность","Принято","Уволено","Кол-во вакансий","м/о","Стажеровка","студентов работает","Причина некомплекта"]
-        for i in ln:
-            sprav_magaz[i]= np.nan
-        sprav_magaz.fillna('', inplace=True)
-        
-        
-        week_info = f"Данные будут записаны для недели № {week_number} с: {start_of_week_str} по: {end_of_week_str}"
-        g.tbl().record(name="Укомплектованность ФРС", name_df=sprav_magaz, sheet_name="ПЕРСОНАЛ", zagolovok = 1, zagolovok_name =week_info)"""
     def tudey(self):
+        BOT.BOT().bot_mes_html(mes="Обработака ФОТ....", silka=0)
         def open_goggle():
             try:
                 print("скачтвание Файла")
                 date_weck = pd.read_excel("https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",skiprows=1)
             except:
                 try:
+
                     time.sleep(360)
                     date_weck = pd.read_excel(
                         "https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",skiprows=1)
                 except:
                     return
-            return date_weck
-        def new_magain(name):
-
-            name = name[["МАГАЗИН"]].copy()
-            name["Датафрейм"] = name["МАГАЗИН"]
+            columns_srt = date_weck.columns.tolist()
+            date_weck["дата"] = ini.dat_seychas.strftime("%d.%m.%Y")
+            date_weck.to_csv(PUT + "Персонал\\Data\\" +
+                        str(ini.dat_seychas.strftime("%d.%m.%Y")) + ".csv",
+                        encoding="utf-8",
+                        sep=';', index=False,
+                        decimal=",")
+            return date_weck,columns_srt
+        def new_magain():
             spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
-            open_mag = open_mag[["МАГАЗИН"]]
+            sprav_magaz = sprav_magaz.loc[ (sprav_magaz["Старые/Новые"] == "Новые ТТ") |
+                                          (sprav_magaz["Старые/Новые"] == "Релокация")|
+                                          (sprav_magaz["Старые/Новые"] == "Без новых ТТ") |
+                                           (sprav_magaz["Старые/Новые"] == "Не магазин")]
+            open_mag = sprav_magaz[["МАГАЗИН","Ответственный за персонал"]]
+            return open_mag
 
+        df_personal,columns_srt = open_goggle()
+        df_personal = df_personal.rename(columns={"Ответственный за персонал":"Ответственный за персонал_del"})
+        new_magain = new_magain()
 
-            new_magaz= pd.merge(name,  open_mag, on='МАГАЗИН', how='outer')
-            l_mag = ["Томск", "Северск"]
-            for w in l_mag:
-                new_magaz = new_magaz[~new_magaz["МАГАЗИН"].str.contains(w)].reset_index(drop=True)
-            print(new_magaz)
-            new_magaz_null = new_magaz[new_magaz["Датафрейм"].isnull()]["МАГАЗИН"]
-            print(new_magaz_null)
+        new_magaz = pd.merge(df_personal,new_magain, on='МАГАЗИН', how='outer')
+        l_mag = ["Томск", "Северск"]
+        for w in l_mag:
+            new_magaz =  new_magaz[~ new_magaz["МАГАЗИН"].str.contains(w)].reset_index(drop=True)
+        new_magaz.loc[new_magaz["Ответственный за персонал"].isnull(), "Ответственный за персонал"] = "НЕ НАЗНАЧЕН"
 
+        new_magaz = new_magaz.reindex(columns_srt, axis=1)
+        d1 = ini.dat_seychas + timedelta(days=1)
+        d1 = d1.strftime("%d.%m.%Y")
+        d = ini.dat_seychas.strftime("%d.%m.%Y")
+        week_info = f"Данные будут сохранены для даты: {str(d1)} (сохранение данных ежедневно в 23:00)"
 
-
-
-
-        df_personal = open_goggle()
-        new_magain(df_personal)
-
-
-
-
-
-
-        """# Первый датафрейм
-        df1 = pd.DataFrame({'Магазины': ['Магазин A', 'Магазин B', 'Магазин C']})
-
-        # Справочник
-        reference_df = pd.DataFrame({'Магазины': ['Магазин A', 'Магазин B', 'Магазин C', 'Магазин D']})
-
-        # Слияние датафреймов по столбцу "Магазины" (outer join для включения всех значений из обоих датафреймов)
-        merged_df = pd.merge(df1, reference_df, on='Магазины', how='outer')
-
-        # Выбираем только отсутствующие значения магазинов из справочника
-        missing_shops = merged_df[merged_df['Магазины'].isnull()]
-
-        # Добавляем отсутствующие магазины в первый датафрейм
-        df1 = pd.concat([df1, missing_shops], ignore_index=True)
-        print(date_weck)
-
-        week_number, start_of_week_str, end_of_week_str = ini.weck()
-        date_weck["Неделя"] = week_number
-        date_weck['Неделя'] = date_weck['Неделя'].apply(lambda x: str(x).zfill(2))
-
-        date_weck["Дата начала недели"]= pd.to_datetime(start_of_week_str, format="%Y-%m-%d")
-        date_weck["Дата конца недели"] =  pd.to_datetime(end_of_week_str, format="%Y-%m-%d")
-        date_weck["Дата начала недели"] = date_weck["Дата начала недели"].dt.strftime("%d.%m.%Y")
-        date_weck["Дата конца недели"] = date_weck["Дата конца недели"].dt.strftime("%d.%m.%Y")
-
-        date_weck["Диапозон"] = date_weck["Дата начала недели"].astype(str) + " - " + date_weck["Дата конца недели"].astype(str)
-        date_weck = date_weck[["Дата начала недели","Дата конца недели","Диапозон", "Неделя", "Ответственный за персонал","Неделя","!МАГАЗИН!","Плановая численность","Фактическая численность","Принято","Уволено","Кол-во вакансий","м/о","Стажеровка","студентов работает","Причина некомплекта"]]
-        print(date_weck)"""
-
-
-
-
-
-
+        new_magaz.fillna('', inplace=True)
+        g.tbl().record(name="Укомплектованность ФРС", name_df=new_magaz, sheet_name="ПЕРСОНАЛ", zagolovok = 1, zagolovok_name =week_info)
+        BOT.BOT().bot_mes_html(mes="Обработака ФОТ Завершена", silka=0)
 
 #PERSONAL().history()
 PERSONAL().tudey()

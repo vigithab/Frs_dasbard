@@ -97,13 +97,10 @@ class tbl:
         # Возвращаем значения alltbl, service и creds
         return alltbl, service, creds
     # инфо по созданым таблицам
-    def record(self, name,name_df,sheet_name, zagolovok, zagolovok_name ):
+    def record(self, name,name_df,sheet_name, zagolovok=None, zagolovok_name=None):
             tbl_id = tbl().tbl_id(name=name)
-
             start = "A1"
-
             if zagolovok ==1:
-
                 # Записываем дату в ячейку A1
                 values = [[str(zagolovok_name)]]
                 range_ = f'{sheet_name}!{start}'
@@ -114,8 +111,6 @@ class tbl:
                                                                 valueInputOption='RAW',
                                                                 body=body).execute()
                 start = "A2"
-
-
             # Имя листа, на который нужно записать данные
             sheet_name = sheet_name
             # Диапазон
@@ -128,7 +123,6 @@ class tbl:
             zagolovok = list(name_df.columns.values)
             # Преобразование в массив
             values = [zagolovok] + name_df.values.tolist()
-
             # Запись данных в таблицу
             body = {'values': values}
             result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_, valueInputOption='RAW', body=body).execute()

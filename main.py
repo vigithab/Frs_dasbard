@@ -1,1 +1,15 @@
-"https://docs.google.com/spreadsheets/d/1dNt8qpZL_ST8aF_iBqV7oVQvH1tsExMd6uLCiC_UtfQ/edit#gid=0" # закрепление команд
+
+import time
+start_time = time.time()
+user_response = None
+timeout = 10
+
+user_input = input("завершить")
+while True:
+    if user_input.lower() == 'y':
+        print("ОСТАНОВЛЕН")
+        break
+    print(time.time() - start_time > timeout)
+    if time.time() - start_time > timeout:
+        print("ОСТАНОВЛЕН dhtvz")
+        break

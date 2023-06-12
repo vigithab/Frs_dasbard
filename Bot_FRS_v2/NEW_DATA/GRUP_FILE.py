@@ -1,3 +1,8 @@
+import sys
+from Bot_FRS_v2.INI import ini
+PUT = ini.PUT
+sys.path.append(ini.PUT_python)
+
 from datetime import date, timedelta
 import os
 import pandas as pd
@@ -560,6 +565,10 @@ class Grup():
             "количество товаров в чеке"]]
 
             #sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
+            print(sales_itog)
+            print(ini.dat_seychas)
+            sales_itog = sales_itog.loc[sales_itog["дата"]!= ini.dat_seychas]
+            print(sales_itog)
             sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8", decimal=".", index=False)
 
         if ini.time_seychas < ini.time_bot_vrem:

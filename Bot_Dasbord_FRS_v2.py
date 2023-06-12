@@ -7,6 +7,7 @@ import os
 import pandas as pd
 import gc
 import datetime
+import time
 #from Bot_FRS_v2.rassilka import voropaev_degustaciya as voropaev
 #from Bot_FRS_v2.new_data import nacpitelniy_itog as naK
 from Bot_FRS_v2.INI import memory
@@ -19,6 +20,8 @@ from Bot_FRS_v2.INI import rename
 from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.NEW_DATA import GRUP_FILE
 from Bot_FRS_v2.INI import log
+from Bot_FRS_v2.RASSILKA import Voropaev
+
 
 
 class NEW_data:
@@ -26,7 +29,7 @@ class NEW_data:
         log.LOG().log_data()
         BOT.BOT().bot_mes_html(mes="Скрипт запущен",silka=0)
         run_NEW_DATA_sd()
-        #set.SET().Set_obrabotka()
+        set.SET().Set_obrabotka()
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
         for root, dirs, files in os.walk(PUT + "Selenium\\Оригинальные файлы\\"):
             # "PUT + "Selenium\\Оригинальные файлы\\"
@@ -136,7 +139,6 @@ class NEW_data:
                     except:
                         print("Ошибка при сохранении ночные магазины")
 
-        print("Obrabotka")
         NEW_data().selenium_day_Spisania()
         NEW_data().sebest()
         SORT_FILE.SORT().sort_files_sales()
@@ -146,6 +148,10 @@ class NEW_data:
         SORT_FILE.SORT().original()
         GRUP_FILE.Grup().grups()
         SORT_FILE.SORT().sashl_sezn()
+        Voropaev.Degustacia().sotka()
+        print("ЗАВЕРШЕНИЕ")
+        time.sleep(240)
+
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
         # групировка файлов продаж по дням
@@ -173,8 +179,9 @@ class NEW_data:
                      decimal=",")
             return
         name_datafreme["Касса"] = name_datafreme["Касса"].astype(str)
-        name_datafreme = name_datafreme.loc[(name_datafreme["!МАГАЗИН!"] != "Таврическая 37") &
-                                            (name_datafreme["Касса"] != "4.0")]
+        name_datafreme = name_datafreme.loc[~((name_datafreme["!МАГАЗИН!"] == "Таврическая 37") & (name_datafreme["Касса"] == "4.0"))]
+
+
         sales_day_sales = name_datafreme[
             ["ID", "!МАГАЗИН!", "Код товара", "Тип", "Наименование товара", "Количество", "Стоимость позиции",
              "Сумма скидки", "Штрихкод"]]
@@ -224,8 +231,8 @@ class NEW_data:
     def selenium_day_chek(self, name_datafreme, name_file):
         memory.MEMORY().mem_total(x="Формирование чеков: ")
         name_datafreme["Касса"] = name_datafreme["Касса"].astype(str)
-        name_datafreme = name_datafreme.loc[(name_datafreme["!МАГАЗИН!"] != "Таврическая 37") &
-                                            (name_datafreme["Касса"] != "4.0")]
+        name_datafreme = name_datafreme.loc[
+            ~((name_datafreme["!МАГАЗИН!"] == "Таврическая 37") & (name_datafreme["Касса"] == "4.0"))]
         sp = ["Касса"]
         Float.FLOAT().float_colms(name_data=name_datafreme,name_col=sp)
         def cnevk(tip):

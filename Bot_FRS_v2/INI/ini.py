@@ -1,3 +1,5 @@
+import sys
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 import datetime
 import time as t
 import pandas as pd
@@ -8,7 +10,7 @@ PUT = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\"
 #PUT = "D:\\РАБОТА\\Дашборд_бот — копия\\"
 PUT_download = r"C:\Users\Lebedevvv\Downloads"
 #PUT_download = r"C:\Users\виталий\Downloads"
-PUT_python = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\PYTHON\\"
+PUT_python = r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages"
 #PUT_public = "\\tw1\\PUBLIC\\"
 PUT_public = "P:\\"
 
@@ -24,11 +26,11 @@ keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
 test_all= keys_dict.get('test')
 test_not = keys_dict.get('testovaya')
-#TY_id = keys_dict.get('testovaya')
-TY_id = keys_dict.get('TY_id')
+TY_id = keys_dict.get('testovaya')
+#TY_id = keys_dict.get('TY_id')
 
 # Время рассылки сообщений
-time_bot_vrem = "22:30:00"
+time_bot_vrem = "23:59:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10
