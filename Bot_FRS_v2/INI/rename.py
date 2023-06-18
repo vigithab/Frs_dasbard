@@ -1,8 +1,10 @@
-import sys
+"""import sys
 from Bot_FRS_v2.INI import ini
 PUT = ini.PUT
-sys.path.append(ini.PUT_python)
-
+sys.path.append(ini.PUT_python)"""
+import sys
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import pandas as pd
 import os
 from Bot_FRS_v2.INI import ini
@@ -17,51 +19,38 @@ PUT = ini.PUT
 
 class RENAME:
     def Rread(self, name_data, name_col, name):
-        while True:
             try:
                 print("Загрузка справочника магазинов...")
                 replacements = pd.read_excel("https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
-                """replacements = pd.read_excel(PUT + "Справочники\\ДЛЯ ЗАМЕНЫ.xlsx",
-                                                 sheet_name="Лист1")"""
+                replacements.to_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
                 rng = len(replacements)
                 for i in range(rng):
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
-                    #print(replacements["НАЙТИ"][i], " / ", replacements["ЗАМЕНИТЬ"][i])
-                break
             except:
                 print("Не удалось загрузить справоник найти знаменить, данные с пк")
                 replacements = pd.read_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
                 rng = len(replacements)
                 for i in range(rng):
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
-                break
-        return name_data
-    """функция переименование"""
-    def Rread_kassa(self, name_data, name_col, name):
-            print("Загрузка справочника кассы...")
-            replacements = pd.read_excel(PUT + "Справочники\\Кассы\\Найи_заменить касса.xlsx", sheet_name="Sheet1")
-            rng = len(replacements)
-            for i in range(rng):
-
-                name_data[name_col] = name_data[name_col].replace(replacements["Найти"][i], replacements["заменить"][i], regex=False)
-                #print(replacements["Найти"][i], " / ", replacements["заменить"][i])
             return name_data
     """функция переименование"""
     def magazin_info(self):
-        print("Загрузка справочника магазинов...")
-        while True:
+            print("Загрузка справочника магазинов...")
             try:
                 sprav_magaz = pd.read_excel("https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx")
+                sprav_magaz.to_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
                 spqr = sprav_magaz[['ID', '!МАГАЗИН!']]
                 open_mag =  sprav_magaz.loc[ (sprav_magaz["Старые/Новые"] == "Новые ТТ") |
                                           (sprav_magaz["Старые/Новые"] == "Релокация")|
                                           (sprav_magaz["Старые/Новые"] == "Без новых ТТ")]
-                break
             except:
                 print("Не удалось загрузить справочник магазинов, данные с пк")
                 sprav_magaz = pd.read_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
                 spqr = sprav_magaz[['ID', '!МАГАЗИН!']]
-        return spqr, sprav_magaz , open_mag
+                open_mag = sprav_magaz.loc[(sprav_magaz["Старые/Новые"] == "Новые ТТ") |
+                                           (sprav_magaz["Старые/Новые"] == "Релокация") |
+                                           (sprav_magaz["Старые/Новые"] == "Без новых ТТ")]
+            return spqr, sprav_magaz , open_mag
     """функция магазины для мердж"""
     def TY(self):
         # загрузка файла справочника териториалов
@@ -70,14 +59,15 @@ class RENAME:
         RENAME().Rread(name_data = ty, name_col= "Название 1 С (для фин реза)", name="TY")
         ty = ty.rename(columns={"Название 1 С (для фин реза)": "!МАГАЗИН!"})
         return ty
+
     def TY_Spravochnik(self):
         try:
             print("Загрузка справочника магазинов...")
             ty = pd.read_excel("https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx")
+            ty.to_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
         except:
             print("Не удалось загрузить справочник магазинов, данные с пк")
             ty = pd.read_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
-
         Ln_tip = {'Турова Анна Сергеевна': 'Турова А.С',
                   'Баранова Лариса Викторовна': 'Баранова Л.В',
                   'Геровский Иван Владимирович': 'Геровский И.В',
@@ -89,16 +79,15 @@ class RENAME:
                   'Карпова Екатерина Эдуардовна': 'Карпова Е.Э'}
         ty["Менеджер"] = ty["Менеджер"].map(Ln_tip)
         ty = ty.rename(columns={"!МАГАЗИН!": "магазин"})
-
         # только открытые
         ty_open_magaz = ty.loc[(ty["Старые/Новые"] == "Новые ТТ") |
                         (ty["Старые/Новые"] == "Релокация") |
                         (ty["Старые/Новые"] == "Без новых ТТ")]
         ty_open_magaz = ty_open_magaz[["магазин", "Менеджер"]]
         ty = ty[["магазин","Менеджер"]]
-
         return ty, ty_open_magaz
         # переименование магазинов справочник ТУ
+    """функция переименование"""
     def nomenklatura_rename(self):
         sp = pd.read_excel(PUT +"Справочники\\Найти_заменить\\Копия Номенклатра.xlsx")
         sp = sp.loc[sp["заменить"]!="#Н/Д"]
@@ -153,7 +142,6 @@ class RENAME:
                     print(new_path)
                     # Сохранение DataFrame в новом пути
                     x.to_csv(new_path[:-4] + ".csv", sep=";", encoding="utf-8", index=False)
-
         def sales():
             folder2 = PUT + "♀Продажи\\2023\\"
             folder1 = PUT + "♀Продажи\\История\\"
@@ -205,11 +193,19 @@ class RENAME:
                         # Сохранение DataFrame в новом пути
                         print(new_directory + str(os.path.basename(file_path)[:-5]))
                         x.to_csv(new_directory + str(os.path.basename(file_path)[:-5]) + ".csv", sep=";", encoding="utf-8", index=False)
-
         SEB()
         sales()
 
         spis()
 
+    def Rread_kassa(self, name_data, name_col, name):
+        print("Загрузка справочника кассы...")
+        replacements = pd.read_excel(PUT + "Справочники\\Кассы\\Найи_заменить касса.xlsx", sheet_name="Sheet1")
+        rng = len(replacements)
+        for i in range(rng):
+            name_data[name_col] = name_data[name_col].replace(replacements["Найти"][i], replacements["заменить"][i],
+                                                              regex=False)
+            # print(replacements["Найти"][i], " / ", replacements["заменить"][i])
+        return name_data
 
 #RENAME().nomenklatura_rename()

@@ -1,7 +1,6 @@
 import sys
-from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
-sys.path.append(ini.PUT_python)
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
 import os
 import shutil

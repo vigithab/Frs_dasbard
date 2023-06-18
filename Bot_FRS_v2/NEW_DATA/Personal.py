@@ -86,7 +86,7 @@ class PERSONAL():
                 date_weck = pd.read_excel("https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",skiprows=1)
             except:
                 try:
-
+                    print("ошибка")
                     time.sleep(360)
                     date_weck = pd.read_excel(
                         "https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",skiprows=1)
@@ -131,3 +131,4 @@ class PERSONAL():
 
 #PERSONAL().history()
 PERSONAL().tudey()
+time.sleep(200)

@@ -1,8 +1,7 @@
 import sys
-from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
-sys.path.append(ini.PUT_python)
-
+import sys
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
 import holidays
 from datetime import datetime, timedelta, time, date

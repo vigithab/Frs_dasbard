@@ -1,7 +1,6 @@
 import sys
-from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
-sys.path.append(ini.PUT_python)
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import selenium
 import warnings
 import time as t
@@ -39,20 +38,40 @@ class SET:
         def spisok_dat():
             # region СПИСОК ДАТ
             today = datetime.datetime.now()
+            d_str = datetime.datetime.now().strftime('%d.%m.%Y')
             tame_Filter = today.strftime("%H:%M:%S")
-
-            spisok_d = [datetime.datetime.now().strftime('%d.%m.%Y')]
+            #spisok_d = [datetime.datetime.now().strftime('%d.%m.%Y')]
             # сохранение файла с датой обновления
             with open(PUT + 'NEW\\дата обновления.txt', 'w') as f:
                 f.write(str(today))
+
             if tame_Filter < ini.time_bot_vrem:
                 day_1 = today - timedelta(days=1)
-                date_vchera = day_1.strftime('%d.%m.%Y')
+                spisok_d = day_1.strftime('%d.%m.%Y')
+                try:
+                    os.remove(PUT + "♀Чеки\\Чеки текущий день\\" + str(spisok_d)+ ".csv" )
+                    os.remove(PUT + "♀Продажи\\текущий день\\" + str(spisok_d) + ".csv")
+                except:
+                    print("нет файлов")
+                df1 = pd.DataFrame(columns=['!МАГАЗИН!','ID',"Наименование товара","Код товара","Стоимость позиции","Количество","Сумма скидки","номенклатура_1с","Дата/Время чека"])
+                df2 = pd.DataFrame(columns=['ID', '!МАГАЗИН!', "выручка", "количество товаров в чеке", "количество уникальных товаров в чеке", "Средний чек",
+                     "дата", "Количество чеков_возврат", "Количество чеков"])
+
+                df1.to_csv(PUT + "♀Продажи\\текущий день\\" + d_str + ".csv", encoding="utf-8",
+                                          sep=';', index=False,
+                                          decimal=",")
+                df2.to_csv(PUT + "♀Чеки\\Чеки текущий день\\" +  d_str + ".csv", encoding="utf-8",
+                                      sep=';', index=False,
+                                      decimal=",")
+                spisok_d = [day_1.strftime('%d.%m.%Y')]
+                print(spisok_d)
+                print(df1)
+                print(df2)
+            else:
+                spisok_d = [datetime.datetime.now().strftime('%d.%m.%Y')]
                 # day_2 = today - timedelta(days=2)
                 # date_poz_vchera = day_2.strftime('%d.%m.%Y')
-                spisok_d.append(date_vchera)
                 # spisok_d.append(date_poz_vchera)
-
             """start_date = date(2023, 1, 1)  # начальная дата
             end_date = date(2023, 5, 12)  # конечная дата
             delta = timedelta(days=1)  # шаг даты
@@ -63,7 +82,7 @@ class SET:
                 dates_list.append(start_date.strftime('%d.%m.%Y'))
                 start_date += delta
                 spisok_d = dates_list"""
-            #spisok_d = ['01.01.2023']
+            #spisok_d = ['12.06.2023']
             #spisok_d = ['09.06.2023','10.06.2023','11.06.2023']
             print(spisok_d)
             return spisok_d

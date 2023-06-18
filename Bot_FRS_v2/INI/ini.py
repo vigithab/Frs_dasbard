@@ -1,5 +1,6 @@
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import datetime
 import time as t
 import pandas as pd
@@ -30,7 +31,7 @@ TY_id = keys_dict.get('testovaya')
 #TY_id = keys_dict.get('TY_id')
 
 # Время рассылки сообщений
-time_bot_vrem = "23:59:00"
+time_bot_vrem = "10:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10

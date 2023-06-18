@@ -88,6 +88,7 @@ class FLOAT:
         return name_data
 class Degustacia:
     def sotka(self):
+
         if ini.time_seychas <ini.time_bot_vrem:
             BOT.BOT().bot_mes_html(mes="Оновление таблицы шашлыка", silka=0)
             file = PUT + 'NEW\\Дегустации\\Отчет по дегустациям - X (TXT).txt'
@@ -180,14 +181,14 @@ class Degustacia:
             FLOAT().float_colms(name_data=df, name_col=columns_to_sum)
 
             ty,ty_open_magaz = rename.RENAME().TY_Spravochnik()
-
+            print("pfuhe;ty")
             ty = ty.rename(columns={"магазин": "Магазин"})
             df = df.merge(ty, on=["Магазин"], how="left").reset_index(drop=True)
 
             # df = pd.concat([df, pd.DataFrame(df.sum(numeric_only=True), columns=['Итого']).T]).reset_index(drop=True)
             df = pd.concat([df, pd.DataFrame(df.sum(numeric_only=True), columns=['Итого']).T.assign(Магазин='ИТОГО')]).reset_index(drop=True)
             df.fillna('', inplace=True)
-
+            print(df)
 
             g.tbl().record(name="Дегустация шашлыка(за последние 7 дней)", name_df=df, sheet_name="ЕСТЬ ДЕГУСТАЦИИ")
             unique_values = df["Магазин"].unique()
@@ -200,5 +201,9 @@ class Degustacia:
             df = df[["Менеджер","Магазин"]]
 
             df.fillna('', inplace=True)
+            print("Запись")
             g.tbl().record(name="Дегустация шашлыка(за последние 7 дней)", name_df=df, sheet_name="НЕТ ДЕГУСТАЦИЙ",)
 
+
+
+#Degustacia().sotka()

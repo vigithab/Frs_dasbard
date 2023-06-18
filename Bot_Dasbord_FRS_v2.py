@@ -1,15 +1,13 @@
 import sys
-from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
-sys.path.append(ini.PUT_python)
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
+
 from datetime import datetime, timedelta, time, date
 import os
 import pandas as pd
 import gc
 import datetime
 import time
-#from Bot_FRS_v2.rassilka import voropaev_degustaciya as voropaev
-#from Bot_FRS_v2.new_data import nacpitelniy_itog as naK
 from Bot_FRS_v2.INI import memory
 from Bot_FRS_v2.INI import ini
 from Bot_FRS_v2.NEW_DATA.SET_SD import run_NEW_DATA_sd
@@ -22,15 +20,20 @@ from Bot_FRS_v2.NEW_DATA import GRUP_FILE
 from Bot_FRS_v2.INI import log
 from Bot_FRS_v2.RASSILKA import Voropaev
 
-
-
+PUT = ini.PUT
 class NEW_data:
     def Obrabotka(self):
         log.LOG().log_data()
         BOT.BOT().bot_mes_html(mes="Скрипт запущен",silka=0)
-        run_NEW_DATA_sd()
-        set.SET().Set_obrabotka()
+
+        try: run_NEW_DATA_sd()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
+
+        try: set.SET().Set_obrabotka()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при скачивании с Сетретейл", silka=0)
+
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
+
         for root, dirs, files in os.walk(PUT + "Selenium\\Оригинальные файлы\\"):
             # "PUT + "Selenium\\Оригинальные файлы\\"
             for file in files:
@@ -139,19 +142,31 @@ class NEW_data:
                     except:
                         print("Ошибка при сохранении ночные магазины")
 
-        NEW_data().selenium_day_Spisania()
-        NEW_data().sebest()
-        SORT_FILE.SORT().sort_files_sales()
-        SORT_FILE.SORT().sort_files_chek()
-        SORT_FILE.SORT().sort_files_spis()
-        SORT_FILE.SORT().sort_files_sebes()
-        SORT_FILE.SORT().original()
-        GRUP_FILE.Grup().grups()
-        SORT_FILE.SORT().sashl_sezn()
-        Voropaev.Degustacia().sotka()
-        print("ЗАВЕРШЕНИЕ")
-        time.sleep(240)
+        try: NEW_data().selenium_day_Spisania()
+        except:BOT.BOT().bot_mes_html(mes="Ошибка при обработке списания", silka=0)
 
+        try: NEW_data().sebest()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке Сбестоймости", silka=0)
+
+        try:
+            SORT_FILE.SORT().sort_files_sales()
+            SORT_FILE.SORT().sort_files_chek()
+            SORT_FILE.SORT().sort_files_spis()
+            SORT_FILE.SORT().sort_files_sebes()
+            SORT_FILE.SORT().original()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при сортировки", silka=0)
+
+        try: GRUP_FILE.Grup().grups()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при Групировке", silka=0)
+
+        try: SORT_FILE.SORT().sashl_sezn()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при Получении данных с паблика", silka=0)
+
+        try:Voropaev.Degustacia().sotka()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
+
+        BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
+        time.sleep(240)
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
         # групировка файлов продаж по дням
