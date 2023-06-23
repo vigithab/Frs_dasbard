@@ -27,17 +27,17 @@ keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
 test_all= keys_dict.get('test')
 test_not = keys_dict.get('testovaya')
-TY_id = keys_dict.get('testovaya')
+TY_id = keys_dict.get('TY_id')
 #TY_id = keys_dict.get('TY_id')
 
 # Время рассылки сообщений
-time_bot_vrem = "10:00:00"
+time_bot_vrem = "18:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10
 # ожидание перед отправкой соощения
-TY_GROP = 0
-TEST_BOT = 2
+TY_GROP = 1
+TEST_BOT = 1
 
 def weck():
     # Получаем номер недели для текущей даты

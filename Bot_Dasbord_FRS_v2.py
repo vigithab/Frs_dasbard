@@ -19,12 +19,17 @@ from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.NEW_DATA import GRUP_FILE
 from Bot_FRS_v2.INI import log
 from Bot_FRS_v2.RASSILKA import Voropaev
+from Bot_FRS_v2.NEW_DATA import Personal_v2
 
 PUT = ini.PUT
 class NEW_data:
     def Obrabotka(self):
         log.LOG().log_data()
         BOT.BOT().bot_mes_html(mes="Скрипт запущен",silka=0)
+        try:
+            new_personal = Personal_v2.new_data()
+            new_personal.tudey()
+        except: BOT.BOT().bot_mes_html(mes="Ошибка при Обновлении ФОТ", silka=0)
 
         try: run_NEW_DATA_sd()
         except: BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
@@ -164,7 +169,7 @@ class NEW_data:
 
         try:Voropaev.Degustacia().sotka()
         except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
-
+        BOT.BOT_rashet().rashet()
         BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
         time.sleep(240)
     # главная функция запускает все
@@ -486,7 +491,7 @@ class NEW_data:
                 gc.collect()
     # Обработка сиестомости
 
-
+#GRUP_FILE.Grup().grups()
 NEW_data().Obrabotka()
 
 

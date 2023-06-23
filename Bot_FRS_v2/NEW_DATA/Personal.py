@@ -128,6 +128,48 @@ class PERSONAL():
         new_magaz.fillna('', inplace=True)
         g.tbl().record(name="Укомплектованность ФРС", name_df=new_magaz, sheet_name="ПЕРСОНАЛ", zagolovok = 1, zagolovok_name =week_info)
         BOT.BOT().bot_mes_html(mes="Обработака ФОТ Завершена", silka=0)
+    def grupfile(self):
+        folder = PUT + "Персонал\\Data\\"
+        folders = [folder]
+        # Получение списка всех файлов в папках и подпапках
+        grup_pers = pd.DataFrame()
+        all_files = []
+        for folder in folders:
+            for root, dirs, files in os.walk(folder):  # folder2,folder1,folder3
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    all_files.append(file_path)
+            for file_path in all_files:
+                print(file_path)
+                # расширение
+                file_put = os.path.splitext(file_path)[-1].lower()
+                x = pd.read_csv(file_path,sep=";",encoding="utf-8")
+
+                grup_pers = pd.concat([grup_pers,x],axis=0)
+
+            grup_pers = grup_pers.melt(
+                id_vars=["дата", "МАГАЗИН", "Ответственный за персонал"],
+                var_name="статья",
+                value_name="значение")
+            grup_pers.to_csv(PUT + "Персонал\\Data\\" +
+                             "бработанный персонад"+ ".csv",
+                             encoding="utf-8",
+                             sep=';', index=False,
+                             decimal=",")
+
+            print(grup_pers) # # гн
+            # не использеется
+
+
+
+
+
+
+
+
+#PERSONAL().grupfile()
+
+
 
 #PERSONAL().history()
 PERSONAL().tudey()

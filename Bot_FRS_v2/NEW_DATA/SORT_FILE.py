@@ -175,4 +175,4 @@ class SORT:
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
 
-
+#SORT().sashl_sezn()

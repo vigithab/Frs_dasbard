@@ -2,7 +2,7 @@ import sys
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
+from Bot_FRS_v2.GooGL_TBL import Google as g
 import holidays
 from datetime import datetime, timedelta, time, date
 import datetime
@@ -34,7 +34,7 @@ class CustomRusHolidays(holidays.RU):
         self[date(year, 5, 9)] = "День Победы"
         # Коректировка выходных дней
 class BOT:
-    def bot_mes_html_TY(self, mes,silka):
+    def bot_mes_html_TY(self, mes,silka, url=None):
         token = ini.token
 
         file_name = ""
@@ -48,7 +48,7 @@ class BOT:
 
             def send_message(chat_id, text, token, reply_markup=None):
                 url = f'https://api.telegram.org/bot{token}/sendMessage'
-                data = {'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}
+                data = {'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML', "disable_web_page_preview":True}
                 if reply_markup:
                     data['reply_markup'] = json.dumps(reply_markup, ensure_ascii=False)
                 response = requests.post(url, json=data)
@@ -63,7 +63,7 @@ class BOT:
                     file.write(str(message_id) + '\n')
                 with open(PUT + 'BOT\\Temp\\ID_messege\\' + file_name + '_ALL.txt', 'a') as file:
                     file.write(str(message_id) + '\n')
-            buttons = [{"text": "Ссылка Google Docs(в разраотке)", "callback_data": "button1", "url": "https://kalina-malina.ru/", "color": "614051"}]
+            buttons = [{"text": "Ссылка Google таблицу", "callback_data": "button1", "url": url}]
             reply_markup = {"inline_keyboard": [[button] for button in buttons]}
             # фильтр прикрепления ссылок
             if silka == 1:
@@ -75,7 +75,7 @@ class BOT:
             if message_id is not None:
                 save_message_id(message_id)
     """отправка сообщений d в формате HTML в группу Т"""
-    def bot_mes_html(self, mes,silka):
+    def bot_mes_html(self, mes,silka,url=None):
         token = ini.token
         file_name = ""
         chat_id = ""
@@ -92,7 +92,7 @@ class BOT:
 
         def send_message(chat_id, text, token, reply_markup=None):
             url = f'https://api.telegram.org/bot{token}/sendMessage'
-            data = {'chat_id': chat_id,'text': text,'parse_mode': 'HTML'}
+            data = {'chat_id': chat_id,'text': text,'parse_mode': 'HTML',}
             if reply_markup:
                 data['reply_markup'] = json.dumps(reply_markup, ensure_ascii=False)
             response = requests.post(url, json=data)
@@ -105,7 +105,7 @@ class BOT:
         def save_message_id(message_id):
             with open(PUT + 'BOT\\Temp\\ID_messege\\' + file_name + '.txt', 'a') as file:
                 file.write(str(message_id) + '\n')
-        buttons = [{"text": "Ссылка Google Docs(в разработке)", "callback_data": "button1", "url": "https://kalina-malina.ru/","color": "614051"}]
+        buttons = [{"text": "Ссылка Google Docs(в разработке)", "callback_data": "button1", "url": url}]
         reply_markup = {"inline_keyboard": [[button] for button in buttons]}
         # фильтр прикрепления ссылок
         if silka == 1:
@@ -267,6 +267,15 @@ class BOT_rashet():
 
         return TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month
     def rashet(self):
+        # форматирование числа
+        def format_chislo(i):
+            format = '{:,.0f}'.format(i).replace(',', ' ')
+            return format
+        # фрматирование процента
+        def format_prosent(i, ndigits):
+            return "{:.{ndigits}%}".format(i, ndigits=ndigits)
+
+        # Формирование списка дат
         TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month = BOT_rashet().tabl_bot_date()
         # Преобразование формата даты
         VCHERA_mes = VCHERA.copy()
@@ -275,77 +284,195 @@ class BOT_rashet():
         TODEY_month = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in TODEY_month]
         LAST_month = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in LAST_month]
 
-        # форматирование числа
-        def format_chislo(i):
-            format = '{:,.0f}'.format(i).replace(',', ' ')
-            return format
-        # фрматирование процента
-        def format_prosent(i, ndigits):
-            return "{:.{ndigits}%}".format(i, ndigits=ndigits)
+        # загрзка таблиц, формирование списка ТУ
         tabl = pd.read_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",parse_dates=['дата'],date_format='%Y-%m-%d',dtype={'LFL': str})
         # доавление ТУ
-        TY = rename.RENAME().TY_Spravochnik()
+        TY, ty_open_magaz = rename.RENAME().TY_Spravochnik()
+        TY = TY.loc[TY["Менеджер"].notnull()]
         tabl = tabl.merge(TY, on=["магазин"], how="left").reset_index(drop=True)
-        def DATE():
-            # Определение даты обновления дашборда
-            """now = datetime.datetime.now()
-            NEW_date = (now.hour + 1) if now.minute >= 30 else (now.hour)
-            NEW_date = datetime.datetime(now.year, now.month, now.day, NEW_date, 0, 0)
-            NEW_date = NEW_date.strftime("%H:%M")
-            print("Текущее время (округлено до часа):", NEW_date)
-            Seychas = f'🕙 Данные на : {NEW_date}\n'"""
-            now = datetime.datetime.now()
-            NEW_date = (now.hour + 1) if now.minute >= 30 else (now.hour)
-            NEW_date = NEW_date % 24  # ограничения значения часа от 0 до 23
-            NEW_date = datetime.datetime(now.year, now.month, now.day, NEW_date, 0, 0)
-            NEW_date = NEW_date.strftime("%H:%M")
-            print("Текущее время (округлено до часа):</b>", NEW_date)
-            Seychas = f'<b>🕙 Данные на : {NEW_date}</b>\n'
+        # создание списка ТУ
+        ty_list = tabl['Менеджер'].unique().tolist()
+        # удаление пустых значений и нан  списк ТУ
+        ty_list = [value for value in ty_list if value and not isinstance(value, float)]
+        print(ty_list)
 
-
-            # список дат из файла TODEY_month
-            with open(PUT + "Bot\\temp\\даты_файлов\\VCHERA.txt", 'r') as f:
-                dates = f.read().strip()[1:-1].split(', ')
-
-            # Формируем сообщение Вчерашнего дня
-            VCHERA_date = f'🕙Результаты вчерашнего дня:\n'
-            for date in dates:
-
-                VCHERA_date += f' •\u200E {date[1:-1]}\n'
-            print(VCHERA_date)
-            # Формируем сообщение после выходных
-            min_date = min(dates)[1:-1]
-            max_date = max(dates)[1:-1]
-            VCHERA_date_holidays = f"<b>🕙Результаты за выходные:</b>\n"
-            VCHERA_date_holidays += f" •{min_date} - {max_date}\n"
-
-
-            return VCHERA_date, Seychas, VCHERA_date_holidays
+        # отправка сообений вчерашнего дня.
         def vhera():
-            VCHERA_mes = ['02.05.2023', '03.05.2023']
-            VCHERA_date = ""
-            kol_day = len(VCHERA_mes)
-            if kol_day == 1:
-                for date in VCHERA_mes:
-                    VCHERA_date = f'🕙Результаты вчерашнего дня:\n'
-                    VCHERA_date += f' •\u200E {date[1:-1]}\n'
-            else:
-                min_date = min(VCHERA_mes)
-                max_date = max(VCHERA_mes)
-                VCHERA_date = f"🕙Результаты за выходные:\n"
-                VCHERA_date += f" •{min_date} - {max_date}\n"
-            print("оличество дней" , kol_day)
-
-            # фильтр даты Вчера
             VCHERA_tabl = tabl[tabl['дата'].isin(VCHERA)]
-            # создание списка ТУ
-            ty_list = VCHERA_tabl['Менеджер'].unique().tolist()
-            # удаление пустых значений ТУ
-            ty_list = [value for value in ty_list if value]
+            TODEY_month_tabl = tabl[tabl['дата'].isin(TODEY_month)]
+            print(TODEY_month_tabl)
+            # ормирование соощение даты
+            def __date():
+                #VCHERA_mes = ['02.05.2023', '03.05.2023']
+                VCHERA_date = ""
+                kol_day = len(VCHERA_mes)
+                if kol_day == 1:
+                    for date in VCHERA_mes:
+                        VCHERA_date = f'🕙 Результаты вчерашнего дня:\n'
+                        VCHERA_date += f' •\u200E {date}\n'
+                else:
+                    min_date = min(VCHERA_mes)
+                    max_date = max(VCHERA_mes)
+                    VCHERA_date = f"🕙 Результаты за выходные:\n"
+                    VCHERA_date += f" •{min_date} - {max_date}\n"
+                print("Количество дней" , kol_day)
+                return VCHERA_date
+
             for i in ty_list:
-                sales = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "выручка"].sum()
-                ######### если дневной план по выручке не выполнен
+                print(i)
+                # получение общех продаж и плана
+                sales_total =  TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i, "выручка"].sum()
+                check_total = TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i, "Количество чеков"].sum()
+
+                TODEY_month_tabl_plan =  TODEY_month_tabl.groupby(["магазин", "Менеджер"],
+                          as_index=False).agg(
+                {"план_выручка": "mean", "план_кол_чеков": "mean"}) \
+                .reset_index(drop=True)
+                print(TODEY_month_tabl_plan)
+
+                plan_sales_total =  TODEY_month_tabl_plan.loc[TODEY_month_tabl_plan["Менеджер"]
+                                                              == i, "план_выручка"].sum()
+                check_plan_total = TODEY_month_tabl_plan.loc[TODEY_month_tabl_plan["Менеджер"]
+                                                             == i, "план_кол_чеков"].sum()
+
+                # если план не выполнен
+                def __not_end_mes_sales():
+                    sales = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "выручка"].sum()
+                    plan_day_sales = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "дневной_план_выручка"].sum()
+                    plan_itog = sales / plan_day_sales
+                    mes_sales = f'<b>👨‍💼{i}:</b>\n\n' \
+                            f'{__date()}\n' \
+                            f'<b>Выручка:\n</b>' \
+                            f'• План(дневной): {format_chislo(i=plan_day_sales)}\n' \
+                            f'• Факт: {format_chislo(i=sales)} ({format_prosent(i=plan_itog, ndigits=1)})\n'
+
+                    plan_itog_total = sales_total / plan_sales_total
+                    mes_sales_total = f'<b>\n📆 Результаты текущего месяца:\n</b>' \
+                                        f'<b>Выручка:\n</b>' \
+                                        f'• План(месяц): {format_chislo(i=plan_sales_total)}\n' \
+                                        f'• Факт: {format_chislo(i=sales_total)} ({format_prosent(i=plan_itog_total, ndigits=1)})\n'
+
+                    return  mes_sales, sales, plan_day_sales, mes_sales_total
+                # если план выполнене
+                def __end_mes_sales():
+                    return mes_sales
+                # план по кол чекам.
+                def __not_end_mes_chek():
+                    check = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "Количество чеков"].sum()
+                    plan_check = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "дневной_план_кол_чеков"].sum()
+                    plan_itog_check = check / plan_check
+                    mes_chek = f'<b>Кол.чеков:\n</b>' \
+                            f'• План(дневной): {format_chislo(i=plan_check)}\n' \
+                            f'• Факт: {format_chislo(i=check)} ({format_prosent(i=plan_itog_check, ndigits=1)})\n'
+                    return mes_chek,check,plan_check
+                # если план выполнене
+                def __end_mes_chek():
+                    return  mes_chek
+                # средний чек
+                def aver_chek(sales,plan_day_sales, check,plan_check):
+                    plan_aver_check =  plan_day_sales / plan_check
+                    aver_check = sales/check
+                    plan_itog_aver_check = aver_check/plan_aver_check
+                    mes_aver_chek = f'<b>Средний чек:\n</b>' \
+                               f'• План(дневной): {format_chislo(i=plan_aver_check)}\n' \
+                               f'• Факт: {format_chislo(i=aver_check)} ({format_prosent(i=plan_itog_aver_check, ndigits=1)})\n'
+                    return mes_aver_chek
+                # списания
+                def __spisania(sales):
+                    print(sales)
+                    spis = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "списания_оказатель"].sum()
+                    spisania_proc = spis/sales
+                    spis_total = TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i, "списания_оказатель"].sum()
+
+                    hoz = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "списания_хозы"].sum()
+                    spisania_proc_hoz = hoz / sales
+
+                    hz_total = TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i, "списания_хозы"].sum()
+
+                    mes_spis = f'<b>Списания:\n</b>' \
+                               f'• Показатель: {format_chislo(i=spis)} ({format_prosent(i=spisania_proc, ndigits=1)})\n' \
+                               f'• Хозы: {format_chislo(i=hoz)} ({format_prosent(i=spisania_proc_hoz, ndigits=1)})\n'
+                    mes_spis_total = f'<b>Списания:\n</b>' \
+                               f'• Показатель: {format_chislo(i=spis)} ({format_prosent(i=spisania_proc, ndigits=1)})\n' \
+                               f'• Хозы: {format_chislo(i=hoz)} ({format_prosent(i=spisania_proc_hoz, ndigits=1)})\n'
+                    return mes_spis, mes_spis_total
+
+
+                def __result_TODEY_month():
+                    return
+                # бновление таблицы гугл
+                def Google():
+                    tabl_googl_vchera = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i]
+                    tabl_googl_vchera = tabl_googl_vchera[["дата","магазин",
+                                               "выручка","план_выручка","дневной_план_выручка",
+                                               "Количество чеков","план_кол_чеков","дневной_план_кол_чеков",
+                                               "Средний чек","план_cредний_чек",
+                                               "списания_оказатель","списания_хозы"]]
+
+                    tabl_googl_vchera = tabl_googl_vchera.rename(columns={"дата":"Дата","магазин":'Магазин',
+                                               "выручка":'Выручка Факт',"план_выручка":"Выручка План","дневной_план_выручка":"Выручка Дневной план ",
+                                               "Количество чеков":"Кол.чеков","план_кол_чеков":"Кол.чеков план","дневной_план_кол_чеков":"Кол.чеков Дневной план",
+                                               "Средний чек": "Средний чек","план_cредний_чек":"Средний чек план",
+                                               "списания_оказатель":"Cписания","списания_хозы":"Хозы"})
+                    tabl_googl_vchera = pd.concat([tabl_googl_vchera, pd.DataFrame(tabl_googl_vchera.sum(numeric_only=True), columns=['Итого']).T.assign(
+                                        Магазин='ИТОГО')]).reset_index(drop=True)
+                    tabl_googl_vchera["Дата"] = tabl_googl_vchera["Дата"].dt.strftime('%d.%m.%Y')
+                    tabl_googl_vchera = tabl_googl_vchera.round(0)
+                    tabl_googl_vchera.fillna('', inplace=True)
+
+                    Goole_url = g.tbl().record(name=i, name_df=tabl_googl_vchera,
+                                   sheet_name="Результаты прошлого дня")
+
+                    return Goole_url
+
+
+                # роверка на выполнение плана по выручке
+                priznak_sales = ""
+                if sales_total<plan_sales_total:
+                    # действие если план ен выполнен
+                    mes_sales, sales, plan_day_sales, mes_sales_total = __not_end_mes_sales()
+                    priznak_sales = 1
+                else:
+                    # действие если план выполнен
+                    mes_sales, sales, plan_day_sales, mes_sales_total = __end_mes_sales()
+                    priznak_sales = 0
+
+                # роверка на выполнение плана по количеств чеков
+                priznak_chek = ""
+                if check_total<check_plan_total:
+                    # действие если план ен выполнен
+                    mes_chek,check,plan_check = __not_end_mes_chek()
+                    priznak_chek = 1
+                else:
+                    # действие если план выполнен
+                    mes_chek,check,plan_check = __end_mes_chek()
+                    priznak_chek = 0
+
+                # вычисление среднего чека
+                priznak_aver_chek = priznak_chek + priznak_sales
+                # если не выполнены оба планоа по выручке и кол чекам
+                if priznak_aver_chek == 2:
+                    mes_aver_chek = aver_chek(sales=sales, plan_day_sales=plan_day_sales,
+                                              check =check ,plan_check= plan_check)
+                else:
+                    mes_aver_chek = 0
+                    #################################################### работать исключение
+
+                mes_spis, mes_spis_total = __spisania(sales=sales)
+
+
+                Goole_url = Google()
+                #BOT().bot_mes_html(mes=mes_sales + mes_chek + mes_aver_chek + mes_spis +
+                                       #mes_sales_total, silka=1 ,url = Goole_url)
+                url = f'<a href={Goole_url}>Ссылка Google таблицу</a>'
+                url = f'<code>&lt;a href="{Goole_url}"&gt;Перейти на Google&lt;/a&gt;</code>'
+                url = f'<b>\n 📎 <a href="{Goole_url}">Ссылка Google таблицу</a></b>'
+                BOT().bot_mes_html_TY(mes=mes_sales + mes_chek + mes_aver_chek + mes_spis +
+                                       mes_sales_total + url , silka=0)
+
+                """######### если дневной план по выручке не выполнен
                 if sales < VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "план_выручка"].sum():
+
                     sales = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "выручка"].sum()
                     plan_day_sales = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "дневной_план_выручка"].sum()
                     plan_itog = sales / plan_day_sales
@@ -361,9 +488,8 @@ class BOT_rashet():
                             f'{VCHERA_date}\n' \
                             f'<b>Выручка: план выполнен👍\n</b>' \
                             f'• Факт: {format_chislo(i=sales)}\n'
-
-
                 check = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "Количество чеков"].sum()
+
                 #########  если дневной план по количеству чеков не выполнен
                 if check < VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "план_кол_чеков"].sum():
                     plan_check = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i, "дневной_план_кол_чеков"].sum()
@@ -375,16 +501,7 @@ class BOT_rashet():
                 else:
                     mes_2 = f'<b>Кол.чеков:\n</b>'\
                             f'<b>Кол.чеков: план выполнен👍\n</b>' \
-                            f'• Факт: {format_chislo(i=check)}\n'
-
-
-
-
-
-                BOT().bot_mes_html(mes=mes_1+ mes_2, silka=1)
-
-
-
+                            f'• Факт: {format_chislo(i=check)}\n'"""
 
         priznzk = "начало недели"
         if priznzk == "начало недели" or priznzk == 'середина недели':

@@ -13,8 +13,8 @@ from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
 
+PUT = ini.PUT
 # авторизациz
 creds = service_account.Credentials.from_service_account_file(PUT + 'BOT\\key\\client_secret.json')
 service = build('sheets', 'v4', credentials=creds)
@@ -176,7 +176,7 @@ class tbl:
         credentials_file = PUT + 'BOT\\key\\client_secret.json'
 
         # Идентификатор (ID) существующей таблицы, к которой нужно предоставить доступ
-        spreadsheet_id = '13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ'
+        spreadsheet_id = '1Ce_7Rm0g5V6a63tgLOfCkknJ3dW4gJuT4O-TACQZJWE'
 
         # Создание объекта сервиса для работы с Google Drive API
         credentials = service_account.Credentials.from_service_account_file(credentials_file)
@@ -252,13 +252,11 @@ class tbl:
         return
 
 
-
-
-
-
 #tbl().dele()
 #tbl().new()
-#tbl().new_taybl(name_tabl="Укомплектованность ФРС", name_list="ПЕРСОНАЛ")
+"""ln = ['Баранова Л.В', 'Карпова Е.Э', 'Бедарева Н.Г', 'Турова А.С', 'Павлова А.А', 'Изотов В.В', 'Геровский И.В', 'Сергеев А.С', 'Томск']
+for i in ln:
+    tbl().new_taybl(name_tabl= i, name_list="Результаты прошлого дня")"""
 #tbl().record(name="Карпова Е.Э_Прошлый день")
 #tbl().dostup()
 #tbl().stil()
