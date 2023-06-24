@@ -25,13 +25,19 @@ time_seychas  = time_seychas.strftime("%H:%M:%S")
 dat = pd.read_excel(PUT + 'Bot\\key\\id.xlsx')
 keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
-test_all= keys_dict.get('test')
-test_not = keys_dict.get('testovaya')
-TY_id = keys_dict.get('TY_id')
-#TY_id = keys_dict.get('TY_id')
+test_all= keys_dict.get('Мой_канал')
+TY_id = keys_dict.get('Мой_канал')
+
+#TY_id = keys_dict.get('Мой_канал_ТУ')
+#test_not = keys_dict.get('testovaya')
+
+
+
+
+
 
 # Время рассылки сообщений
-time_bot_vrem = "18:00:00"
+time_bot_vrem = "10:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10
@@ -54,9 +60,6 @@ def weck():
     end_of_week_str = end_of_week.strftime('%Y-%m-%d')
 
     return week_number,start_of_week_str,end_of_week_str
-
-
-
 
 # ВЫЧИСЛЕНИЕ ДАТЫ ГОДА ПО ВЧЕРАШНИЙ ДЕНЬ список дат до сегоднешнего дня
 def god_todey():
@@ -129,8 +132,29 @@ def last_mount():
 
 
     # Использование функции и вывод списка дат
-
 ################# Для бота
+
+def profnoz():
+    # Получаем текущую дату
+    current_date = datetime.date.today()
+    # Определяем первый день текущего месяца
+    first_day = current_date.replace(day=1)
+    # Определяем первый день следующего месяца
+    next_month = first_day.replace(month=first_day.month + 1)
+    # Определяем последний день текущего месяца
+    last_day = next_month - datetime.timedelta(days=1)
+    # Вычисляем количество дней в текущем месяце
+    days_in_month = last_day.day
+    # Вычисляем количество прошедших дней в текущем месяце
+    days_last = current_date.day
+    # Вычисляем количество оставшихся дней до конца месяца
+    days_ostatok = days_in_month - days_last
+    # Выводим результаты
+    print("Количество дней в текущем месяце:", days_in_month)
+    print("Прошло дней в текущем месяце:", days_last)
+    print("Осталось дней до конца месяца:", days_ostatok)
+
+    return days_in_month, days_last, days_ostatok
 
 
 

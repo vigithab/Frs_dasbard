@@ -1,21 +1,19 @@
-import sys
-import sys
-sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
-sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-from Bot_FRS_v2.GooGL_TBL import Google as g
 import holidays
+import timeit
 from datetime import datetime, timedelta, time, date
 import datetime
-from Bot_FRS_v2.INI import rename
 import time as t
 import os
 import pandas as pd
 import calendar
 import gc
 import requests
-from Bot_FRS_v2.INI import memory
-from Bot_FRS_v2.INI import ini
 import json
+from Bot_FRS_v2.INI import Float
+from Bot_FRS_v2.GooGL_TBL import Google as g
+from Bot_FRS_v2.INI import ini
+from Bot_FRS_v2.INI import memory
+from Bot_FRS_v2.INI import rename
 
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
@@ -188,7 +186,7 @@ class BOT_rashet():
         MAX_DATE = datetime.datetime.strptime(date_str[:10], '%Y-%m-%d').date()
         TODEY = [MAX_DATE.strftime(format_date_str)]
         LAST_DATE = MAX_DATE - datetime.timedelta(days=1)
-        print("Дата в файле\n", MAX_DATE)
+        #print("Дата в файле\n", MAX_DATE)
 
         # тестовая
         test = 0
@@ -222,14 +220,14 @@ class BOT_rashet():
                 fil_vchera.append(date_str)
 
         VCHERA = fil_vchera
-        print("Прошлый день\n",VCHERA)
+        #print("Прошлый день\n",VCHERA)
         # endregion
 
         # region ТЕКУШИЙ МЕСЯЦ
         TODEY_month_min_day = MAX_DATE.replace(day=1)
         # список дат
         TODEY_month = pd.date_range(start=TODEY_month_min_day, end=MAX_DATE  - datetime.timedelta(days=1), freq='D').strftime(format_date_str).tolist()
-        print("Текущий месяц\n",TODEY_month)
+        #print("Текущий месяц\n",TODEY_month)
         # endregion
 
         # region ПРОШЛЫЙ МЕСЯЦ
@@ -244,7 +242,7 @@ class BOT_rashet():
         # Если количество дней в прошлом месяце больше, отфильтруем его, чтобы было равное количество дней
         if days_in_last_month > days_in_today_month:
             LAST_month = LAST_month[:days_in_today_month]
-        print("Прошлый месяц\n",LAST_month)
+        #print("Прошлый месяц\n",LAST_month)
 
         # endregion
         # region ЕРЕМЕННАЯ НАЧАЛО МЕСЯЦА
@@ -278,7 +276,6 @@ class BOT_rashet():
         # Формирование списка дат
         TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month = BOT_rashet().tabl_bot_date()
         # Преобразование формата даты
-        VCHERA_mes = VCHERA.copy()
         TODEY= [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in TODEY]
         VCHERA = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in  VCHERA]
         TODEY_month = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in TODEY_month]
@@ -305,14 +302,14 @@ class BOT_rashet():
             def __date():
                 #VCHERA_mes = ['02.05.2023', '03.05.2023']
                 VCHERA_date = ""
-                kol_day = len(VCHERA_mes)
+                kol_day = len(VCHERA)
                 if kol_day == 1:
-                    for date in VCHERA_mes:
+                    for date in VCHERA:
                         VCHERA_date = f'🕙 Результаты вчерашнего дня:\n'
                         VCHERA_date += f' •\u200E {date}\n'
                 else:
-                    min_date = min(VCHERA_mes)
-                    max_date = max(VCHERA_mes)
+                    min_date = min(VCHERA)
+                    max_date = max(VCHERA)
                     VCHERA_date = f"🕙 Результаты за выходные:\n"
                     VCHERA_date += f" •{min_date} - {max_date}\n"
                 print("Количество дней" , kol_day)
@@ -396,8 +393,6 @@ class BOT_rashet():
                                f'• Показатель: {format_chislo(i=spis)} ({format_prosent(i=spisania_proc, ndigits=1)})\n' \
                                f'• Хозы: {format_chislo(i=hoz)} ({format_prosent(i=spisania_proc_hoz, ndigits=1)})\n'
                     return mes_spis, mes_spis_total
-
-
                 def __result_TODEY_month():
                     return
                 # бновление таблицы гугл
@@ -507,6 +502,243 @@ class BOT_rashet():
         if priznzk == "начало недели" or priznzk == 'середина недели':
             vhera()
 
+class bot_mesege:
+    def __init__(self):
+
+        # Формирвание списка ТУ
+        def ty(name_df):
+            # доавление ТУ
+            TY, ty_open_magaz = rename.RENAME().TY_Spravochnik()
+            TY = TY.loc[TY["Менеджер"].notnull()]
+            tabl = name_df.merge(TY, on=["магазин"], how="left").reset_index(drop=True)
+            # создание списка ТУ
+            ty_list = tabl['Менеджер'].unique().tolist()
+            # удаление пустых значений и нан  списк ТУ
+            ty_list = [value for value in ty_list if value and not isinstance(value, float)]
+            return ty_list, tabl
+
+        # Чтение даты из файла
+        with open(PUT + 'NEW\\дата обновления.txt', 'r') as f:
+            self.date_str = f.readline().strip()
+        self.format_date_str = '%d.%m.%Y'
+
+        # Формирование списка дат
+        TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month = BOT_rashet().tabl_bot_date()
+        # Преобразование формата даты
+        self.VCHERA_mes = VCHERA.copy()
+        self.TODEY = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in TODEY]
+        self.VCHERA = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in VCHERA]
+        self.TODEY_month = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in TODEY_month]
+        self.LAST_month = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in LAST_month]
+
+        # загрзка таблиц, формирование списка ТУ
+        self.tabl = pd.read_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
+                           parse_dates=['дата'], date_format='%Y-%m-%d',
+                           dtype={'магазин': str, 'LFL': str},low_memory=False)
+        # Получение списка всех столбцов, исключая ['магазин', 'LFL', 'дата']
+
+        All_colms = list(set(self.tabl.columns) - {'магазин', 'LFL', 'дата'})
+        print(All_colms)
+        Float.FLOAT().float_colms(name_data=self.tabl,name_col=All_colms)
+        self.ty_list, self.tabl = ty(name_df=self.tabl)
+
+    def ff(self):
+        print("Сегодняшняя дата: ", self.TODEY)
+        print("Вчерашняя дата: ", self.VCHERA)
+        print("Даты текущего месяца: ", self.TODEY_month)
+        print("Даты прошлого месяца: ", self.LAST_month)
+        print("Список территориалов: ", self.ty_list)
+
+    def vchera(self):
+        # форматирование числа
+        def fn(i):
+            return '{:,.0f}'.format(i).replace(',', ' ')
+        # фрматирование процента
+        def fp(i, ndigits):
+            return "{:.{ndigits}%}".format(i, ndigits=ndigits)
+        # ормирование соощение даты
+        def __date():
+            # VCHERA = ['02.05.2023', '03.05.2023']
+            VCHERA_date = ""
+            kol_day = len(self.VCHERA)
+            if kol_day == 1:
+                date = min(self.VCHERA)
+                VCHERA_date = f'🕙 Результаты вчерашнего дня:\n'
+                VCHERA_date += f' •\u200E {date}\n'
+            else:
+                min_date = min(self.VCHERA)
+                max_date = max(self.VCHERA)
+                VCHERA_date = f"🕙 Результаты за выходные:\n"
+                VCHERA_date += f" •{min_date} - {max_date}\n"
+            return VCHERA_date
+        # результаты за вчера
+        VCHERA_tabl = self.tabl[self.tabl['дата'].isin(self.VCHERA)]
+        print(VCHERA_tabl)
+        VCHERA_tabl  = VCHERA_tabl.groupby(["магазин", "Менеджер"],
+                                                    as_index=False).agg(
+                                {"выручка": "sum", "Количество чеков": "sum", "дневной_план_выручка": "sum",
+                                 "дневной_план_кол_чеков": "sum",
+                                 "списания_оказатель":"sum","списания_хозы":"sum"}) \
+                                .reset_index(drop=True)
+
+        # Результаты за месяц
+        TODEY_month_tabl = self.tabl[self.tabl['дата'].isin(self.TODEY_month)]
+        # Плыны сгрупированные
+        TODEY_month_tabl = TODEY_month_tabl.groupby(["магазин", "Менеджер"],
+                                                              as_index=False).agg(
+                                {"выручка":"sum","Количество чеков":"sum","план_выручка": "mean",
+                                 "план_кол_чеков": "mean","план_cредний_чек":"mean",
+                                 "списания_оказатель":"sum","списания_хозы":"sum"}) \
+                                .reset_index(drop=True)
+
+        for i in self.ty_list:
+            t.sleep(1)
+            # выруча за месяц
+            manager_data_total = TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i]
+            sales_total = manager_data_total["выручка"].sum()
+            sales_total_plan = manager_data_total["план_выручка"].sum()
+            sales_total_itog = sales_total / sales_total_plan
+            # чеки  за месяц
+            check_total = manager_data_total["Количество чеков"].sum()
+            check_total_plan = manager_data_total["план_кол_чеков"].sum()
+            check_total_itog = check_total/ check_total_plan
+            # Средний чек  за месяц
+            aver_chek_total = sales_total/check_total
+            aver_chek_total_plan = manager_data_total["план_cредний_чек"].mean()
+            aver_chek_total_itog =aver_chek_total/aver_chek_total_plan
+            # Списания  за месяц
+            spis_total = manager_data_total["списания_оказатель"].sum()
+            hoz_total = manager_data_total["списания_хозы"].sum()
+            spis_day_total_itog = spis_total / sales_total
+            hoz_day_total_itog = hoz_total / sales_total
+
+            # дневные показатели Выручка
+            manager_data_day = VCHERA_tabl.loc[VCHERA_tabl["Менеджер"] == i]
+            sales_day = manager_data_day["выручка"].sum()
+            plan_sales_day = manager_data_day["дневной_план_выручка"].sum()
+            plan_sales_itog = sales_day / plan_sales_day
+
+            # дневные показатели Чеки
+            check_day = manager_data_day["Количество чеков"].sum()
+            plan_check_day = manager_data_day["дневной_план_кол_чеков"].sum()
+            plan_check_itog = check_day / plan_check_day
+
+            # план дневного среднего чека
+            aver_chek_day = sales_day / check_day
+            aver_chek_plan_day = plan_sales_day / plan_check_day
+            aver_chek_itog_day = aver_chek_day / aver_chek_plan_day
+            # дневные показатели средний чек
+            spis_day = manager_data_day["списания_оказатель"].sum()
+            hoz_day = manager_data_day["списания_хозы"].sum()
+            spis_day_itog = spis_day / sales_day
+            hoz_day_itog = hoz_day / sales_day
+
+
+            # формирование сообщений выручка
+            def __sales():
+                s = 0
+                if sales_total<sales_total_plan:
+                    s = sales_total_plan - sales_total
+                    print(f'{i} - "До плана дневных продаж" {fn(s)}')
+                    mes_sales = f'<b> 👨‍💼 {i}:</b>\n\n' \
+                                     f' {__date()}\n' \
+                                     f'<b>Выручка:\n</b>' \
+                                     f'• План(дневной): {fn(i=plan_sales_day)}\n' \
+                                     f'• Факт: {fn(i=sales_day)} ({fp(i=plan_sales_itog, ndigits=1)})\n'
+                else:
+                    mes_sales = f'<b> 👨‍💼 {i}:</b>\n\n' \
+                                     f' {__date()}\n' \
+                                     f'<b>Выручка:\n</b>' \
+                                     f'• План(дневной): "Выполнен"\n'
+
+
+                mes_sales_total = f'<b>\n📆 Результаты текущего месяца: \n</b>' \
+                                  f'<b>Выручка:\n</b>' \
+                                  f'• План(месяц): {fn(i=sales_total_plan)}\n' \
+                                  f'• Факт: {fn(i=sales_total)} ({fp(i=sales_total_itog, ndigits=1)})\n'
+
+                return  mes_sales, mes_sales_total
+
+            # формирование сообщений чеки
+            def __check():
+                s = 0
+                if check_total<check_total_plan:
+                    s = check_total_plan - check_total
+                    print(f'{i} - "До плана" {fn(s)}')
+                    mes_check = f'<b>Кол.чеков:\n</b>' \
+                                     f'• План(дневной): {fn(i=plan_check_day)}\n' \
+                                     f'• Факт: {fn(i=check_day)} ({fp(i=plan_check_itog, ndigits=1)})\n'
+                else:
+                    mes_check = f'<b>Кол.чеков:\n</b>' \
+                                     f'• План(дневной): "Выполнен"\n'\
+
+                mes_check_total = f'<b>Кол.чеков:\n</b>' \
+                                  f'• План(месяц): {fn(i=check_total_plan)}\n' \
+                                  f'• Факт: {fn(i=check_total)} ({fp(i=check_total_itog, ndigits=1)})\n'
+
+                return  mes_check, mes_check_total
+
+            # формирование сообщений средний чек
+            def aver_chek():
+                s = 0
+                if check_total < check_total_plan:
+                    s = check_total_plan - check_total
+                    print(f'{i} - "До плана" {fn(s)}')
+                    mes_aver_chek = f'<b>Средний чек:\n</b>' \
+                                f'• План(дневной): {fn(i=aver_chek_plan_day)}\n' \
+                                f'• Факт: {fn(i=aver_chek_day)} ({fp(i=aver_chek_itog_day, ndigits=1)})\n'
+                else:
+                    mes_aver_chek = f'<b>Средний чек:\n</b>' \
+                                    f'• План(дневной): "Выполнен"\n'
+
+                mes_aver_chek_total = f'<b>Средний чек:\n</b>' \
+                                      f'• План(месяц): {fn(i=aver_chek_total_plan)}\n' \
+                                      f'• Факт: {fn(i=aver_chek_total)} ({fp(i=aver_chek_total_itog, ndigits=1)})\n'
+
+                return mes_aver_chek, mes_aver_chek_total
+
+            # формирование сообщений списания
+            def spisania():
+                signal_spisania = ""
+                print(spis_day_total_itog)
+                if spis_day_total_itog>0.025:
+                    signal_spisania = "⚠️"
+                mes_spisania_day =\
+                    f'<b>Списания:\n</b>' \
+                    f'• Показатель: {fn(i=spis_day)} ({fp(i=spis_day_itog, ndigits=1)})\n'\
+                    f'• Хозы: {fn(i=hoz_day)} ({fp(i=hoz_day_itog, ndigits=1)})\n'
+                mes_spisania_total =\
+                    f'<b>Списания:\n</b>' \
+                    f'• Показатель: {fn(i=spis_total)} ({fp(i=spis_day_total_itog, ndigits=1)}){signal_spisania}\n'\
+                    f'• Хозы: {fn(i=hoz_total)} ({fp(i=hoz_day_total_itog, ndigits=1)})\n'
+
+                return mes_spisania_day, mes_spisania_total
+
+
+
+
+
+
+
+            mes_sales, mes_sales_total = __sales()
+            mes_check, mes_check_total = __check()
+            mes_aver_chek, mes_aver_chek_total = aver_chek()
+            mes_spisania_day, mes_spisania_total = spisania()
+            BOT().bot_mes_html_TY(mes=mes_sales + mes_check+ mes_aver_chek + mes_spisania_day +
+                                      mes_sales_total+mes_check_total + mes_aver_chek_total + mes_spisania_total ,silka=0)
+
+
+
+
+
+
+
+
+
+
 
 #BOT_rashet().rashet()
+bot_mesege = bot_mesege()
+bot_mesege.ff()
+bot_mesege.vchera()
 

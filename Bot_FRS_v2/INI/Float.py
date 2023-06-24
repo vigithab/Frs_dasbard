@@ -24,4 +24,4 @@ class FLOAT:
                                           .round(2))
         return name_data
     """для одного столбца"""
-        # перевод в число
+
