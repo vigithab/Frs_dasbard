@@ -252,6 +252,61 @@ class tbl:
         return
 
 
+class tbl_bot():
+    def tbl_id(self, name):
+        dat = pd.read_excel(PUT + 'BOT\\Goole\\Таблицы_Googl.xlsx')
+        keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
+        tbl_id = keys_dict.get(name)
+        return tbl_id
+    # поиск ключей таблиц
+    def sheet(self,name_tbl, df, sheet_name, one_stroka = None):
+
+        tbl_id = tbl_bot().tbl_id(name=name_tbl)
+        print()
+
+        zagolovok_name = one_stroka
+        # Записываем дату в ячейку A1
+        values = [[str(zagolovok_name)]]
+        range_ = f'{sheet_name}!A1'
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
+                                                        valueInputOption='RAW',
+                                                        body=body).execute()
+
+
+        zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
+        # Записываем дату
+        values = [[str(zagolovok_name)]]
+        range_ = f'{sheet_name}!A2'
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
+                                                        valueInputOption='RAW',
+                                                        body=body).execute()
+
+        # Диапазон
+        range_ = f'{sheet_name}!A3'
+        del_dat = f'{sheet_name}!A3:Z'
+        # Очистка данных в листе перед записью
+        result = service.spreadsheets().values().clear(
+            spreadsheetId=tbl_id, range=del_dat).execute()
+        # аголовки добавить
+        zagolovok = list(df.columns.values)
+        # Преобразование в массив
+        values = [zagolovok] + df.values.tolist()
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_, valueInputOption='RAW',
+                                                        body=body).execute()
+        # ссылка
+        Goole_url = f'https://docs.google.com/spreadsheets/d/{tbl_id}'
+        print(f'Ссылка на таблицу - {name_tbl} :  {Goole_url}')
+
+        return Goole_url
+
+
+
 #tbl().dele()
 #tbl().new()
 """ln = ['Баранова Л.В', 'Карпова Е.Э', 'Бедарева Н.Г', 'Турова А.С', 'Павлова А.А', 'Изотов В.В', 'Геровский И.В', 'Сергеев А.С', 'Томск']

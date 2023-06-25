@@ -169,7 +169,11 @@ class NEW_data:
 
         try:Voropaev.Degustacia().sotka()
         except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
-        BOT.BOT_rashet().rashet()
+
+        bot_mesege = BOT.bot_mesege()
+        bot_mesege.ff()
+        bot_mesege.vchera()
+
         BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
         time.sleep(240)
     # главная функция запускает все

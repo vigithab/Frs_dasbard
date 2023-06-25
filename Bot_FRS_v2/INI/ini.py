@@ -1,6 +1,7 @@
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
+import locale
 import datetime
 import time as t
 import pandas as pd
@@ -26,9 +27,9 @@ dat = pd.read_excel(PUT + 'Bot\\key\\id.xlsx')
 keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
 test_all= keys_dict.get('Мой_канал')
-TY_id = keys_dict.get('Мой_канал')
+#TY_id = keys_dict.get('Мой_канал')
 
-#TY_id = keys_dict.get('Мой_канал_ТУ')
+TY_id = keys_dict.get('Мой_канал_ТУ')
 #test_not = keys_dict.get('testovaya')
 
 
@@ -37,14 +38,22 @@ TY_id = keys_dict.get('Мой_канал')
 
 
 # Время рассылки сообщений
-time_bot_vrem = "10:00:00"
+time_bot_vrem = "14:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 10
 # ожидание перед отправкой соощения
 TY_GROP = 1
 TEST_BOT = 1
-
+def month_and_god():
+    # сохранить локаль
+    old_locale = locale.getlocale(locale.LC_TIME)
+    locale.setlocale(locale.LC_TIME, 'ru_RU')
+    # Получить текущий месяц и год в формате строки
+    month_god = dat_seychas.strftime('%B %Y')
+    # вернуть локаль
+    locale.setlocale(locale.LC_TIME, old_locale)
+    return month_god
 def weck():
     # Получаем номер недели для текущей даты
     week_number = dat_seychas.isocalendar()[1]
@@ -134,7 +143,7 @@ def last_mount():
     # Использование функции и вывод списка дат
 ################# Для бота
 
-def profnoz():
+def prognoz():
     # Получаем текущую дату
     current_date = datetime.date.today()
     # Определяем первый день текущего месяца
@@ -146,7 +155,7 @@ def profnoz():
     # Вычисляем количество дней в текущем месяце
     days_in_month = last_day.day
     # Вычисляем количество прошедших дней в текущем месяце
-    days_last = current_date.day
+    days_last = current_date.day-1
     # Вычисляем количество оставшихся дней до конца месяца
     days_ostatok = days_in_month - days_last
     # Выводим результаты
