@@ -2,6 +2,7 @@ import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
+
 from datetime import datetime, timedelta, time, date
 import os
 import pandas as pd
@@ -35,7 +36,10 @@ class NEW_data:
         except: BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
 
         try: set.SET().Set_obrabotka()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при скачивании с Сетретейл", silka=0)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании с Сетретейл: {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}"
+            BOT.BOT().bot_mes_html(mes=mes, silka=0)
 
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
 
@@ -165,7 +169,10 @@ class NEW_data:
         except: BOT.BOT().bot_mes_html(mes="Ошибка при Групировке", silka=0)
 
         try: SORT_FILE.SORT().sashl_sezn()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при Получении данных с паблика", silka=0)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при Получении данных с паблика: {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}"
+            BOT.BOT().bot_mes_html(mes=mes, silka=0)
 
         try:Voropaev.Degustacia().sotka()
         except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
