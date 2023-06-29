@@ -580,6 +580,6 @@ class Grup():
 #spis()
 #Grup().spisania_nistory()
 #Grup().Sales()
-Grup().grups()
+#Grup().grups()
 
 #test()

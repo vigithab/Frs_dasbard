@@ -22,6 +22,7 @@ TY_GROP =  ini.TY_GROP
 TEST_BOT = ini.TEST_BOT
 PUT = ini.PUT
 
+
 class CustomRusHolidays(holidays.RU):
     def _populate(self, year,):
         super()._populate(year)
@@ -160,5 +161,19 @@ class BOT:
         # обновление файла с айди сообщений
         with open(PUT + "BOT\\Temp\\ID_messege\\" + file_name + ".txt", 'w') as file:
             file.write('\n'.join(updated_message_ids))
+
+    def bot_proverka_KM(self, mes):
+        token = ini.token
+        chat_id = ini.km
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        data = {'chat_id': chat_id,'text': mes, 'parse_mode': 'HTML',}
+        response = requests.post(url, json=data)
+        if response.status_code == 200:
+            print('Сообщение отправлено')
+            return response.json().get('result', {}).get('message_id')
+        else:
+            print(f'Ошибка при отправке сообщения: {response.status_code}')
+
+
 
 

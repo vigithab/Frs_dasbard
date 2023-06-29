@@ -26,7 +26,7 @@ PUT = ini.PUT
 class NEW_data:
     def Obrabotka(self):
         log.LOG().log_data()
-        BOT.BOT().bot_mes_html(mes="Скрипт запущен",silka=0)
+        BOT.BOT().bot_mes_html(mes="Скрипт Дашборда запущен",silka=0)
         try:
             new_personal = Personal_v2.new_data()
             new_personal.tudey()
