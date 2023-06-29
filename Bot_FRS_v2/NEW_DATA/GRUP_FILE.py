@@ -486,8 +486,9 @@ class Grup():
             sales_itog = sales_itog.rename(columns={"выручка_x": "выручка"})
             # добавление панов прдаж
             x = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
+            print(x)
             x['дата'] = pd.to_datetime(x['дата'], format='%d.%m.%Y')
-            x = x[["!МАГАЗИН!", "ПЛАН", "дата", "Показатель"]]
+            x = x[["магазин", "ПЛАН", "дата", "Показатель"]]
             FLOAT().float_colm(name_data=x, name_col="ПЛАН")
             x["месяц"] = pd.to_datetime(x["дата"]).dt.month
             x["год"] = pd.to_datetime(x["дата"]).dt.year
@@ -495,8 +496,7 @@ class Grup():
             x.loc[x["Показатель"] == "Средний чек", "план_cредний_чек"] = x["ПЛАН"]
             x.loc[x["Показатель"] == "Кол чеков", "план_кол_чеков"] = x["ПЛАН"]
             x = x.drop(["ПЛАН", "Показатель", "дата"], axis=1)
-            x = x.groupby(["!МАГАЗИН!", "месяц", "год"]).sum().reset_index()
-            x = x.rename(columns={"!МАГАЗИН!": 'магазин'})
+            x = x.groupby(["магазин", "месяц", "год"]).sum().reset_index()
             sales_itog =  pd.merge(sales_itog, x, on=['магазин', 'месяц',"год"], how='left')
 
             # создание столбцов с датами(для прогноза)
@@ -511,8 +511,11 @@ class Grup():
             # Создание столбца с общим количеством дней в месяце
             sales_itog['дней в месяце'] = sales_itog["дата"].dt.daysinmonth
 
-            sales_itog["дневной_план_выручка"] = (sales_itog["план_выручка"] -sales_itog["накопительный_итог_выручка_месяц"])/sales_itog["осталось дней"]
-            sales_itog["дневной_план_кол_чеков"] = ( sales_itog["план_кол_чеков"] - sales_itog["накопительный_итог_Количество чеков_месяц"])/sales_itog["осталось дней"]
+            sales_itog["дневной_план_выручка"] = sales_itog["план_выручка"] / sales_itog["дней в месяце"]
+            sales_itog["дневной_план_кол_чеков"] = sales_itog["план_кол_чеков"] / sales_itog["дней в месяце"]
+
+            """sales_itog["дневной_план_выручка"] = (sales_itog["план_выручка"] -sales_itog["накопительный_итог_выручка_месяц"])/sales_itog["осталось дней"]
+            sales_itog["дневной_план_кол_чеков"] = ( sales_itog["план_кол_чеков"] - sales_itog["накопительный_итог_Количество чеков_месяц"])/sales_itog["осталось дней"]"""
             sales_itog.loc[sales_itog["год"] != 2023, "LFL"] = np.nan
 
             sales_itog = sales_itog[["магазин","LFL","дата","год","месяц","Прошло дней","осталось дней","дней в месяце",
@@ -564,12 +567,8 @@ class Grup():
             "количество товаров в чеке"]]
 
             #sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
-            print(sales_itog)
-            print(ini.dat_seychas)
             sales_itog = sales_itog.loc[sales_itog["дата"]!= ini.dat_seychas]
-            print(sales_itog)
             sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8", decimal=".", index=False)
-
         if ini.time_seychas < ini.time_bot_vrem:
             sales()
 
@@ -581,6 +580,6 @@ class Grup():
 #spis()
 #Grup().spisania_nistory()
 #Grup().Sales()
-#Grup().grups()
+Grup().grups()
 
 #test()

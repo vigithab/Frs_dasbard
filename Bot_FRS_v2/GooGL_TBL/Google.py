@@ -267,7 +267,7 @@ class tbl_bot():
         zagolovok_name = one_stroka
         # Записываем дату в ячейку A1
         values = [[str(zagolovok_name)]]
-        range_ = f'{sheet_name}!A1'
+        range_ = f'{sheet_name}!B1'
         # Запись данных в таблицу
         body = {'values': values}
         result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
@@ -278,7 +278,7 @@ class tbl_bot():
         zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
         # Записываем дату
         values = [[str(zagolovok_name)]]
-        range_ = f'{sheet_name}!A2'
+        range_ = f'{sheet_name}!B2'
         # Запись данных в таблицу
         body = {'values': values}
         result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,

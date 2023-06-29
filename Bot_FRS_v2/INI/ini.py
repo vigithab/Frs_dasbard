@@ -27,6 +27,7 @@ dat = pd.read_excel(PUT + 'Bot\\key\\id.xlsx')
 keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
 test_all= keys_dict.get('Мой_канал')
+
 #TY_id = keys_dict.get('Мой_канал')
 
 TY_id = keys_dict.get('Мой_канал_ТУ')
@@ -38,10 +39,10 @@ TY_id = keys_dict.get('Мой_канал_ТУ')
 
 
 # Время рассылки сообщений
-time_bot_vrem = "14:00:00"
+time_bot_vrem = "12:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
-zaderjka = 10
+zaderjka = 0
 # ожидание перед отправкой соощения
 TY_GROP = 1
 TEST_BOT = 1

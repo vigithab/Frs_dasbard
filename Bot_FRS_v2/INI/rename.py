@@ -18,14 +18,16 @@ PUT = ini.PUT
 
 
 class RENAME:
-    def Rread(self, name_data, name_col, name):
+    def Rread(self, name_data, name_col, name = None):
             try:
                 print("Загрузка справочника магазинов...")
                 replacements = pd.read_excel("https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
                 replacements.to_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
+                print(replacements)
                 rng = len(replacements)
                 for i in range(rng):
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
+
             except:
                 print("Не удалось загрузить справоник найти знаменить, данные с пк")
                 replacements = pd.read_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
