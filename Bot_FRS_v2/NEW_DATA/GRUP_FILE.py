@@ -569,6 +569,13 @@ class Grup():
             #sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
             sales_itog = sales_itog.loc[sales_itog["дата"]!= ini.dat_seychas]
             sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8", decimal=".", index=False)
+            try:
+                sales_itog.to_csv("P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Сгруппированные продажи по дня\\"
+                                  "Сгруппированные продажи по дня.csv", sep="\t", encoding="utf-8", decimal=",",
+                                  index=False)
+            except:
+                BOT.BOT().bot_mes_html(mes="Ошибка....", silka=0)
+
         if ini.time_seychas < ini.time_bot_vrem:
             sales()
 

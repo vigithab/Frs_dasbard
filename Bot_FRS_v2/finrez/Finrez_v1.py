@@ -74,6 +74,7 @@ class Finrez:
             FINREZ = FINREZ.reset_index(drop=True)
             FINREZ = FINREZ.loc[FINREZ['дата'] >= "2022-01-01"]
 
+
             # region для получения уникальных значений колонок
             FINREZ_SPRAVOCHNIK_STATIYA = FINREZ.melt(
                 id_vars=["дата", "магазин", "режим налогообложения", "канал", "канал на последний закрытый период"],
