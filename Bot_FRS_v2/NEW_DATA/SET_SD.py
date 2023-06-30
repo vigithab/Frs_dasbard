@@ -100,11 +100,6 @@ class NEW_DATA_sd:
 
                 spravka.to_csv(PUT + "Справочники\\номенклатура\\Справочник номеклатуры.txt", sep="\t",
                                encoding="utf-8", index=False)
-                try:
-                    spravka.to_csv(r'P:\Фирменная розница\ФРС\Данные из 1 С\♀Справочник(НСИ - группа, подгруппа, штрихкод, номенклатура)\Справочник номеклатуры.txt', sep="\t",
-                               encoding="utf-8", index=False)
-                except:
-                    BOT.BOT().bot_mes_html(mes="Ошибка сохранения справочника штрихкодов", silka=0)
 
                 # удалить файл после преноса
                 if os.path.isfile(put_spravka_extract):
