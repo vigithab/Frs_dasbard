@@ -27,7 +27,6 @@ class RENAME:
                 rng = len(replacements)
                 for i in range(rng):
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
-
             except:
                 print("Не удалось загрузить справоник найти знаменить, данные с пк")
                 replacements = pd.read_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
@@ -52,7 +51,7 @@ class RENAME:
                 open_mag = sprav_magaz.loc[(sprav_magaz["Старые/Новые"] == "Новые ТТ") |
                                            (sprav_magaz["Старые/Новые"] == "Релокация") |
                                            (sprav_magaz["Старые/Новые"] == "Без новых ТТ")]
-            return spqr, sprav_magaz , open_mag
+            return spqr, sprav_magaz, open_mag
     """функция магазины для мердж"""
     def TY(self):
         # загрузка файла справочника териториалов

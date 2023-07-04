@@ -21,12 +21,8 @@ class NEW_DATA_sd:
         try:
             replacements = pd.read_excel("https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
             replacements.to_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx", index=False)
-
-
         except:
             print("Справочники не обновлены")
-
-
     def setevoy(self):
             put_zip = r'\\rtlfranch3\Данные из 1С\Для Дашборда\Себестоимость'
             put_zip_end = PUT + "\\Selenium\\Сетевой диск\\"
@@ -164,6 +160,17 @@ class NEW_DATA_sd:
         else:
             BOT.BOT().bot_mes_html(mes="❗Нет файла дегустации", silka=0)
     # получение данных  сетевого диска
+    def Nmenklatura(self):
+
+        spravka = pd.read_csv(PUT+"Справочники\\номенклатура\\GROUPS_Свежий.txt", sep= "\t", encoding="utf-8")
+        print(spravka)
+
+        komanda = pd.read_excel("https://docs.google.com/spreadsheets/d/1dNt8qpZL_ST8aF_iBqV7oVQvH1tsExMd6uLCiC_UtfQ/export?exportFormat=xlsx")
+        print(komanda)
+
+        spravka = spravka.merge(komanda, on='Входит в группу', how="left")
+        print(spravka)
+        spravka.to_csv(PUT + "Справочники\\номенклатура\\GROUPS.txt", sep="\t", encoding="utf-8")
 
 def run_NEW_DATA_sd():
     if ini.time_seychas < ini.time_bot_vrem:
@@ -172,5 +179,9 @@ def run_NEW_DATA_sd():
         NEW_DATA_sd().setevoy()
         NEW_DATA_sd().setevoy_spisania()
         NEW_DATA_sd().setevoy_degustacia()
+        #NEW_DATA_sd().Nmenklatura()
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
+
+#NEW_DATA_sd().Nmenklatura()
+

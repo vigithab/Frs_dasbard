@@ -1,8 +1,6 @@
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
-
 from datetime import datetime, timedelta, time, date
 import os
 import pandas as pd
@@ -27,18 +25,35 @@ class NEW_data:
     def Obrabotka(self):
         log.LOG().log_data()
         BOT.BOT().bot_mes_html(mes="Скрипт Дашборда запущен",silka=0)
+        # Получение данных для персонала
         try:
             new_personal = Personal_v2.new_data()
             new_personal.tudey()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при Обновлении ФОТ", silka=0)
-
-        try: run_NEW_DATA_sd()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
-
-        try: set.SET().Set_obrabotka()
+            log.LOG().log_new_data(name_txt="Персонал")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            mes = f"Ошибка при скачивании с Сетретейл: {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}"
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Персонал", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при Обновлении ФОТ", silka=0)
+
+        # Получение С сетевого диска
+        try:
+            run_NEW_DATA_sd()
+            log.LOG().log_new_data(name_txt="Сетевой диск")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сетевой диск", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
+
+        # Получение С СЕТРЕТЕЙЛА
+        try:
+            set.SET().Set_obrabotka()
+            log.LOG().log_new_data(name_txt="Cетритеил")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Cетритеил", e=mes)
             BOT.BOT().bot_mes_html(mes=mes, silka=0)
 
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
@@ -151,33 +166,98 @@ class NEW_data:
                     except:
                         print("Ошибка при сохранении ночные магазины")
 
-        try: NEW_data().selenium_day_Spisania()
-        except:BOT.BOT().bot_mes_html(mes="Ошибка при обработке списания", silka=0)
-
-        try: NEW_data().sebest()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке Сбестоймости", silka=0)
-
+        # обработка списания
         try:
-            SORT_FILE.SORT().sort_files_sales()
-            SORT_FILE.SORT().sort_files_chek()
-            SORT_FILE.SORT().sort_files_spis()
-            SORT_FILE.SORT().sort_files_sebes()
-            SORT_FILE.SORT().original()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при сортировки", silka=0)
-
-        try: GRUP_FILE.Grup().grups()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при Групировке", silka=0)
-
-        try: SORT_FILE.SORT().sashl_sezn()
+            NEW_data().selenium_day_Spisania()
+            log.LOG().log_new_data(name_txt="Обработка списания")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            mes = f"Ошибка при Получении данных с паблика: {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}"
-            BOT.BOT().bot_mes_html(mes=mes, silka=0)
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Обработка списания", e=mes)
 
-        try:Voropaev.Degustacia().sotka()
-        except: BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке списания", silka=0)
+        # обработка сибестоймости
+        try:
+            NEW_data().sebest()
+            log.LOG().log_new_data(name_txt="Себестоемости")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Себестоемости", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке Сбестоймости", silka=0)
+
+        # обработка СОРТИРОВКА ФАЙЛОВ
+        try:
+            SORT_FILE.SORT().sort_files_sales()
+            log.LOG().log_new_data(name_txt="Сортировка продаж")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сортировка продаж", e=mes)
+
+        try:
+            SORT_FILE.SORT().sort_files_chek()
+            log.LOG().log_new_data(name_txt="Сортировка чеков")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сортировка чеков", e=mes)
+
+        try:
+            SORT_FILE.SORT().sort_files_spis()
+            log.LOG().log_new_data(name_txt="Сортировка Списния")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сортировка Списния", e=mes)
+
+        try:
+            SORT_FILE.SORT().sort_files_sebes()
+            log.LOG().log_new_data(name_txt="Сортировка сибестоймости")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сортировка сибестоймости", e=mes)
+
+        try:
+            SORT_FILE.SORT().original()
+            log.LOG().log_new_data(name_txt="Сортировка исходников")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Сортировка сибестоймости", e=mes)
+        # группировка файлов
+        try:
+            GRUP_FILE.Grup().grups()
+            log.LOG().log_new_data(name_txt="Групировка файлов")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Групировка файлов", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка Групировка файлов", silka=0)
+        # перенос шашлычного сезона
+        try:
+            SORT_FILE.SORT().sashl_sezn()
+            log.LOG().log_new_data(name_txt="Перенос шашлычного сезона")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Перенос шашлычного сезона", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка Перенос шашлычного сезона", silka=0)
+
+        try:
+            Voropaev.Degustacia().sotka()
+            log.LOG().log_new_data(name_txt="Гугл таблица шашлычный сезон")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Гугл таблица шашлычный сезон", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
 
         BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
+        with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',
+                  encoding="utf-8") as file:
+            file.write(f'**************************************************************************\n')
         time.sleep(240)
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):

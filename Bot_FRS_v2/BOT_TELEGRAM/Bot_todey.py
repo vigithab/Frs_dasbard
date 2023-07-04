@@ -425,6 +425,7 @@ class bot_mesege:
                 g = google_tabl(self)
                 # отправка на создание гугл таблицы за день
                 g.last_day_googl_tbl(df=manager_data_day)
+                t.sleep(3)
                 # отправка на создание гугл таблицы за месяц
                 url_month = g.vchera_googl_tbl(df=manager_data_total)
                 url = f'<b>\n 📎 <a href="{url_month}">Ссылка Google таблицу</a></b>'
@@ -432,7 +433,7 @@ class bot_mesege:
                 #BOT().__del_lost(priznak_grup="TY")
                 BOT.BOT().bot_mes_html_TY(mes=mes_sales + mes_check+ mes_aver_chek + mes_spisania_day +
                     mes_sales_total+mes_check_total + mes_aver_chek_total + mes_spisania_total + url, silka=0)
-                t.sleep(30)
+                t.sleep(7)
 
 
     # формирование таблиц дневных

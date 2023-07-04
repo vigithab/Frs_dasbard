@@ -15,7 +15,6 @@ url4 = "https://eda.yandex.ru/kemerovo?shippingType=delivery"
 # Ожидаемый контент или фразы на странице
 expected_content = "8 (800) 700 81 21"
 
-
 def check_website():
     try:
         # Записываем текущее время перед отправкой запроса
