@@ -47,6 +47,41 @@ zaderjka = 0
 # ожидание перед отправкой соощения
 TY_GROP = 1
 TEST_BOT = 1
+
+
+def name_day():
+    # Получаем текущую дату
+    current_date = datetime.date.today()
+    # Получаем день недели (0 - понедельник, 1 - вторник, ..., 6 - воскресенье)
+    weekday = current_date.weekday()
+    # Преобразуем числовое представление дня недели в текстовое
+    weekday_name = current_date.strftime("%A")
+    # Выводим результат
+    print("Текущий день недели (числовое представление):", weekday)
+    print("Текущий день недели (текстовое представление):", weekday_name)
+# прошлая неделя список дат
+def date_last_week():
+
+
+    def previous_week_dates():
+        today = datetime.date.today()
+        weekday = today.weekday()
+        # Вычисляем начальную дату прошлой недели
+        start_of_last_week = today - datetime.timedelta(days=weekday + 7)
+        # Создаем список дат с понедельника по воскресенье прошлой недели
+        dates_of_last_week = [start_of_last_week + datetime.timedelta(days=i) for i in range(7)]
+        return dates_of_last_week
+
+    # Получаем список дат прошлой недели
+    date_list = previous_week_dates()
+    my_list = []
+    # Выводим список
+    for i in date_list:
+        i = i.strftime("%Y-%m-%d")
+        my_list.append(i)
+    print(my_list)
+    return my_list
+
 def month_and_god():
     # сохранить локаль
     old_locale = locale.getlocale(locale.LC_TIME)
@@ -126,6 +161,7 @@ def god_last_year2():
         current_date += timedelta(days=1)
 
     return date_list
+
 def last_mount():
     today = datetime.date.today()
     first_day_current_month = today.replace(day=1)

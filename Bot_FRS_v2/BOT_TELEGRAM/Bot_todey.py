@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, time, date
 import datetime
 import time as t
 import os
+
+import numpy as np
 import pandas as pd
 from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.GooGL_TBL import Google as g
@@ -426,6 +428,7 @@ class bot_mesege:
                 # отправка на создание гугл таблицы за день
                 g.last_day_googl_tbl(df=manager_data_day)
                 t.sleep(3)
+
                 # отправка на создание гугл таблицы за месяц
                 url_month = g.vchera_googl_tbl(df=manager_data_total)
                 url = f'<b>\n 📎 <a href="{url_month}">Ссылка Google таблицу</a></b>'
@@ -433,8 +436,7 @@ class bot_mesege:
                 #BOT().__del_lost(priznak_grup="TY")
                 BOT.BOT().bot_mes_html_TY(mes=mes_sales + mes_check+ mes_aver_chek + mes_spisania_day +
                     mes_sales_total+mes_check_total + mes_aver_chek_total + mes_spisania_total + url, silka=0)
-                t.sleep(7)
-
+                t.sleep(10)
 
     # формирование таблиц дневных
     def to_day(self):
@@ -604,13 +606,14 @@ class google_tabl():
             "Списание (Хозы) изменение к прошлому году %":[df["Списание (Хозы) %"].mean() - df["Списание (Хозы) прошлый год %"].mean()],
             })
         df = pd.concat([df, total_row], ignore_index=True)
-
+        df.replace([np.inf, -np.inf], np.nan, inplace=True)
         df.fillna('', inplace=True)
+
+        print(df)
         zagolovok_name = f'Результаты текущего месяца: {ini.month_and_god()}'
         url = g.tbl_bot().sheet(name_tbl=self.bot.i,df=df,sheet_name="Результаты текущего месяца",
                                 one_stroka=zagolovok_name)
         return url
-
     # формирование таблиц дневных
     def last_day_googl_tbl(self,df):
         df = df.drop(columns=["Менеджер"])
@@ -650,7 +653,7 @@ class google_tabl():
         })
 
         df = pd.concat([df, total_row], ignore_index=True)
-
+        df.replace([np.inf, -np.inf], np.nan, inplace=True)
         df.fillna('', inplace=True)
         zagolovok_name = ""
         if self.bot.kol_day == 1:

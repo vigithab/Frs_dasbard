@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
@@ -15,33 +16,44 @@ from Bot_FRS_v2.INI import log
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 PUT = ini.PUT
+
+
 class FLOAT:
     def float_colms(self, name_data, name_col):
         for i in name_col:
             name_data[i] = (name_data[i].astype(str)
-                                              .str.replace("\xa0", "")
-                                              .str.replace(",", ".")
-                                              .fillna("0")
-                                              .astype("float"))
+                            .str.replace("\xa0", "")
+                            .str.replace(",", ".")
+                            .fillna("0")
+                            .astype("float"))
         return name_data
-    """Для нескольких столбцов"""
-    def float_colm(self, name_data, name_col):
 
+    """Для нескольких столбцов"""
+
+    def float_colm(self, name_data, name_col):
         name_data[name_col] = (name_data[name_col].astype(str)
-                                          .str.replace("\xa0", "")
-                                          .str.replace(",", ".")
-                                          .fillna("0")
-                                          .astype("float"))
+                               .str.replace("\xa0", "")
+                               .str.replace(",", ".")
+                               .fillna("0")
+                               .astype("float"))
         return name_data
+
     """для одного столбца"""
-        # перевод в число
+    # перевод в число
+
+
 class Spr:
     def Shahlik(self):
-        spisok_shash = ['Купаты Барбекю, охл, 0,5 кг', 'Купаты куриные, охл, 0,5 кг', 'Колбаски для гриля Улитка, охл, 0,5 кг',
-                        'Колбаски для гриля Ассорти, охл, 0,5 кг', 'Сердце цыпленка-бройлера (шашлык из сердечек), охл, 0,4 кг',
-                        'Шашлык из индейки в маринаде, охл, 0,35 кг', 'Колбаски Свиные с вяленными томатами, вар, в/у, охл, 0,3 кг',
-                        'Колбаски Свиные с сыром, вар, в/у, охл, 0,3 кг', 'Колбаски для гриля (с соусом Терияки), вар, в/у, охл, 0,3 кг',
-                        'Колбаски для гриля (луковые), вар, в/у, охл, 0,3 кг', 'Колбаски Мексиканские, охл, в/у, 0,4 кг', 'Колбаски Нежные, охл, в/у, 0,4 кг']
+        spisok_shash = ['Купаты Барбекю, охл, 0,5 кг', 'Купаты куриные, охл, 0,5 кг',
+                        'Колбаски для гриля Улитка, охл, 0,5 кг',
+                        'Колбаски для гриля Ассорти, охл, 0,5 кг',
+                        'Сердце цыпленка-бройлера (шашлык из сердечек), охл, 0,4 кг',
+                        'Шашлык из индейки в маринаде, охл, 0,35 кг',
+                        'Колбаски Свиные с вяленными томатами, вар, в/у, охл, 0,3 кг',
+                        'Колбаски Свиные с сыром, вар, в/у, охл, 0,3 кг',
+                        'Колбаски для гриля (с соусом Терияки), вар, в/у, охл, 0,3 кг',
+                        'Колбаски для гриля (луковые), вар, в/у, охл, 0,3 кг',
+                        'Колбаски Мексиканские, охл, в/у, 0,4 кг', 'Колбаски Нежные, охл, в/у, 0,4 кг']
         spr = pd.read_csv(
             r'C:\Users\lebedevvv\Desktop\Дашборд_бот\Справочники\номенклатура\Справочник номеклатуры.txt',
             sep='\t', skiprows=1)
@@ -50,11 +62,16 @@ class Spr:
         spr['Shsh'] = np.where(spr['Владелец'].str.contains('Р/К', regex=True), "N",
                                np.where(spr['Входит в группу'].str.contains('191.15 Сэндвичи', regex=True), "N",
                                         np.where(spr['Владелец'].str.contains('Шашл', regex=True), "Y",
-                                                 np.where(spr['Входит в группу'].str.contains('100', regex=True), "Y",
-                                                          np.where(spr['Входит в группу'].str.contains('Шашл', regex=True), "Y",
+                                                 np.where(spr['Входит в группу'].str.contains('100', regex=True),
+                                                          "Y",
+                                                          np.where(spr['Входит в группу'].str.contains('Шашл',
+                                                                                                       regex=True),
+                                                                   "Y",
                                                                    np.where(spr['Входит в группу'].str.contains(
-                                                                       '200.07 Гриль (Шашлык на шпажке)', regex=True), "Y",
-                                                                       np.where(spr['Владелец'].isin(spisok_shash), "Y",
+                                                                       '200.07 Гриль (Шашлык на шпажке)',
+                                                                       regex=True), "Y",
+                                                                       np.where(spr['Владелец'].isin(spisok_shash),
+                                                                                "Y",
                                                                                 "N")))))))
         spr['Штрихкод'] = spr['Штрихкод'].astype(str)
         spr = spr.dropna(subset='Входит в группу')
@@ -64,11 +81,13 @@ class Spr:
         spr = spr[['Владелец', 'Shsh']]
         spr = spr.drop_duplicates()
         spr = spr.loc[spr['Shsh'] == "Y"]
-        spr = spr.rename(columns={"Владелец": 'Номенклатура',"Shsh": 'шашлык'})
+        spr = spr.rename(columns={"Владелец": 'Номенклатура', "Shsh": 'шашлык'})
         spr.to_csv(PUT + "ФОКУС\\шашлычный сезон\\" + "Справочник_шашлычный" + ".csv", encoding="utf=8", sep='\t',
-                 index=False,
-                 decimal=',')
+                   index=False,
+                   decimal=',')
         return spr
+
+
 class Grup():
     def spisania_nistory(self):
         folder2 = PUT + "♀Списания\\История\\"
@@ -84,34 +103,35 @@ class Grup():
             for i in all_files:
                 memory.MEMORY().mem_total(x=i)
                 x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
-                ln= ["Количество вес","Количество","Сумма"]
+                ln = ["Количество вес", "Количество", "Сумма"]
                 FLOAT().float_colms(name_data=x, name_col=ln)
                 do = x["Сумма"].sum()
-                x.loc[x["Аналитика хозяйственной операции"]=="Хозяйственные товары", "отбор"]="Хозы"
+                x.loc[x["Аналитика хозяйственной операции"] == "Хозяйственные товары", "отбор"] = "Хозы"
 
-
-                x = x.groupby(["!МАГАЗИН!", "Аналитика хозяйственной операции","дата","отбор"],
-                                                    as_index=False).agg(
-                    {"Количество": "sum", "Количество вес": "sum","Сумма":"sum"}).reset_index(drop=True)
+                x = x.groupby(["!МАГАЗИН!", "Аналитика хозяйственной операции", "дата", "отбор"],
+                              as_index=False).agg(
+                    {"Количество": "sum", "Количество вес": "sum", "Сумма": "sum"}).reset_index(drop=True)
                 posslw = x["Сумма"].sum()
-                print(str(os.path.basename(i)),"  Разница списаия:", do - posslw)
+                print(str(os.path.basename(i)), "  Разница списаия:", do - posslw)
                 # перименование столбцов
                 y = x.rename(columns={"!МАГАЗИН!": "магазин", "Сумма": "Списания"})
                 # удаление микромаркетов
                 l_mag = ("Микромаркет", "Экопункт", "Вендинг", "Итого")
                 for w in l_mag:
                     y = y[~y["магазин"].str.contains(w)].reset_index(drop=True)
-                y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" + str(os.path.basename(i)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False, decimal=',')
+                y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" + str(os.path.basename(i)[:-4]) + ".csv",
+                         encoding="utf=8", sep='\t', index=False, decimal=',')
                 gc.collect()
+
     def sales_history(self):
         folder2 = PUT + "♀Продажи\\2023\\"
         folder1 = PUT + "♀Продажи\\История\\"
         folder3 = PUT + "♀Продажи\\текущий месяц\\"
-        folders = [folder1,folder3, folder2]
+        folders = [folder1, folder3, folder2]
         # Получение списка всех файлов в папках и подпапках
         all_files = []
         for folder in folders:
-            for root, dirs, files in os.walk(folder): #folder2,folder1,folder3
+            for root, dirs, files in os.walk(folder):  # folder2,folder1,folder3
                 for file in files:
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
@@ -119,8 +139,9 @@ class Grup():
                 file_extension = os.path.splitext(file_path)[-1].lower()
                 if file_extension == '.txt':
                     # Обработка TXT файла
-                    x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["По дням"], date_format='%Y-%m-%d')
-                    ln = ["Себестоимость","Выручка","ВесПродаж", "Прибыль","ВесНом","Количество продаж"]
+                    x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["По дням"],
+                                    date_format='%Y-%m-%d')
+                    ln = ["Себестоимость", "Выручка", "ВесПродаж", "Прибыль", "ВесНом", "Количество продаж"]
                     FLOAT().float_colms(name_data=x, name_col=ln)
                     # удаление микромаркетов
                     l_mag = ("Микромаркет", "Экопункт", "Вендинг", "Итого")
@@ -134,17 +155,22 @@ class Grup():
                         x = x.loc[x["Номенклатура"] != i]
 
                     x = x.rename(columns={"Склад магазин.Наименование": "магазин", "Выручка": "выручка",
-                                          "Себестоимость": "себестоимость","ВесПродаж":"вес_продаж","Прибыль":"прибыль",
-                                          "Количество продаж":"количество_продаж","По дням":"дата"})
+                                          "Себестоимость": "себестоимость", "ВесПродаж": "вес_продаж",
+                                          "Прибыль": "прибыль",
+                                          "Количество продаж": "количество_продаж", "По дням": "дата"})
                     do = x["выручка"].sum()
                     x = x.groupby(["магазин", "дата"],
-                                  as_index=False).agg({"выручка": "sum","себестоимость": "sum", "вес_продаж": "sum", "прибыль": "sum", "количество_продаж": "sum"}).reset_index(drop=True)
+                                  as_index=False).agg(
+                        {"выручка": "sum", "себестоимость": "sum", "вес_продаж": "sum", "прибыль": "sum",
+                         "количество_продаж": "sum"}).reset_index(drop=True)
                     posslw = x["выручка"].sum()
-                    print(str(os.path.basename(file_path)),"  Разница продажи:", do - posslw)
-                    x["скидка"]=0
-                    x["ID"]=0
-                    x = x[["дата","ID","магазин","выручка","прибыль","себестоимость","вес_продаж","количество_продаж","скидка"]]
-                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,
+                    print(str(os.path.basename(file_path)), "  Разница продажи:", do - posslw)
+                    x["скидка"] = 0
+                    x["ID"] = 0
+                    x = x[["дата", "ID", "магазин", "выручка", "прибыль", "себестоимость", "вес_продаж",
+                           "количество_продаж", "скидка"]]
+                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(
+                        os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,
                              decimal=',')
                     gc.collect()
 
@@ -157,16 +183,20 @@ class Grup():
 
                     x = x.groupby(["!МАГАЗИН!", "ID", "Дата/Время чека"],
                                   as_index=False).agg(
-                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"}).reset_index(drop=True)
+                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"}).reset_index(
+                        drop=True)
                     posslw = x["Стоимость позиции"].sum()
 
-                    print(str(os.path.basename(file_path)),"  Разница продажи:", do - posslw)
-                    x = x.rename(columns={"!МАГАЗИН!": "магазин", "Стоимость позиции": "выручка", "Количество": "количество_продаж",
-                                          "Сумма скидки": "скидка", "Дата/Время чека":"дата"})
+                    print(str(os.path.basename(file_path)), "  Разница продажи:", do - posslw)
+                    x = x.rename(columns={"!МАГАЗИН!": "магазин", "Стоимость позиции": "выручка",
+                                          "Количество": "количество_продаж",
+                                          "Сумма скидки": "скидка", "Дата/Время чека": "дата"})
                     x = x[["дата", "ID", "магазин", "выручка", "количество_продаж", "скидка"]]
-                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-5]) + ".csv", encoding="utf=8", sep='\t',
+                    x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(
+                        os.path.basename(file_path)[:-5]) + ".csv", encoding="utf=8", sep='\t',
                              index=False,
                              decimal=',')
+
     def sebes_history(self):
         folder2 = PUT + "♀Сибестоемость\\Архив\\"
         folder1 = PUT + "♀Сибестоемость\\Текущий месяц\\"
@@ -179,7 +209,8 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
-                x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["Дата/Время чека"], date_format='%Y-%m-%d')
+                x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["Дата/Время чека"],
+                                date_format='%Y-%m-%d')
                 ln = ["Сибистоемость", "Вес_продаж", "прибыль"]
                 FLOAT().float_colms(name_data=x, name_col=ln)
                 # удаление микромаркетов
@@ -197,14 +228,16 @@ class Grup():
                               as_index=False).agg(
                     {"Сибистоемость": "sum", "Вес_продаж": "sum", "прибыль": "sum"}).reset_index(drop=True)
                 posslw = x["Сибистоемость"].sum()
-                print(str(os.path.basename(file_path)),"  Разница Сибестоемость:", do - posslw)
+                print(str(os.path.basename(file_path)), "  Разница Сибестоемость:", do - posslw)
                 x = x.rename(columns={"!МАГАЗИН!": "магазин",
                                       "Сибистоемость": "себестоимость", "Вес_продаж": "вес_продаж",
                                       "Дата/Время чека": "дата"})
-                x.to_csv(PUT + "♀Сибестоемость\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t',
+                x.to_csv(PUT + "♀Сибестоемость\\Сгрупированные файлы по дням\\" + str(
+                    os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t',
                          index=False,
                          decimal=',')
                 gc.collect()
+
     # обработка всех данных
     def spisania_new(self):
         folder1 = PUT + "♀Списания\\Текущий месяц\\"
@@ -227,17 +260,19 @@ class Grup():
                           as_index=False).agg(
                 {"Количество": "sum", "Количество вес": "sum", "Сумма": "sum"}).reset_index(drop=True)
             posslw = x["Сумма"].sum()
-            print(str(os.path.basename(i)),"  Разница списанияи:", do - posslw)
+            print(str(os.path.basename(i)), "  Разница списанияи:", do - posslw)
             # перименование столбцов
             y = x.rename(columns={"!МАГАЗИН!": "магазин", "Сумма": "Списания"})
             # удаление микромаркетов
             l_mag = ("Микромаркет", "Экопункт", "Вендинг", "Итого")
             for w in l_mag:
                 y = y[~y["магазин"].str.contains(w)].reset_index(drop=True)
-            y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" + str(os.path.basename(i)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,
+            y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" + str(os.path.basename(i)[:-4]) + ".csv",
+                     encoding="utf=8", sep='\t', index=False,
                      decimal=',')
             gc.collect()
         return
+
     def sales_new(self):
         folder2 = PUT + "♀Продажи\\2023\\"
         folder1 = PUT + "♀Продажи\\История\\"
@@ -246,7 +281,7 @@ class Grup():
         # Получение списка всех файлов в папках и подпапках
         all_files = []
         for folder in folders:
-            for root, dirs, files in os.walk(folder): #folder2,folder1,folder3
+            for root, dirs, files in os.walk(folder):  # folder2,folder1,folder3
                 for file in files:
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
@@ -261,19 +296,20 @@ class Grup():
                     do = x["Стоимость позиции"].sum()
                     x = x.groupby(["!МАГАЗИН!", "ID", "Дата/Время чека"],
                                   as_index=False).agg(
-                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"})\
+                        {"Стоимость позиции": "sum", "Количество": "sum", "Сумма скидки": "sum"}) \
                         .reset_index(drop=True)
                     posslw = x["Стоимость позиции"].sum()
 
-                    print(str(os.path.basename(file_path)),"  Разница Продажи:", do - posslw)
+                    print(str(os.path.basename(file_path)), "  Разница Продажи:", do - posslw)
                     x = x.rename(columns={"!МАГАЗИН!": "магазин", "Стоимость позиции": "выручка",
                                           "Количество": "количество_продаж",
-                                          "Сумма скидки": "скидка", "Дата/Время чека":"дата"})
+                                          "Сумма скидки": "скидка", "Дата/Время чека": "дата"})
                     x = x[["дата", "ID", "магазин", "выручка", "количество_продаж", "скидка"]]
                     x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" +
                              str(os.path.basename(file_path)[:-5]) + ".csv", encoding="utf=8", sep='\t',
                              index=False,
                              decimal=',')
+
     def sebes_new(self):
         folder2 = PUT + "♀Сибестоемость\\Архив\\"
         folder1 = PUT + "♀Сибестоемость\\Текущий месяц\\"
@@ -286,7 +322,8 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
-                x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["Дата/Время чека"], date_format='%Y-%m-%d')
+                x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["Дата/Время чека"],
+                                date_format='%Y-%m-%d')
                 ln = ["Сибистоемость", "Вес_продаж", "прибыль"]
                 FLOAT().float_colms(name_data=x, name_col=ln)
                 # удаление микромаркетов
@@ -305,19 +342,22 @@ class Grup():
                               as_index=False).agg(
                     {"Сибистоемость": "sum", "Вес_продаж": "sum", "прибыль": "sum"}).reset_index(drop=True)
                 posslw = x["Сибистоемость"].sum()
-                print(str(os.path.basename(file_path)),"  разница Себестоемость:", do - posslw)
+                print(str(os.path.basename(file_path)), "  разница Себестоемость:", do - posslw)
                 x = x.rename(columns={"!МАГАЗИН!": "магазин",
                                       "Сибистоемость": "себестоимость", "Вес_продаж": "вес_продаж",
                                       "Дата/Время чека": "дата"})
-                x.to_csv(PUT + "♀Сибестоемость\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,
+                x.to_csv(PUT + "♀Сибестоемость\\Сгрупированные файлы по дням\\" + str(
+                    os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,
                          decimal=',')
                 gc.collect()
+
     # обрабока данных за последний месяц
     def grups(self):
         print("групировка файлов")
-        #Grup().spisania_nistory()
-        #Grup().sebes_history()
-        #Grup().sales_history()
+
+        # Grup().spisania_nistory()
+        # Grup().sebes_history()
+        # Grup().sales_history()
         # Обновление тлько последнего месяца и справочника
         def sales():
             BOT.BOT().bot_mes_html(mes="Групировка файлов....", silka=0)
@@ -353,13 +393,14 @@ class Grup():
                 sebes = pd.concat([sebes, x], ignore_index=True)
             sales = pd.concat([sales, sebes], ignore_index=True)
 
-            ln  = ["выручка","прибыль","себестоимость","вес_продаж","количество_продаж","скидка"]
-            FLOAT().float_colms(name_data=sales,name_col=ln)
+            ln = ["выручка", "прибыль", "себестоимость", "вес_продаж", "количество_продаж", "скидка"]
+            FLOAT().float_colms(name_data=sales, name_col=ln)
             do = sales["выручка"].sum()
             sales = sales.groupby(["магазин", "дата"],
-                          as_index=False).agg(
-                {"выручка": "sum", "прибыль": "sum", "себестоимость": "sum","вес_продаж": "sum","количество_продаж": "sum","скидка": "sum"}).reset_index(drop=True)
-            posslw =sales["выручка"].sum()
+                                  as_index=False).agg(
+                {"выручка": "sum", "прибыль": "sum", "себестоимость": "sum", "вес_продаж": "sum",
+                 "количество_продаж": "sum", "скидка": "sum"}).reset_index(drop=True)
+            posslw = sales["выручка"].sum()
 
             # запись в лог
             txt = f'до - {do:.1f}, после - {posslw:.1f},' \
@@ -382,12 +423,12 @@ class Grup():
             ln = ["Количество", "Количество вес", "Списания"]
             FLOAT().float_colms(name_data=spis, name_col=ln)
 
-            spis_pocaz = spis.loc[spis["отбор"]=="показатель"]
+            spis_pocaz = spis.loc[spis["отбор"] == "показатель"]
             do = spis_pocaz["Списания"].sum()
-            spis_pocaz  = spis_pocaz.groupby(["магазин", "дата"],as_index=False).agg(
-                {"Количество": "sum", "Количество вес": "sum","Списания": "sum"}).reset_index(
+            spis_pocaz = spis_pocaz.groupby(["магазин", "дата"], as_index=False).agg(
+                {"Количество": "sum", "Количество вес": "sum", "Списания": "sum"}).reset_index(
                 drop=True)
-            posslw  = spis_pocaz["Списания"].sum()
+            posslw = spis_pocaz["Списания"].sum()
             # запись в лог
             txt = f'до - {do:.1f}, после - {posslw:.1f},' \
                   f' разница {(do - posslw):.1f}'
@@ -397,7 +438,7 @@ class Grup():
 
             spis_hoz = spis.loc[spis["отбор"] == "Хозы"]
             do = spis_hoz["Списания"].sum()
-            spis_hoz = spis_hoz.groupby(["магазин", "дата"],as_index=False).agg(
+            spis_hoz = spis_hoz.groupby(["магазин", "дата"], as_index=False).agg(
                 {"Количество": "sum", "Количество вес": "sum", "Списания": "sum"}).reset_index(
                 drop=True)
             posslw = spis_hoz["Списания"].sum()
@@ -407,8 +448,10 @@ class Grup():
             log.LOG().log_obrabotka(mes=txt, priznak="Сводная Хозы", name_file="0")
             spis_hoz = spis_hoz.rename(columns={"Списания": "списания_хозы"})
 
-            sales = pd.merge(sales,spis_pocaz[["магазин","дата","списания_оказатель"]],on=["магазин","дата"], how="left")
-            sales = pd.merge(sales, spis_hoz[["магазин", "дата", "списания_хозы"]], on=["магазин", "дата"],how="left")
+            sales = pd.merge(sales, spis_pocaz[["магазин", "дата", "списания_оказатель"]], on=["магазин", "дата"],
+                             how="left")
+            sales = pd.merge(sales, spis_hoz[["магазин", "дата", "списания_хозы"]], on=["магазин", "дата"],
+                             how="left")
 
             folder2 = PUT + "♀Чеки\\История\\"
             folder1 = PUT + "♀Чеки\\2023\\"
@@ -426,7 +469,7 @@ class Grup():
                     x = pd.read_excel(file_path, parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
                 except:
                     try:
-                        x = pd.read_csv(file_path,sep=";",encoding="utf-8", parse_dates=["дата"],
+                        x = pd.read_csv(file_path, sep=";", encoding="utf-8", parse_dates=["дата"],
                                         date_format='%Y-%m-%d %H:%M:%S')
                     except:
                         x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["дата"],
@@ -447,19 +490,22 @@ class Grup():
                     x = pd.read_csv(file_path, sep=";", encoding="utf-8", parse_dates=["дата"],
                                     date_format='%Y-%m-%d %H:%M:%S')
                 print(file_path)
-                x  = x.rename(columns={"Магазин": "магазин","Дата": "дата","Чеков":"Количество чеков",
-                                        "SKU в чеке": "количество уникальных товаров в чеке", "Длина":"количество товаров в чеке"})
+                x = x.rename(columns={"Магазин": "магазин", "Дата": "дата", "Чеков": "Количество чеков",
+                                      "SKU в чеке": "количество уникальных товаров в чеке",
+                                      "Длина": "количество товаров в чеке"})
                 chek = pd.concat([chek, x], ignore_index=True)
             chek['дата'] = pd.to_datetime(chek['дата'])
-            sales = pd.merge(sales, chek[["магазин", "дата", "Количество чеков","количество уникальных товаров в чеке","Средний чек","количество товаров в чеке"]], on=["магазин", "дата"], how="left")
-
+            sales = pd.merge(sales, chek[
+                ["магазин", "дата", "Количество чеков", "количество уникальных товаров в чеке", "Средний чек",
+                 "количество товаров в чеке"]], on=["магазин", "дата"], how="left")
 
             # Сортировка данных по столбцу 'Дата'
             sales = sales.sort_values('дата')
 
             # Список столбцов, для которых нужно рассчитать накопительные итоги
-            columns_to_cumulate = ['выручка', 'прибыль', 'себестоимость', 'вес_продаж', 'количество_продаж', 'скидка',
-                                   'списания_оказатель', 'списания_хозы',"Количество чеков"]
+            columns_to_cumulate = ['выручка', 'прибыль', 'себестоимость', 'вес_продаж', 'количество_продаж',
+                                   'скидка',
+                                   'списания_оказатель', 'списания_хозы', "Количество чеков"]
             sales_itog = pd.DataFrame()
             sales['год'] = sales['дата'].dt.year
             sales['месяц'] = sales['дата'].dt.month
@@ -470,7 +516,7 @@ class Grup():
                 # Создание столбцов для накопительных итогов
                 for column in columns_to_cumulate:
                     # Накопительный итог по месяцам
-                    x[f'накопительный_итог_{column}_месяц'] = x.groupby(['магазин','месяц'])[f'{column}'].cumsum()
+                    x[f'накопительный_итог_{column}_месяц'] = x.groupby(['магазин', 'месяц'])[f'{column}'].cumsum()
                     x[f'накопительный_итог_{column}_год'] = x.groupby(['магазин', 'год'])[f'{column}'].cumsum()
                 sales_itog = pd.concat([sales_itog, x], ignore_index=True)
 
@@ -478,11 +524,12 @@ class Grup():
             previous_year_sales_df = sales_itog.copy()  # Копируем исходный DataFrame
             previous_year_sales_df['дата'] = previous_year_sales_df['дата'] - pd.DateOffset(years=-1)
             # Объединяем исходный DataFrame и DataFrame с продажами прошлого года по столбцам 'Магазин' и 'Дата'
-            sales_itog = pd.merge(sales_itog, previous_year_sales_df[["выручка", 'магазин', 'дата']], on=['магазин', 'дата'], how='left')
+            sales_itog = pd.merge(sales_itog, previous_year_sales_df[["выручка", 'магазин', 'дата']],
+                                  on=['магазин', 'дата'], how='left')
 
             sales_itog.loc[(sales_itog["выручка_x"] > 0) & (sales_itog["выручка_y"] > 0), "LFL"] = "LFL"
 
-            sales_itog= sales_itog.drop(columns="выручка_y")
+            sales_itog = sales_itog.drop(columns="выручка_y")
             sales_itog = sales_itog.rename(columns={"выручка_x": "выручка"})
             # добавление панов прдаж
             x = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
@@ -497,12 +544,12 @@ class Grup():
             x.loc[x["Показатель"] == "Кол чеков", "план_кол_чеков"] = x["ПЛАН"]
             x = x.drop(["ПЛАН", "Показатель", "дата"], axis=1)
             x = x.groupby(["магазин", "месяц", "год"]).sum().reset_index()
-            sales_itog =  pd.merge(sales_itog, x, on=['магазин', 'месяц',"год"], how='left')
+            sales_itog = pd.merge(sales_itog, x, on=['магазин', 'месяц', "год"], how='left')
 
             # создание столбцов с датами(для прогноза)
             # Создание исходного датафрейма с столбцом дат
             # Преобразование столбца 'date' в тип данных даты
-            #sales_itog["дата"] = pd.to_datetime(df['date'])
+            # sales_itog["дата"] = pd.to_datetime(df['date'])
 
             # Создание столбца с количеством прошедших дней от начала месяца
             sales_itog['Прошло дней'] = sales_itog["дата"].dt.day
@@ -518,57 +565,58 @@ class Grup():
             sales_itog["дневной_план_кол_чеков"] = ( sales_itog["план_кол_чеков"] - sales_itog["накопительный_итог_Количество чеков_месяц"])/sales_itog["осталось дней"]"""
             sales_itog.loc[sales_itog["год"] != 2023, "LFL"] = np.nan
 
-            sales_itog = sales_itog[["магазин","LFL","дата","год","месяц","Прошло дней","осталось дней","дней в месяце",
-            "выручка",
-            "накопительный_итог_выручка_месяц",
-            "накопительный_итог_выручка_год",
-            "план_выручка",
-            "дневной_план_выручка",
+            sales_itog = sales_itog[
+                ["магазин", "LFL", "дата", "год", "месяц", "Прошло дней", "осталось дней", "дней в месяце",
+                 "выручка",
+                 "накопительный_итог_выручка_месяц",
+                 "накопительный_итог_выручка_год",
+                 "план_выручка",
+                 "дневной_план_выручка",
 
-            "Количество чеков",
-            "накопительный_итог_Количество чеков_месяц",
-            "накопительный_итог_Количество чеков_год",
-            "план_кол_чеков",
-            "дневной_план_кол_чеков",
+                 "Количество чеков",
+                 "накопительный_итог_Количество чеков_месяц",
+                 "накопительный_итог_Количество чеков_год",
+                 "план_кол_чеков",
+                 "дневной_план_кол_чеков",
 
-            "Средний чек",
-            "план_cредний_чек",
+                 "Средний чек",
+                 "план_cредний_чек",
 
-            "прибыль",
-            "накопительный_итог_прибыль_месяц",
-            "накопительный_итог_прибыль_год",
+                 "прибыль",
+                 "накопительный_итог_прибыль_месяц",
+                 "накопительный_итог_прибыль_год",
 
-            "себестоимость",
-            "накопительный_итог_себестоимость_месяц",
-            "накопительный_итог_себестоимость_год",
+                 "себестоимость",
+                 "накопительный_итог_себестоимость_месяц",
+                 "накопительный_итог_себестоимость_год",
 
-            "вес_продаж",
-            "накопительный_итог_вес_продаж_месяц",
-            "накопительный_итог_вес_продаж_год",
+                 "вес_продаж",
+                 "накопительный_итог_вес_продаж_месяц",
+                 "накопительный_итог_вес_продаж_год",
 
-            "количество_продаж",
-            "накопительный_итог_количество_продаж_месяц",
-            "накопительный_итог_количество_продаж_год",
+                 "количество_продаж",
+                 "накопительный_итог_количество_продаж_месяц",
+                 "накопительный_итог_количество_продаж_год",
 
-            "скидка",
-            "накопительный_итог_скидка_месяц",
-            "накопительный_итог_скидка_год",
+                 "скидка",
+                 "накопительный_итог_скидка_месяц",
+                 "накопительный_итог_скидка_год",
 
-            "списания_оказатель",
-            "накопительный_итог_списания_оказатель_месяц",
-            "накопительный_итог_списания_оказатель_год",
+                 "списания_оказатель",
+                 "накопительный_итог_списания_оказатель_месяц",
+                 "накопительный_итог_списания_оказатель_год",
 
-            "списания_хозы",
-            "накопительный_итог_списания_хозы_месяц",
-            "накопительный_итог_списания_хозы_год",
-                                     
-            
-            "количество уникальных товаров в чеке",
-            "количество товаров в чеке"]]
+                 "списания_хозы",
+                 "накопительный_итог_списания_хозы_месяц",
+                 "накопительный_итог_списания_хозы_год",
 
-            #sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
-            sales_itog = sales_itog.loc[sales_itog["дата"]!= ini.dat_seychas]
-            sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8", decimal=".", index=False)
+                 "количество уникальных товаров в чеке",
+                 "количество товаров в чеке"]]
+
+            # sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
+            sales_itog = sales_itog.loc[sales_itog["дата"] != ini.dat_seychas]
+            sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
+                              decimal=".", index=False)
             try:
                 sales_itog.to_csv("P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Сгруппированные продажи по дня\\"
                                   "Сгруппированные продажи по дня.csv", sep="\t", encoding="utf-8", decimal=",",
@@ -579,14 +627,14 @@ class Grup():
         if ini.time_seychas < ini.time_bot_vrem:
             sales()
 
-#todey_ear()
-#lastear()
-#d2022()
-#Scepka()
-#LFL()
-#spis()
-#Grup().spisania_nistory()
-#Grup().Sales()
+# todey_ear()
+# lastear()
+# d2022()
+# Scepka()
+# LFL()
+# spis()
+# Grup().spisania_nistory()
+# Grup().Sales()
 #Grup().grups()
 
-#test()
+# test()

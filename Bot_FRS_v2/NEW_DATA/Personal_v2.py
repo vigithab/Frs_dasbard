@@ -74,7 +74,3 @@ class new_data():
         return
 #new = new_data()
 #new.tudey()
-
-
-
-

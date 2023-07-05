@@ -94,4 +94,3 @@ plan = plan.round(2)
 print(plan)
 
 plan.to_excel("C:\\Users\\Lebedevvv\\Desktop\\FRS\\DATA_copy\\♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx", index=False)
-

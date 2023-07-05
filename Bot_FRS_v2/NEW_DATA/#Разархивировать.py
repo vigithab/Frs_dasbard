@@ -5,6 +5,40 @@ import shutil
 import datetime as dt
 import warnings
 import numpy as np
+import glob
+
+
+def del_file():
+    folders = [r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Списания',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Движение',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Дегустации',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\ЗО ден',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Остаток',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Продажи',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Себес',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Списания',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\ЗО нед',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\LOL',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки SET',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки SET тек.день',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Мусор',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\НСИ магазины',
+               r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Движение нед']
+    for f in folders:
+        print(f)
+        files = glob.glob(f + '\*.*', recursive=True)
+
+        for f in files:
+            try:
+                os.remove(f)
+            except OSError as e:
+                print("Error: %s : %s" % (f, e.strerror))
+del_file()
+
+
+
+
 papki={r'\\rtlfranch3\Данные из 1С\Для Дашборда\Чеки 1 С':r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки',\
        r'\\rtlfranch3\Данные из 1С\Для Дашборда\Списания':r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Списания',\
        r'\\rtlfranch3\Данные из 1С\Для Дашборда\Движение товаров':r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Движение',\
@@ -23,8 +57,8 @@ def copyr(papka,papka_to):
         file_to=papka_to+'\\'+f
         print(file)
         print(file_to)
+    
         shutil.copy2(file,file_to)
-
 ########        os.remove(file)
 
 
@@ -35,7 +69,7 @@ def turbo_extracter(path):
         File_zip_path = zipfile.ZipFile(file, 'r')
         File_zip_path.extractall(path)
         File_zip_path.close()
-        #os.remove(file)
+        os.remove(file)  
 
 for item in papki.items():
     copyr(item[0],item[1])
@@ -44,8 +78,8 @@ for item in papki.items():
 
 warnings.filterwarnings('ignore')  ########отключаем warnings###########
 
-pathCh = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Чеки'
-file = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Чеки\Статистика чеков по часам (детально) - идеальный отчёт по чекам СNEw (TXT).txt'
+pathCh = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Чеки'
+file = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Чеки\Статистика чеков по часам (детально) - идеальный отчёт по чекам СNEw (TXT).txt'
 print(file)
 print(pathCh)
 mesyac = 'Июнь'
@@ -53,34 +87,14 @@ god = '2023'
 
 ###################################################################################
 ##############Соединение двух старых в один новый
-path_chek_all_1 = r'P:\Фирменная розница\ФРС\Данные из 1 С\Чеки NEW\2023\Май'
-path_chek_all_2 = r'P:\Фирменная розница\ФРС\Данные из 1 С\Чеки NEW\2023\Июнь'
-chek_all_1 = os.listdir(path_chek_all_1)
-chek_all_2 = os.listdir(path_chek_all_2)
-combined_chek_all_1 = pd.DataFrame()
-combined_chek_all_2 = pd.DataFrame()
 combined_chek_all = pd.DataFrame()
-for chek_old_1 in chek_all_1:
-    file_chek_1 = path_chek_all_1 + '\\' + chek_old_1
-    print(file_chek_1)
-    df_chek_all_1 = pd.read_csv(file_chek_1, sep='\t', parse_dates=['Дата'], dayfirst=True)
-    df_chek_all_1 = df_chek_all_1[['Номенклатура', 'Кол-во']]
-    combined_chek_all_1 = pd.concat([combined_chek_all_1, df_chek_all_1], axis=0)
-for chek_old_2 in chek_all_2:
-    file_chek_2 = path_chek_all_2 + '\\' + chek_old_2
-    print(file_chek_2)
-    df_chek_all_2 = pd.read_csv(file_chek_2, sep='\t', parse_dates=['Дата'], dayfirst=True)
-    df_chek_all_2 = df_chek_all_2[['Номенклатура', 'Кол-во']]
-    combined_chek_all_2 = pd.concat([combined_chek_all_2, df_chek_all_2], axis=0)
-
-print('готово')
-
-###################################################################################
 
 ##########Чеки
 ch_files = os.listdir(pathCh)
 
 for ch in ch_files:
+    mes = 'Чек за ' + str(ch)+'начат'
+    bot.bot_mes(mes=mes)
     print('Архив с чеками удален')
 ########    ##Новое имя файла
     f = open(file, 'r', encoding='utf-8')
@@ -90,102 +104,73 @@ for ch in ch_files:
     f.close()
 ########    ##Обработка файла чеки
     df = pd.read_csv(file, sep='\t', encoding='utf-8', skiprows=7, skipfooter=1)
-    df_1 = pd.read_csv(file, sep='\t', encoding='utf-8', skiprows=7, skipfooter=1)
-    df_1.columns = ['Магазин', 'Номер чека', 'Номенклатура', 'Дата чека', 'Номер кассы', 'Выручка', 'Кол-во',
-                    'Кол-во вес']
-    df_1 = df_1[['Номенклатура', 'Кол-во']]
-    combined_chek_all = pd.concat([combined_chek_all_2, df_1, combined_chek_all_1], axis=0)
-    combined_chek_all['Кол-во'] = combined_chek_all['Кол-во'].str.replace(r'\xa0', '').str.replace(',', '.')
-    combined_chek_all['Кол-во'] = combined_chek_all['Кол-во'].astype(float)
-    agg_func_chek_all = {'Кол-во': ['median']}
-
-    table_chek_all = combined_chek_all.groupby(['Номенклатура'], as_index=False).aggregate(agg_func_chek_all)
-
-    table_chek_all.columns = table_chek_all.columns.droplevel(0)
-    table_chek_all.columns = ['Номенклатура', 'Кол-во мед.']
 
     df.columns = ['Магазин', 'Номер чека', 'Номенклатура', 'Дата чека', 'Номер кассы', 'Выручка', 'Кол-во',
-                  'Кол-во вес']
+                    'Кол-во вес']
+
     df['Дата'] = df['Дата чека'].str.split(' ').str.get(0)
     df['Время'] = df['Дата чека'].str.split(' ').str.get(1)
     df['Номер чека'] = df['Номер чека'].astype('str')
     df.drop(columns=['Дата чека'], axis=1, inplace=True)
-    warnings.filterwarnings('ignore')
     df['id'] = df['Номер кассы'].astype(str) + df['Дата'].astype(str) + df['Магазин'] + df['Номер чека'].astype(str)
     df['Выручка'] = df['Выручка'].astype(str)
     df['Выручка'] = df['Выручка'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
     df['Выручка'] = df['Выручка'].astype(float)
-    print('Объединение')
-    table_1 = df.merge(table_chek_all[['Номенклатура', 'Кол-во мед.']], on='Номенклатура', how='left')
-    table_1['Кол-во мед.'] = table_1['Кол-во мед.'].astype(str)
-    table_1['Кол-во мед.'] = table_1['Кол-во мед.'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
-    table_1['Кол-во'] = table_1['Кол-во'].astype(str)
-    table_1['Кол-во'] = table_1['Кол-во'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
-    table_1['Количество строк промежуток'] = table_1['Кол-во'].astype(float) // table_1['Кол-во мед.'].astype(float)
-    table_1['Количество строк'] = np.where(table_1['Количество строк промежуток'] < 1, 1,
-                                           table_1['Количество строк промежуток'])
+    combined_chek_all = pd.concat([combined_chek_all, df], axis=0)
+    os.remove(file)
+combined_chek_all['Кол-во'] = combined_chek_all['Кол-во'].str.replace(r'\xa0', '').str.replace(',', '.').astype(float)
+####Вычисляем медианное значение всеа или ед. для вычисления строк в чеке
+agg_func_chek_all = {'Кол-во': ['median']}
+table_chek_all = combined_chek_all.groupby(['Номенклатура'], as_index=False).aggregate(agg_func_chek_all)
+table_chek_all.columns = table_chek_all.columns.droplevel(0)
+table_chek_all.columns = ['Номенклатура', 'Кол-во мед.']
+####Подставляем медианное значение для вычисления строк в чеке
+table_1 = combined_chek_all.merge(table_chek_all[['Номенклатура', 'Кол-во мед.']], on='Номенклатура', how='left')
+table_1['Кол-во мед.'] = table_1['Кол-во мед.'].astype(str)
+table_1['Кол-во мед.'] = table_1['Кол-во мед.'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
+table_1['Кол-во'] = table_1['Кол-во'].astype(str)
+table_1['Кол-во'] = table_1['Кол-во'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
+table_1['Количество строк промежуток'] = table_1['Кол-во'].astype(float) // table_1['Кол-во мед.'].astype(float)
+table_1['Количество строк'] = np.where(table_1['Количество строк промежуток'] < 1, 1,
+                                       table_1['Количество строк промежуток'])
+table_1.drop(columns=['Кол-во мед.', 'Количество строк промежуток'], axis=1, inplace=True)
 
-    table_1.drop(columns=['Кол-во мед.', 'Количество строк промежуток'], axis=1, inplace=True)
-    table_1.to_csv(pathCh +"\\" +filename, encoding='utf-8', sep='\t', index=False, decimal=',')
+spisok_dat=table_1['Дата'].drop_duplicates().to_list()
+print(spisok_dat)
 
-    print(filename, ' готов')
-    ########Копируем чеки на Public
-    shutil.copy2(pathCh +"\\"+ filename, 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Чеки NEW\\2023\\Июнь\\')
-    shutil.copy2(pathCh +"\\"+ filename, 'C:\\Users\\soldatovas\\Desktop\\Задача\\Чеки\\Для переработки\\')
-    #os.remove(file)
-    print(file, ' удален')
-##Средний чек
-combined = pd.DataFrame()
-slash = '\\'
-path_cheki_public = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Чеки NEW\\2023\\' + mesyac + '\\'
-pathKuda = ('P:\\Фирменная розница\\ФРС\Данные из 1 С\\Данные по чекам\\Месяцы\\')
-files = os.listdir(path_cheki_public)
+for day in spisok_dat :
+    ###вычисляем месяц
+    day_date=dt.datetime.strptime(day, '%d.%m.%Y')
+    mesyac=day_date.strftime('%B')
+    print(mesyac)
+    path_to = r'P:\Фирменная розница\ФРС\Данные из 1 С\Чеки New\2023\Июль и так далее' ####Папка для чеков
+    df_t=table_1.copy(deep=True)
+    df_t=df_t.loc[df_t['Дата']==str(day)]
+    distination=path_to+"\\"+day+".txt"
+    df_t.to_csv(distination, encoding='utf-8', sep='\t', index=False, decimal=',')
+    print(day, "готов")
 
-for file in files:
-    fil = path_cheki_public + file
-    print(file)
-    data = pd.read_csv(fil, sep='\t', decimal=',')
-    combined = pd.concat([combined, data], axis=0)
-combined['Выручка'] = combined['Выручка'].astype(str)
-combined['Выручка'] = combined['Выручка'].apply(lambda x: (x.replace(',', '.').replace(u'\xa0', u'')))
-combined['Выручка'] = combined['Выручка'].astype(float)
-cards = ['Подарочная карта КМ 500р+ конверт', 'Подарочная карта КМ 1000р+ конверт', 'подарочная карта КМ 500 НОВАЯ',
-         'подарочная карта КМ 1000 НОВАЯ']
-combined['Убрать'] = np.where(combined['Номенклатура'].isin(cards), 'y', 'n')
-combined = combined.loc[combined['Убрать']=='n']
 
-########################Группировка для ср.чека
-print('Файл собран')
-agg_func_count = {'Выручка': ['sum'], 'id': ['count', 'nunique'], 'Количество строк': ['sum']}
-table = combined.groupby(['Магазин', 'Дата'], as_index=False).agg(agg_func_count)
-table.columns = ['_'.join(col).rstrip('_') for col in table.columns.values]
-table.columns = ['Магазин', 'Дата', 'Выручка', 'Позиций', 'Чеков', 'Количество строк']
-table['Средний чек'] = table['Выручка'] / table['Чеков']
-table['SKU в чеке'] = table['Позиций'] / table['Чеков']
-table['Длина'] = table['Количество строк'] / table['Чеков']
-table.to_excel(pathKuda + '\\' + god + '-' + mesyac + '.xlsx', index=False)
-##    my_report = sv.analyze(table)
-##    my_report.show_html()
-##Конец чеков
 
 
 
 ##############Обработка 'движения'#####################################
-pathDv = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Движение'
+pathDv = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Движение'
 dv_files = os.listdir(pathDv)
 print(dv_files)
 for dv in dv_files:
     print(dv, ' начат')
     mes = 'Движение ' + str(dv)+'готово'
+    bot.bot_mes(mes=mes)
 #########################Конец 'движения'######################################
 
 ################################Обработка остатков
-path_ostatok = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Остаток'
+path_ostatok = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Остаток'
 
 
 ostatok_files = os.listdir(path_ostatok)
 for ostatok in ostatok_files:
-    fileostatok = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Остаток\Остатки на складах КХВ - АЗ (TXT).txt'
+    fileostatok = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Остаток\Остатки на складах КХВ - АЗ (TXT).txt'
     print(ostatok, ' начат')
     print('Архив с остатком')
     stroka = open(fileostatok, 'r', encoding='utf-8')
@@ -205,11 +190,12 @@ for ostatok in ostatok_files:
                  'C:\\Users\\soldatovas\\Desktop\\Задача\\12.Корректность 1С\\Остаток')
     shutil.copy2(path_ostatok +"\\"+ new_name + '.txt',
                  'C:\\Users\\soldatovas\\Desktop\\Задача\\-----------ALL together---------------\\Остатки')
-    #os.remove(fileostatok)
+    os.remove(fileostatok)
     mes = str(ostatok)+ ' удален'
+    bot.bot_mes(mes=mes)
 #####################################################Отчет по продажам
 path_to = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Отчет по продажам\\По дням\\2023\\'
-pathPR = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Продажи'
+pathPR = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Продажи'
 
 prodazhi_files = os.listdir(pathPR)
 
@@ -231,7 +217,7 @@ for prodazhi in prodazhi_files:
 
                  ##############ЗО неделя###############
 warnings.filterwarnings('ignore')
-p = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\ЗО нед'
+p = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\ЗО нед'
 p2 = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\ЗО\\2023\\'
 c = os.listdir(p2)
 f = os.listdir(p)
@@ -250,7 +236,7 @@ for fs in f:
         df_copy_zo_ned.to_csv (distination_zo_ned, encoding='utf-8', sep='\t', index=False,decimal=',')
                 ##############ЗО день###############
 file_zo_den_txt = ('Заявлено_Отгружено - с артикулом поставщика 80_20NEW(Д48) (TXT).txt')
-path_zo_den = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\ЗО ден'
+path_zo_den = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\ЗО ден'
 for file_zo_den in os.listdir(path_zo_den):
     fileplace_zo_den = path_zo_den + '\\' + file_zo_den_txt
     df_zo_den = pd.read_csv(fileplace_zo_den, sep='\t', encoding='utf-8', skiprows=7, skipfooter=1)
@@ -264,8 +250,8 @@ for file_zo_den in os.listdir(path_zo_den):
         df_copy_zo_den=df_copy_zo_den.loc[df_copy_zo_den['Дата']==day]
         df_copy_zo_den.to_csv (distination_zo_den, encoding='utf-8', sep='\t', index=False,decimal=',')
 ###############################Списания################################
-path_sp=r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Списания'
-path_sp_to='C:\\Users\\Lebedevvv\\Desktop\\Задача\\Списания\\Спис\\2023'
+path_sp=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Списания'
+path_sp_to='C:\\Users\\soldatovas\\Desktop\\Задача\\Списания\\Спис\\2023'
 files=os.listdir(path_sp)
 print(files)
 x = 'Регистратор.Причина списания'
@@ -302,10 +288,10 @@ for filezip in files:
         df_t.drop(columns=['Дата f','Сумма без НДС'],axis=1,inplace=True)
         dist_spis=dist_spis_public+'\\'+day+'.txt'
         df_t.to_csv(dist_spis, encoding='utf-8', sep='\t', index=False, decimal=',')
-    os.rename(extracted_file, path_sp +filename_spis)
+    os.rename(extracted_file, path_sp +'\\'+filename_spis)
 ###############################Себестоимость################################
-path_sebes = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Себес'
-path_sebes_to = 'C:\\Users\\Lebedevvv\\Desktop\\Задача\\Отчет по продажам\\За месяц\\2023'
+path_sebes = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Себес'
+path_sebes_to = 'C:\\Users\\soldatovas\\Desktop\\Задача\\Отчет по продажам\За месяц\\2023'
 files_sebes = os.listdir(path_sebes)
 print(files_sebes)
 for filezip_sebes in files_sebes:
@@ -322,7 +308,7 @@ for filezip_sebes in files_sebes:
 
 print('good')
 ###################
-path_degus = r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Дегустации'
+path_degus = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Дегустации'
 print(path_degus)
 path_degus_to = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Дегустации\\'
 print(path_degus_to)
@@ -363,7 +349,8 @@ def dvizh(file):
     data=pd.merge(df,
               spravochnik_TT,
               on='Магазин',
-              how='left' )
+              how='left'
+              )
 
     data["ТТ"] = data["ТТ"].ffill()
     data["Номенклатура"] = data["Номенклатура"].ffill()
@@ -391,6 +378,7 @@ def dvizh(file):
 ##        dlina=len(file)
 ##        konec=int(dlina)-4
 ##        dlina=int(dlina)-14
+##        
 ##        n=file[dlina:konec]
         data_dvizh=data.copy()
         day_dvizh=str(day_dvizh)
@@ -401,7 +389,7 @@ def dvizh(file):
         data_dvizh.to_csv(distination_dvizh, index=False,sep='\t',decimal=',')
 
 
-path_dvizh=r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\Движение нед'
+path_dvizh=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Движение нед'
 for f in os.listdir(path_dvizh):
     fail_dvizhenie=path_dvizh+'\\'+f
     dvizh(fail_dvizhenie)
@@ -422,7 +410,7 @@ path_to=r'P:\Фирменная розница\ФРС\Данные из 1 С\Н�
 
 replacements=pd.read_excel(r'https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx')
 rng=len(replacements)
-file_nsi=r'C:\Users\Lebedevvv\Desktop\Задача\111.Конец товара\НСИ магазины\НСИ МАГАЗИН (TXT).txt'
+file_nsi=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\НСИ магазины\НСИ МАГАЗИН (TXT).txt'
 df_nsi=pd.read_csv(file_nsi,sep='\t',skiprows=6)
 df_nsi.columns=['Магазин','Юр.Лицо','Формат магазина','Дата','Дата начала авто-формирования документов',\
                 'ID магазина','Площадь торгового зала','Правило ценообразования','Узел 1C','Склад поступления','Выручка 1С','Прибыль 1С']
@@ -444,4 +432,11 @@ for day in spisok_dat :
     nsi_distination=path_to+"\\"+day+".txt"
     df.to_csv(nsi_distination,sep='\t',index=False,encoding='utf-8')
 
+
+
+
+
+tprint('BCE')
+mes = 'Всех раскидал'
+bot.bot_mes(mes=mes)
 

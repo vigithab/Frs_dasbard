@@ -168,12 +168,11 @@ class SORT:
     def sashl_sezn(self):
         if ini.time_seychas < ini.time_bot_vrem:
             print("перемещение шашлычного файда")
-            p_palic = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Шашлык\\'
-            p_local = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\Шашлычный\\"
+            p_palic = ini.PUT_public + "Фирменная розница\\ФРС\\Данные из 1 С\\Шашлык\\"
+            p_local = r"C:\Users\Lebedevvv\Desktop\FRS\Шашлычный"
             for filename in os.listdir(p_palic):
-                print(filename)
                 pabl = os.path.join(p_palic, filename)
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
 
-#SORT().sashl_sezn()
+

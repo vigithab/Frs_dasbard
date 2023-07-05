@@ -184,4 +184,3 @@ def run_NEW_DATA_sd():
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
 
 #NEW_DATA_sd().Nmenklatura()
-

@@ -46,7 +46,6 @@ else:
     PUT_SET_chek = "C:\\Users\\lebedevvv\\Desktop\\DASHBRD_SET\\ЧЕКИ_set\\Текущий день\\"
 # endregion
 
-
 class RENAME:
     def Rread(self, name_data, name_col):
         print("Загрузка справочника магазинов...")
