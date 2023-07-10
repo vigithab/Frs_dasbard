@@ -173,14 +173,9 @@ def last_mount():
     while current_date <= last_day_previous_month:
         date_list.append(current_date.strftime('%d.%m.%Y'))
         current_date += timedelta(days=1)
-
-
     return date_list
-
-
     # Использование функции и вывод списка дат
 ################# Для бота
-
 def prognoz():
     # Получаем текущую дату
     current_date = datetime.date.today()
@@ -202,6 +197,33 @@ def prognoz():
     print("Осталось дней до конца месяца:", days_ostatok)
 
     return days_in_month, days_last, days_ostatok
+# словарь с датами, считает и номерует понедельники
+def num_pn(yea, mon):
+    def get_first_and_following_mondays(year, month):
+        # Создаем объект datetime для первого дня месяца
+        first_day = datetime.date(year, month, 1)
+        # Находим день недели первого дня месяца (с понедельника - 0 до воскресенья - 6)
+        first_day_of_week = first_day.weekday()
+        # Вычисляем разницу до следующего понедельника и добавляем соответствующее количество дней
+        days_until_next_monday = (7 - first_day_of_week) % 7
+        next_monday = first_day + datetime.timedelta(days=days_until_next_monday)
+        # Создаем список для хранения понедельников месяца
+        mondays = [next_monday]
+        # Добавляем следующие понедельники месяца
+        while next_monday.month == month:
+            next_monday += datetime.timedelta(days=7)
+            mondays.append(next_monday)
+        return mondays
+    # Пример использования функции
+    year = yea
+    month = mon
+    mondays = get_first_and_following_mondays(year, month)
+    spis = []
+    for monday in mondays:
+        monday = monday.strftime('%Y-%m-%d')
+        spis.append(monday)
+    numbered_dict = {date: i for i, date in enumerate(spis)}
+    return numbered_dict
 
 
 

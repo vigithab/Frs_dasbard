@@ -78,8 +78,8 @@ for item in papki.items():
 
 warnings.filterwarnings('ignore')  ########отключаем warnings###########
 
-pathCh = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Чеки'
-file = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Чеки\Статистика чеков по часам (детально) - идеальный отчёт по чекам СNEw (TXT).txt'
+pathCh = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки'
+file = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Чеки\Статистика чеков по часам (детально) - идеальный отчёт по чекам СNEw (TXT).txt'
 print(file)
 print(pathCh)
 mesyac = 'Июнь'
@@ -94,7 +94,6 @@ ch_files = os.listdir(pathCh)
 
 for ch in ch_files:
     mes = 'Чек за ' + str(ch)+'начат'
-    bot.bot_mes(mes=mes)
     print('Архив с чеками удален')
 ########    ##Новое имя файла
     f = open(file, 'r', encoding='utf-8')
@@ -155,13 +154,13 @@ for day in spisok_dat :
 
 
 ##############Обработка 'движения'#####################################
-pathDv = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Движение'
+pathDv = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Движение'
 dv_files = os.listdir(pathDv)
 print(dv_files)
 for dv in dv_files:
     print(dv, ' начат')
     mes = 'Движение ' + str(dv)+'готово'
-    bot.bot_mes(mes=mes)
+
 #########################Конец 'движения'######################################
 
 ################################Обработка остатков
@@ -170,7 +169,7 @@ path_ostatok = r'C:\Users\soldatovas\Desktop\Задача\111.Конец тов�
 
 ostatok_files = os.listdir(path_ostatok)
 for ostatok in ostatok_files:
-    fileostatok = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Остаток\Остатки на складах КХВ - АЗ (TXT).txt'
+    fileostatok = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Остаток\Остатки на складах КХВ - АЗ (TXT).txt'
     print(ostatok, ' начат')
     print('Архив с остатком')
     stroka = open(fileostatok, 'r', encoding='utf-8')
@@ -192,10 +191,10 @@ for ostatok in ostatok_files:
                  'C:\\Users\\soldatovas\\Desktop\\Задача\\-----------ALL together---------------\\Остатки')
     os.remove(fileostatok)
     mes = str(ostatok)+ ' удален'
-    bot.bot_mes(mes=mes)
+
 #####################################################Отчет по продажам
 path_to = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Отчет по продажам\\По дням\\2023\\'
-pathPR = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Продажи'
+pathPR = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Продажи'
 
 prodazhi_files = os.listdir(pathPR)
 
@@ -217,7 +216,7 @@ for prodazhi in prodazhi_files:
 
                  ##############ЗО неделя###############
 warnings.filterwarnings('ignore')
-p = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\ЗО нед'
+p = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\ЗО нед'
 p2 = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\ЗО\\2023\\'
 c = os.listdir(p2)
 f = os.listdir(p)
@@ -236,7 +235,7 @@ for fs in f:
         df_copy_zo_ned.to_csv (distination_zo_ned, encoding='utf-8', sep='\t', index=False,decimal=',')
                 ##############ЗО день###############
 file_zo_den_txt = ('Заявлено_Отгружено - с артикулом поставщика 80_20NEW(Д48) (TXT).txt')
-path_zo_den = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\ЗО ден'
+path_zo_den = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\ЗО ден'
 for file_zo_den in os.listdir(path_zo_den):
     fileplace_zo_den = path_zo_den + '\\' + file_zo_den_txt
     df_zo_den = pd.read_csv(fileplace_zo_den, sep='\t', encoding='utf-8', skiprows=7, skipfooter=1)
@@ -250,7 +249,7 @@ for file_zo_den in os.listdir(path_zo_den):
         df_copy_zo_den=df_copy_zo_den.loc[df_copy_zo_den['Дата']==day]
         df_copy_zo_den.to_csv (distination_zo_den, encoding='utf-8', sep='\t', index=False,decimal=',')
 ###############################Списания################################
-path_sp=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Списания'
+path_sp=r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Списания'
 path_sp_to='C:\\Users\\soldatovas\\Desktop\\Задача\\Списания\\Спис\\2023'
 files=os.listdir(path_sp)
 print(files)
@@ -290,7 +289,7 @@ for filezip in files:
         df_t.to_csv(dist_spis, encoding='utf-8', sep='\t', index=False, decimal=',')
     os.rename(extracted_file, path_sp +'\\'+filename_spis)
 ###############################Себестоимость################################
-path_sebes = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Себес'
+path_sebes = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Себес'
 path_sebes_to = 'C:\\Users\\soldatovas\\Desktop\\Задача\\Отчет по продажам\За месяц\\2023'
 files_sebes = os.listdir(path_sebes)
 print(files_sebes)
@@ -308,7 +307,7 @@ for filezip_sebes in files_sebes:
 
 print('good')
 ###################
-path_degus = r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Дегустации'
+path_degus = r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Дегустации'
 print(path_degus)
 path_degus_to = 'P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Дегустации\\'
 print(path_degus_to)
@@ -389,7 +388,7 @@ def dvizh(file):
         data_dvizh.to_csv(distination_dvizh, index=False,sep='\t',decimal=',')
 
 
-path_dvizh=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\Движение нед'
+path_dvizh=r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\Движение нед'
 for f in os.listdir(path_dvizh):
     fail_dvizhenie=path_dvizh+'\\'+f
     dvizh(fail_dvizhenie)
@@ -410,7 +409,7 @@ path_to=r'P:\Фирменная розница\ФРС\Данные из 1 С\Н�
 
 replacements=pd.read_excel(r'https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx')
 rng=len(replacements)
-file_nsi=r'C:\Users\soldatovas\Desktop\Задача\111.Конец товара\НСИ магазины\НСИ МАГАЗИН (TXT).txt'
+file_nsi=r'C:\Users\Lebedevvv\Desktop\FRS\Автозаказ\Задача\111.Конец товара\НСИ магазины\НСИ МАГАЗИН (TXT).txt'
 df_nsi=pd.read_csv(file_nsi,sep='\t',skiprows=6)
 df_nsi.columns=['Магазин','Юр.Лицо','Формат магазина','Дата','Дата начала авто-формирования документов',\
                 'ID магазина','Площадь торгового зала','Правило ценообразования','Узел 1C','Склад поступления','Выручка 1С','Прибыль 1С']
@@ -436,7 +435,7 @@ for day in spisok_dat :
 
 
 
-tprint('BCE')
+
 mes = 'Всех раскидал'
-bot.bot_mes(mes=mes)
+print(mes)
 
