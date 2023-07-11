@@ -1,4 +1,7 @@
 import sys
+
+import numpy as np
+
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 

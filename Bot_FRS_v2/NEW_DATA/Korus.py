@@ -204,7 +204,6 @@ for file in files :
     fil=path+file
     print(file)
     data=pd.read_csv(fil,sep=";",decimal=',')
-
     agg_func_count = {'Наименование товара': ['count']}
     table = data.groupby(['Магазин/Склад получатель', 'Дата заказа'], as_index=False).agg(agg_func_count)
     del data
