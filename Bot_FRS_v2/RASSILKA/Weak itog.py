@@ -278,12 +278,18 @@ itog = itog.drop(columns=["ПоказательОтчетная неделя"], 
 itog = itog.drop(columns=["ПоказательПрошлый год"], axis=1)
 
 
+
+itog  = itog.rename(columns={"ПоказательПрошлая неделя":""})
+itog = itog[["","Прошлый год","Прошлая неделя","Отчетная неделя"]]
+
 ln = ["Отчетная неделя","Прошлая неделя","Прошлый год"]
 for i in ln:
     itog[i] = pd.to_numeric(itog[i], errors='coerce')
 
-itog  = itog.rename(columns={"ПоказательПрошлая неделя":""})
-itog = itog[["","Прошлый год","Прошлая неделя","Отчетная неделя"]]
+itog["Изменение год к году"] = itog["Отчетная неделя"] - itog["Прошлый год"]
+itog["Изменение год к году %"] = itog["Изменение год к году"] / itog["Прошлый год"]
+
+print(itog.info())
 
 zagolovok_name = f'Данные сформированны: {ini.dat_seychas} - {ini.time_seychas}'
 
