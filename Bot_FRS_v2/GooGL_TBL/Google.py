@@ -237,7 +237,6 @@ class tbl:
             print(f'Ссылка на таблицу - {i} :  {Goole_url}')
         return
 
-
 class tbl_bot():
     def tbl_id(self, name):
         dat = pd.read_excel(PUT + 'BOT\\Goole\\Таблицы_Googl.xlsx')
@@ -271,6 +270,39 @@ class tbl_bot():
         # Диапазон
         range_ = f'{sheet_name}!A3'
         del_dat = f'{sheet_name}!A3:Z'
+        # Очистка данных в листе перед записью
+        result = service.spreadsheets().values().clear(
+            spreadsheetId=tbl_id, range=del_dat).execute()
+        # аголовки добавить
+        zagolovok = list(df.columns.values)
+        # Преобразование в массив
+        values = [zagolovok] + df.values.tolist()
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_, valueInputOption='RAW',
+                                                        body=body).execute()
+        # ссылка
+        Goole_url = f'https://docs.google.com/spreadsheets/d/{tbl_id}'
+        print(f'Ссылка на таблицу - {name_tbl} :  {Goole_url}')
+
+        return Goole_url
+
+    def svodniy_itog(self,name_tbl, df, sheet_name, one_stroka = None):
+        tbl_id = tbl_bot().tbl_id(name=name_tbl)
+        time.sleep(2)
+        zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
+        # Записываем дату
+        values = [[str(zagolovok_name)]]
+        range_ = f'{sheet_name}!C1'
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
+                                                        valueInputOption='RAW',
+                                                        body=body).execute()
+
+        # Диапазон
+        range_ = f'{sheet_name}!A2'
+        del_dat = f'{sheet_name}!A2:Z'
         # Очистка данных в листе перед записью
         result = service.spreadsheets().values().clear(
             spreadsheetId=tbl_id, range=del_dat).execute()

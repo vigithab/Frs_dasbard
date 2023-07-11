@@ -13,19 +13,23 @@ from Bot_FRS_v2.GooGL_TBL import Google as g
 class groups:
     # загрузка таблиц
     def __init__(self):
+        self.list_last_year_total = None
         self.list_last_year = None
         self.list_last_month_MTD  = None
         self.list_last_month = None
         self.list_month = None
         self.PUT = ini.PUT
         format_date_str = "%Y-%m-%d"
-
         self.date_todey = ini.dat_seychas
+        print(self.date_todey)
         # нумерация понедельников
         def num_pn():
             date_toodey_str = datetime.date.today().strftime(format_date_str)
             num_pn = ini.num_pn(yea=ini.dat_seychas.year, mon=ini.dat_seychas.month)
             priznak_pn = num_pn.get(date_toodey_str)
+
+            priznak_pn = 1
+
             return priznak_pn
         # ЗАГРУЗКА ДАННЫХ ФИНРЕЗА И ОРАБОТКА
         def finrez():
@@ -86,7 +90,7 @@ class groups:
                 # список дат отчетной недели
                 self.list_month = pd.date_range(start=min_date, end=self.date_todey - datetime.timedelta(days=1),
                                             freq='D').strftime(format_date_str).tolist()
-
+                print("Отчетна неделя(Период)")
                 # список дат прошлой прошлого периода полный месяц
                 last_month_min_day = min_date - pd.offsets.MonthBegin(1)
                 # Определяем последний день прошлого месяца
@@ -94,17 +98,19 @@ class groups:
                 # Создаем список дат прошлого месяца
                 self.list_last_month = pd.date_range(start=last_month_min_day, end= last_month_max_day, freq='D').strftime(
                     format_date_str).tolist()
-
+                print("Отчетна неделя(Период)")
                 # список дат прошлой прошлого периода сопоставимый месяц
                 days_in_today_month = len(self.list_month)
                 days_in_last_month = len(self.list_last_month)
                 # Если количество дней в прошлом месяце больше, отфильтруем его, чтобы было равное количество дней
                 if days_in_last_month > days_in_today_month:
                     self.list_last_month_MTD = self.list_last_month[:days_in_today_month]
-
+                print("Отчетна неделя(Период)")
                 # список дат прошлого года сопоставимый
                 self.list_last_year = [datetime.datetime.strptime(date_str, '%Y-%m-%d').date().replace(year=2022).strftime('%Y-%m-%d') for
                                  date_str in self.list_month]
+                print("Отчетна неделя(Период)")
+
 
                 self.list_last_year_total = []
                 today = self.date_todey
@@ -116,19 +122,15 @@ class groups:
                     date = date.strftime('%Y-%m-%d')
                     self.list_last_year_total.append(date)
 
-
-
-
-
-
-
                 print("Отчетна неделя(Период)", self.list_month)
                 print("Прошлая неделя(Период)", self.list_last_month)
                 print("Прошлая неделя(Период опоставимый)", self.list_last_month_MTD)
                 print("Прошлый год сопаставимый", self.list_last_year)
                 print("Прошлый год полный", self.list_last_year_total)
+
             if num_pn() == 0:
-                print("ужно взять прошлый месяц")
+                print("нужно взять прошлый месяц")
+
         tabl = kanal()
         # формирование списка столбцов
         All_colms = list(set(tabl.columns) - {'магазин', 'LFL', 'дата','канал'})
@@ -137,12 +139,10 @@ class groups:
         self.ty_list, self.tabl = ty(name_df=tabl)
         # [Отчетная неделя]
         weeck_onchet()
-        #self.otchet_week_max = max(ini.date_last_week())
-        #self._otchet_week_min = min(ini.date_last_week())
-        #self.date_list = ini.date_last_week()
 
     # обработка таблиц
     def tabls(self,prinak):
+        global df_last_year_total
         df =pd.DataFrame()
         if prinak =="Отчетная неделя":
             df = self.tabl[self.tabl['дата'].isin(self.list_month)]
@@ -151,7 +151,8 @@ class groups:
             df = self.tabl[self.tabl['дата'].isin(self.list_last_month)]
 
         if prinak =="Прошлый год":
-            df = self.tabl[self.tabl['дата'].isin(self.list_last_year)]
+            df = self.tabl[self.tabl['дата'].isin( self.list_last_year)]
+            df_last_year_total = self.tabl[self.tabl['дата'].isin(self.list_last_year_total)]
 
         sales = df['выручка'].sum().astype(int)
         chek = df['Количество чеков'].sum().astype(int)
@@ -173,11 +174,21 @@ class groups:
         # Счет количество а точек
         count_TT = df[df['выручка'] > 1000]['магазин'].nunique()
         # Списания
-        spisania = df["списания_оказатель"].sum().astype(int)
+        spisania =((df["списания_оказатель"].sum() / df["Прошло дней"].max() *
+                 df["осталось дней"].min()) + df["списания_оказатель"].sum()).astype(int)
+
         # Списания процент
         spisania_P = spisania / sales_forecast
         # вес продаж
         ves_prodaj = df["вес_продаж"].sum().astype(int)
+
+        if prinak == "Прошлый год":
+            sales_forecast = df_last_year_total['выручка'].sum().astype(int)
+            chek_forecast = df_last_year_total['Количество чеков'].sum().astype(int)
+            aver_chek_forecast = (sales / chek).astype(int)
+            spisania = df_last_year_total["списания_оказатель"].sum().astype(int)
+            spisania_P = spisania / sales_forecast
+            ves_prodaj = df_last_year_total["вес_продаж"].sum().astype(int)
 
         # Список значений
         values = [[f"Выручка за {len(self.list_month)} дней", sales],
@@ -231,12 +242,14 @@ class groups:
                 ves_prodaj = mabager["вес_продаж"].sum().astype(int)
 
                 if prinak =="Прошлый год":
-                    sales = mabager['выручка'].sum().astype(int)
-                    chek = mabager['Количество чеков'].sum().astype(int)
+                    mabager_total = df_last_year_total.loc[df_last_year_total["Менеджер"] == i]
+                    print(mabager_total)
+                    sales =  mabager_total['выручка'].sum().astype(int)
+                    chek =  mabager_total['Количество чеков'].sum().astype(int)
                     aver_chek = (sales / chek).astype(int)
-                    spisania = mabager["списания_оказатель"].sum().astype(int)
+                    spisania =  mabager_total["списания_оказатель"].sum().astype(int)
                     spisania_P = spisania / sales
-                    ves_prodaj = mabager["вес_продаж"].sum().astype(int)
+                    ves_prodaj =  mabager_total["вес_продаж"].sum().astype(int)
 
                 values = [["Менеджер: "+ i ],
                           ["Выручка", sales],
@@ -276,9 +289,10 @@ zagolovok_name = f'Данные сформированны: {ini.dat_seychas} - 
 
 itog.to_excel(r"C:\Users\Lebedevvv\Desktop\FRS\Dashbord_new\csv.xlsx", index=False)
 
+
 itog.replace([np.inf, -np.inf], np.nan, inplace=True)
 itog.fillna('', inplace=True)
 
-g.tbl_bot().sheet(name_tbl="Показатели сети для собрания", df=itog, sheet_name="Показатели сети", one_stroka=zagolovok_name)
+g.tbl_bot().svodniy_itog(name_tbl="Показатели сети для собрания", df=itog, sheet_name="Показатели сети")
 
 
