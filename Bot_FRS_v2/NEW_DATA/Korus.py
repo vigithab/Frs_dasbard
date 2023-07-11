@@ -214,7 +214,7 @@ for file in files :
     del table
     gc.collect()
 gc.collect()
-pathKuda=("C:\\Users\\Lebedevvv\\Desktop\\FRS\\Автозаказ\\Корректировки2023.xlsx")
+pathKuda=("CC:\\Users\\lebedevvv\\Desktop\\FRS\\Автозаказ\\Списания ежедневные\\Коректировки\\Корректировки2023.xlsx")
 combined.to_excel(pathKuda,index=False)
 print("BCE")
 BOT.BOT().bot_mes_html(mes="Скрипт Корус успешно завершен",silka=0)

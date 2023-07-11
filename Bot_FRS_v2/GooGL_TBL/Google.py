@@ -1,4 +1,6 @@
 import sys
+import time
+
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
@@ -138,24 +140,8 @@ class tbl:
     # запись данных в таблицу
     def dele(self):
         alltbl,service,creds= tbl().Info()
-        alltbl = ["1hpscFqVEpRdgbGdzsGuUeqnXnNOhShn9cd4EsFik0Vg",
-                    "1n_KbXhZF__klq4ou_pt0Uos5MV4fMx6aG0iVDuejEfo",
-                    "1KYmZWJUMVVoXIqMj3QLrXpltST4oQ7__ykdRVpgqIAE",
-                    "12pMhWtxsLpmtTyhcNe9yE9TDm65MmYL54XXM6zUNeA0",
-                    "1zDFvvy0EXu1imepd9wTejaBBb2_sq2S0q0-Z6WW8pNY",
-                    "15vkYSUQJAlOQOiRkHK0pVbbkxHNW14JDXavDfRQ9dFc",
-                    "1dI-o4ghJCi6U2KfmmTGsl2SqUNtxFFh4A6Gvo5aDRBk",
-                    "1oHS97cARq9HcgI0EpmyvSL3k11I80q-5wBiDGLO4z1w",
-                    "1vW8Eto-hpNhi6cSIk_fuWn-H1TBDNBlslGzlbAKuzc4",
-                    "1V00qxCJKMzv5dvl9AAhomFfaXcW2nHY1k-zssB6H3Rs",
-                    "1vfAPjxvp1y2lsVyJ-2HlOxvxxXAiwI8EguhcMOx_Mtg",
-                    "1jYNVgGRq68wb2mTNgBQzjJHBEeC2tgx4ED6sS3vHy7c",
-                    "1_6wsvrKRkvpTpmn__aVYgKbzR2bvOgPm20vPX5T0a3c",
-                    "1xy4ezSpQpY_-60_ybCklUMrvH_02RqTtcXQ52bBsPUc",
-                    "1lcjoCTtrumA7G-lTnwYRahhJjPk9tKI5S3Q9QmenQyI",
-                    "1z0rbCCnYtLVs4npn3GKqeLZN5ZD2tNCxM57UfLplK2c",
-                    "1cr0OrFhN_kEQfP63mZtsYw7ebv76gux1n8NeMPD_O6A",
-                    "10jP3AA-QjjnhFohhJxLcKkBVtRTCE0PdS149xTjpiLw"]
+        alltbl = ["13ut7U19bGUjnvfOxYCl2AijEujmgvlcm-1ZjFZNFSNU",
+                    "1AKNZBVr0v4VabphWxHgjD3kKV1yQ3jvhIOGUXRJr6Ps"]
 
         for i in alltbl:
             file_id = i
@@ -176,7 +162,7 @@ class tbl:
         credentials_file = PUT + 'BOT\\key\\client_secret.json'
 
         # Идентификатор (ID) существующей таблицы, к которой нужно предоставить доступ
-        spreadsheet_id = '1Ce_7Rm0g5V6a63tgLOfCkknJ3dW4gJuT4O-TACQZJWE'
+        spreadsheet_id = '1-nH_gnyl3LEb4WUosMvAhZrfcxwikwnEB86CPwcJESY'
 
         # Создание объекта сервиса для работы с Google Drive API
         credentials = service_account.Credentials.from_service_account_file(credentials_file)
@@ -251,7 +237,6 @@ class tbl:
             print(f'Ссылка на таблицу - {i} :  {Goole_url}')
         return
 
-
 class tbl_bot():
     def tbl_id(self, name):
         dat = pd.read_excel(PUT + 'BOT\\Goole\\Таблицы_Googl.xlsx')
@@ -260,10 +245,7 @@ class tbl_bot():
         return tbl_id
     # поиск ключей таблиц
     def sheet(self,name_tbl, df, sheet_name, one_stroka = None):
-
         tbl_id = tbl_bot().tbl_id(name=name_tbl)
-        print()
-
         zagolovok_name = one_stroka
         # Записываем дату в ячейку A1
         values = [[str(zagolovok_name)]]
@@ -274,7 +256,7 @@ class tbl_bot():
                                                         valueInputOption='RAW',
                                                         body=body).execute()
 
-
+        time.sleep(2)
         zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
         # Записываем дату
         values = [[str(zagolovok_name)]]
@@ -305,13 +287,46 @@ class tbl_bot():
 
         return Goole_url
 
+    def svodniy_itog(self,name_tbl, df, sheet_name, one_stroka = None):
+        tbl_id = tbl_bot().tbl_id(name=name_tbl)
+        time.sleep(2)
+        zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
+        # Записываем дату
+        values = [[str(zagolovok_name)]]
+        range_ = f'{sheet_name}!C1'
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
+                                                        valueInputOption='RAW',
+                                                        body=body).execute()
+
+        # Диапазон
+        range_ = f'{sheet_name}!A2'
+        del_dat = f'{sheet_name}!A2:Z'
+        # Очистка данных в листе перед записью
+        result = service.spreadsheets().values().clear(
+            spreadsheetId=tbl_id, range=del_dat).execute()
+        # аголовки добавить
+        zagolovok = list(df.columns.values)
+        # Преобразование в массив
+        values = [zagolovok] + df.values.tolist()
+        # Запись данных в таблицу
+        body = {'values': values}
+        result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_, valueInputOption='RAW',
+                                                        body=body).execute()
+        # ссылка
+        Goole_url = f'https://docs.google.com/spreadsheets/d/{tbl_id}'
+        print(f'Ссылка на таблицу - {name_tbl} :  {Goole_url}')
+
+        return Goole_url
+
 
 
 #tbl().dele()
 #tbl().new()
-"""ln = ['Баранова Л.В', 'Карпова Е.Э', 'Бедарева Н.Г', 'Турова А.С', 'Павлова А.А', 'Изотов В.В', 'Геровский И.В', 'Сергеев А.С', 'Томск']
+"""ln = ['Показатели сети для собрания']
 for i in ln:
-    tbl().new_taybl(name_tabl= i, name_list="Результаты прошлого дня")"""
+    tbl().new_taybl(name_tabl= i, name_list="Показатели сети")"""
 #tbl().record(name="Карпова Е.Э_Прошлый день")
 #tbl().dostup()
 #tbl().stil()
