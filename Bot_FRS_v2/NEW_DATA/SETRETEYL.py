@@ -83,7 +83,7 @@ class SET:
                 start_date += delta
                 spisok_d = dates_list"""
             #spisok_d = ['12.06.2023']
-            #spisok_d = ['09.06.2023','10.06.2023','11.06.2023']
+            #spisok_d = ['11.07.2023','12.07.2023','13.07.2023']
             print(spisok_d)
             return spisok_d
         # region СКАЧИВАНИЕ С САЙТА

@@ -1,3 +1,4 @@
+import datetime
 import sys
 
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
@@ -546,6 +547,7 @@ class Grup():
             x = x.groupby(["магазин", "месяц", "год"]).sum().reset_index()
             sales_itog = pd.merge(sales_itog, x, on=['магазин', 'месяц', "год"], how='left')
 
+            sales_itog = sales_itog.loc[sales_itog["дата"] != str(ini.dat_seychas)].reset_index(drop=True)
             # создание столбцов с датами(для прогноза)
             # Создание исходного датафрейма с столбцом дат
             # Преобразование столбца 'date' в тип данных даты
@@ -565,7 +567,7 @@ class Grup():
             sales_itog["дневной_план_кол_чеков"] = ( sales_itog["план_кол_чеков"] - sales_itog["накопительный_итог_Количество чеков_месяц"])/sales_itog["осталось дней"]"""
             sales_itog.loc[sales_itog["год"] != 2023, "LFL"] = np.nan
 
-            sales_itog = sales_itog[
+            sales_itog_seve = sales_itog[
                 ["магазин", "LFL", "дата", "год", "месяц", "Прошло дней", "осталось дней", "дней в месяце",
                  "выручка",
                  "накопительный_итог_выручка_месяц",
@@ -611,21 +613,21 @@ class Grup():
                  "накопительный_итог_списания_хозы_год",
 
                  "количество уникальных товаров в чеке",
-                 "количество товаров в чеке"]]
+                 "количество товаров в чеке"]].copy()
 
             # sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
-            sales_itog = sales_itog.loc[sales_itog["дата"] != ini.dat_seychas]
-            sales_itog.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
+            print(sales_itog_seve)
+            sales_itog_seve.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
                               decimal=".", index=False)
             try:
-                sales_itog.to_csv("P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Сгруппированные продажи по дня\\"
+                sales_itog_seve.to_csv("P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Сгруппированные продажи по дня\\"
                                   "Сгруппированные продажи по дня.csv", sep="\t", encoding="utf-8", decimal=",",
                                   index=False)
             except:
                 BOT.BOT().bot_mes_html(mes="Ошибка....", silka=0)
 
-        if ini.time_seychas < ini.time_bot_vrem:
-            sales()
+        #if ini.time_seychas < ini.time_bot_vrem:
+        sales()
 
 # todey_ear()
 # lastear()
@@ -635,6 +637,6 @@ class Grup():
 # spis()
 # Grup().spisania_nistory()
 # Grup().Sales()
-#Grup().grups()
+Grup().grups()
 
 # test()

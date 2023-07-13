@@ -90,7 +90,7 @@ class Obrabotka:
             FLOAT().float_colm(name_data= AA, name_col="Обороты за период")
             AA['фаил'] = Name_file_col
             # region ДОП ТАБЛИЦА ДЛЯ ПОИСКА СТАТЕЙ
-            LN_1 = AA[["Дробить", "фаил", "магазин", "номер склада"]]
+            LN_1 = AA[["Дробить", "фаил", "магазин", "номер склада","Обороты за период"]]
             LN_1.to_excel(PUT + "ОБРАБОТАННЫЙ\\промежуточные\\" + Name_file_col + ".xlsx",index=False)
             # endregion
 
@@ -135,7 +135,7 @@ class Obrabotka:
             AP = AP.loc[AP['Дробить'] != 'Итого']
             AP['фаил'] = Name_file_col
             # region ДОП ТАБЛИЦА ДЛЯ ПОИСКА СТАТЕЙ
-            LN_1 = AP[["Дробить", "фаил", "магазин", "номер склада"]]
+            LN_1 = AP[["Дробить", "фаил", "магазин", "номер склада","Обороты за период"]]
 
             LN_1.to_excel(PUT + "ОБРАБОТАННЫЙ\\промежуточные\\" + Name_file_col + ".xlsx",index=False,)
             # endregion
@@ -180,7 +180,7 @@ class Obrabotka:
             LN['фаил'] = Name_file_col
 
             # region ДОП ТАБЛИЦА ДЛЯ ПОИСКА СТАТЕЙ
-            LN_1 = LN[["Дробить", "фаил", "магазин", "номер склада"]]
+            LN_1 = LN[["Дробить", "фаил", "магазин", "номер склада","Обороты за период"]]
 
             LN_1.to_excel(PUT + "ОБРАБОТАННЫЙ\\промежуточные\\" + Name_file_col + ".xlsx",index=False)
             # endregion
@@ -223,7 +223,7 @@ class Obrabotka:
             LN['фаил'] = Name_file_col
 
             # region ДОП ТАБЛИЦА ДЛЯ ПОИСКА СТАТЕЙ
-            LN_1 = LN[["Дробить", "фаил", "магазин", "номер склада"]]
+            LN_1 = LN[["Дробить", "фаил", "магазин", "номер склада","Обороты за период"]]
 
             LN_1.to_excel(PUT + "ОБРАБОТАННЫЙ\\промежуточные\\" + Name_file_col + ".xlsx",index=False)
             # endregion
@@ -263,7 +263,9 @@ class Obrabotka:
             LN = LN.loc[LN["магазин"].notnull()]
             LN['фаил'] = Name_file_col
             # region ДОП ТАБЛИЦА ДЛЯ ПОИСКА СТАТЕЙ
-            LN_1 =  LN[["Дробить","фаил","магазин","номер склада"]]
+            print("-----------------------------------\n")
+            print(LN)
+            LN_1 =  LN[["Дробить","фаил","магазин","номер склада","Обороты за период"]]
             LN_1.to_excel(PUT  + "ОБРАБОТАННЫЙ\\промежуточные\\" + Name_file_col + ".xlsx",
                          index=False)
             # endregion
@@ -456,9 +458,6 @@ class Obrabotka:
             x = x.rename(columns={'Дробить': 'Статья', "фаил": "Юр.лицо", 'магазин': 'Магазин', 'номер склада': '№ скл'})
             print(x)
             combain = pd.concat([combain,x],axis=0)
-
-
-
         combain.to_excel(PUT + "ОБРАБОТАННЫЙ\\Для поиска сатей" + ".xlsx",index=False)
 
 

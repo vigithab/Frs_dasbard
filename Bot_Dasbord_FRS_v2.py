@@ -226,6 +226,7 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Сортировка сибестоймости", e=mes)
+
         # группировка файлов
         try:
             GRUP_FILE.Grup().grups()
@@ -235,6 +236,17 @@ class NEW_data:
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Групировка файлов", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка Групировка файлов", silka=0)
+
+        # перенос Ежедневного списания
+        try:
+            SORT_FILE.SORT().Ostatki_chas()
+            log.LOG().log_new_data(name_txt="Перенос Ежедневного списания ДШ")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Перенос Ежедневного списания", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка Перенос Ежедневного списания", silka=0)
+
         # перенос шашлычного сезона
         try:
             SORT_FILE.SORT().sashl_sezn()

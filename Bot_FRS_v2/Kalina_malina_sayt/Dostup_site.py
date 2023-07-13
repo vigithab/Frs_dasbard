@@ -1,6 +1,7 @@
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
+
 import time
 import requests
 from Bot_FRS_v2.BOT_TELEGRAM import BOT

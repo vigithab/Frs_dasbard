@@ -39,9 +39,11 @@ class FLOAT:
     """для одного столбца"""
 
 # обороты за период дебет
-file = PUT + "01.04.2023.xlsx"
+file = PUT + "01.06.2023.xlsx"
+print(file)
 
 zatrat_frandhiza = pd.read_excel(file)
+print(zatrat_frandhiza)
 zatrat_frandhiza = zatrat_frandhiza[["Оборотно-сальдовая ведомость по счету 44 за Апрель 2023 г.", "Unnamed: 3"]].reset_index(drop=True)
 
 # создание новой строки с названиями столбцов
@@ -79,12 +81,6 @@ zatrat_frandhiza["ЗАТРАТЫ НА МАРКЕТИНГ"] = zatrat_frandhiza["�
 
 zatrat_frandhiza.to_csv(PUT + "↓Затраты обработанный.csv", encoding="ANSI", sep=';',
                          index=False, decimal=',')
-
-
-
-
-
-
 
 # убираем многоуровневые названия столбцов
 #zatrat_frandhiza.columns = [f"{col[0]} {col[1]}" for col in zatrat_frandhiza.columns]

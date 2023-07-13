@@ -175,4 +175,25 @@ class SORT:
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
 
+    def Ostatki_chas(self):
+        if ini.time_seychas < ini.time_bot_vrem:
+            print("перемещение ежедневного списания")
+            p_palic = r"P:\Фирменная розница\ФРС\Данные из 1 С\Корректировки\Только корректировки"
+            p_local = r"C:\Users\lebedevvv\Desktop\FRS\Автозаказ\Списания ежедневные\Только корректировки"
+            for filename in os.listdir(p_palic):
+                print("Перемещение: ", filename)
+                pabl = os.path.join(p_palic, filename)
+                local = os.path.join(p_local, filename)
+                shutil.copy(pabl, local)
+
+            p_palic = r"P:\Фирменная розница\ФРС\Данные из 1 С\Остатки по часам"
+            p_local = r"C:\Users\lebedevvv\Desktop\FRS\Автозаказ\Списания ежедневные\Остатки по часам"
+            for filename in os.listdir(p_palic):
+                print("Перемещение: ", filename)
+                pabl = os.path.join(p_palic, filename)
+                local = os.path.join(p_local, filename)
+                shutil.copy(pabl, local)
+
+
+
 
