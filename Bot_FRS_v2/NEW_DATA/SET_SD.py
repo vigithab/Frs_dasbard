@@ -147,10 +147,8 @@ class NEW_DATA_sd:
         if os.path.isfile(source_file):
             # Копирование файла в папку назначения
             shutil.copy2(source_file, destination_folder)
-
             # Получение пути к скопированному файлу
             copied_file = os.path.join(destination_folder, os.path.basename(source_file))
-
             # Разархивирование файла
             with zipfile.ZipFile(copied_file, 'r') as zip_ref:
                 zip_ref.extractall(destination_folder)
@@ -160,17 +158,37 @@ class NEW_DATA_sd:
         else:
             BOT.BOT().bot_mes_html(mes="❗Нет файла дегустации", silka=0)
     # получение данных  сетевого диска
-    def Nmenklatura(self):
+    def Nmenklatura(self, rows=None):
+        # Пути к файлам и папкам
+        BOT.BOT().bot_mes_html(mes="- дегустации", silka=0)
+        print("Получение: Справочников")
+        ot = r"\\rtlfranch3\Данные из 1С\Для Дашборда\SKU и Номенклатура"
+        to = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\NEW\Справочники"
+        to_sku = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура"
+        for filename in os.listdir(ot):
+            pabl = os.path.join(ot, filename)
+            save = os.path.join(to, filename)
+            shutil.copy2(pabl, save)
+            if filename == "GROUPS.txt":
+                spravka = pd.read_csv(
+                    r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\GROUPS_Свежий.txt",
+                    sep="\t", encoding="utf-8")
+                komanda = pd.read_excel(
+                    "https://docs.google.com/spreadsheets/d/1dNt8qpZL_ST8aF_iBqV7oVQvH1tsExMd6uLCiC_UtfQ/export?exportFormat=xlsx")
+                spravka = spravka.merge(komanda, on=['Входит в группу'], how="left")
+                spravka.to_csv(PUT + "Справочники\\номенклатура\\GROUPS.txt", sep="\t", encoding="utf-8")
 
-        spravka = pd.read_csv(PUT+"Справочники\\номенклатура\\GROUPS_Свежий.txt", sep= "\t", encoding="utf-8")
-        print(spravka)
+        spravk_sku = pd.read_csv(
+            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_свежий.txt",
+            sep="\t", encoding="utf-8")
+        print(spravk_sku)
 
-        komanda = pd.read_excel("https://docs.google.com/spreadsheets/d/1dNt8qpZL_ST8aF_iBqV7oVQvH1tsExMd6uLCiC_UtfQ/export?exportFormat=xlsx")
-        print(komanda)
+        spravk_sku.loc[spravk_sku["Номенклатура"] == "Не исп Эклер СХ смородиновый, 50г", "Номенклатура"] = "Бедрышко цыпленка-бройлера (в подложке), охл"
 
-        spravka = spravka.merge(komanda, on='Входит в группу', how="left")
-        print(spravka)
-        spravka.to_csv(PUT + "Справочники\\номенклатура\\GROUPS.txt", sep="\t", encoding="utf-8")
+        #spravk_sku = spravk_sku.loc[spravk_sku["Номенклатура"] == "Бедрышко цыпленка-бройлера (в подложке), охл"]
+
+        spravk_sku.to_csv(PUT + "Справочники\\номенклатура\\Список.txt", sep="\t", encoding="utf-8")
+
 
 def run_NEW_DATA_sd():
     if ini.time_seychas < ini.time_bot_vrem:
@@ -183,4 +201,5 @@ def run_NEW_DATA_sd():
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
 
-#NEW_DATA_sd().Nmenklatura()
+if __name__ == '__main__':
+    NEW_DATA_sd().Nmenklatura()

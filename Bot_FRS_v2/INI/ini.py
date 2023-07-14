@@ -35,10 +35,6 @@ km = keys_dict.get("km_test")
 #test_not = keys_dict.get('testovaya')
 
 
-
-
-
-
 # Время рассылки сообщений
 time_bot_vrem = "10:00:00"
 

@@ -1,7 +1,9 @@
+import datetime
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
+import schedule
+import time
 import time
 import requests
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
@@ -42,7 +44,7 @@ def check_website():
         # Проверка статуса ответа
         if response.status_code == 200:
             r1 = f"✅ Сайт работает"
-            if response_time>1.5:
+            if response_time>3:
                 t = "❌"
             r2 = f"{t} Время ответа: {response_time} сек"
             r11 = f"Немного для сравнения"
@@ -78,5 +80,13 @@ def check_website():
     except requests.ConnectionError:
         mes = f"отказ в подключении или нет интернета"
     BOT.BOT().bot_proverka_KM(mes=mes)
-
+    return
 check_website()
+
+"""while True:
+    current_time = datetime.datetime.now().time()
+    print(current_time)
+    if current_time.hour == 0 and current_time.minute == 0:
+        check_website()
+    # Ожидание до следующей минуты
+    time.sleep(60 - current_time.second)"""

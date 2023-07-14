@@ -47,7 +47,7 @@ class Koreus():
         warnings.filterwarnings('ignore')  ##отключаем warnings
         ua = UserAgent()
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -68,7 +68,6 @@ class Koreus():
         print("ход на сайт Корус")
         time.sleep(5)
         if screen_width > screen_height:
-
             self.driver.set_window_size(screen_width, screen_height)
             print('Горизонтальная')
         else:
@@ -102,7 +101,10 @@ class Koreus():
             time.sleep(10)
             login_button = self.driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div/div/span/form/div/div[2]/button/span')
             login_button.click()
-            time.sleep(7)
+            time.sleep(2)
+
+
+
             print(1)
             filter_button = self.driver.find_element(By.XPATH, '/html/body/div/div/div[1]/main/div/div/div/div[1]/button[1]')
             filter_button.click()
@@ -169,6 +171,7 @@ class Koreus():
 start = Koreus()
 start.zagruxka()
 path_download = start.path_download
+#path_download =r"C:\Users\Lebedevvv\Downloads"
 
 files=os.listdir(path_download)
 print(files,  " и ", path_download)
@@ -213,7 +216,7 @@ for file in files :
     del table
     gc.collect()
 gc.collect()
-pathKuda=("CC:\\Users\\lebedevvv\\Desktop\\FRS\\Автозаказ\\Списания ежедневные\\Коректировки\\Корректировки2023.xlsx")
+pathKuda=("C:\\Users\\lebedevvv\\Desktop\\FRS\\Автозаказ\\Списания ежедневные\\Коректировки\\Корректировки2023.xlsx")
 combined.to_excel(pathKuda,index=False)
 print("BCE")
 BOT.BOT().bot_mes_html(mes="Скрипт Корус успешно завершен",silka=0)

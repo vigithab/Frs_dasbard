@@ -195,5 +195,5 @@ class SORT:
                 shutil.copy(pabl, local)
 
 
-
+#SORT().Ostatki_chas()
 

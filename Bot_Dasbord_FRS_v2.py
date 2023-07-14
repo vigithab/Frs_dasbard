@@ -46,7 +46,7 @@ class NEW_data:
             log.LOG().log_new_data(name_txt="Сетевой диск", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
 
-        # Получение С СЕТРЕТЕЙЛА
+        """# Получение С СЕТРЕТЕЙЛА
         try:
             set.SET().Set_obrabotka()
             log.LOG().log_new_data(name_txt="Cетритеил")
@@ -54,7 +54,7 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Cетритеил", e=mes)
-            BOT.BOT().bot_mes_html(mes=mes, silka=0)
+            BOT.BOT().bot_mes_html(mes=mes, silka=0)"""
 
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
 
@@ -333,9 +333,14 @@ class NEW_data:
 
         sales_day_sales = sales_day_sales.merge(spravka_nom[['номенклатура_1с', "Код товара"]],
                                                 on=["Код товара"], how="left").reset_index(drop=True)
+
+
         sales_day_sales_null = sales_day_sales.loc[sales_day_sales["номенклатура_1с"].isnull()]
         sales_day_sales_null = len(sales_day_sales_null)
-        txt = f'Номенклатура не найдено- {sales_day_sales_null}'
+        txt = f'{name_file}\nНоменклатура не найдено - {sales_day_sales_null}'
+        if sales_day_sales_null > 0:
+            BOT.BOT().bot_mes_html(mes=txt, silka=0)
+        txt = f'Номенклатура не найдено - {sales_day_sales_null}'
         print(txt)
         log.LOG().log_obrabotka(mes=txt, priznak="Номенклатура", name_file=name_file)
         del spravka_nom
