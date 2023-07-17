@@ -30,6 +30,7 @@ class LOG:
     def log_obrabotka(self, mes, priznak,name_file):
         with open(PUT + 'Log\\Лог_обработки.txt', 'a') as file:
                 file.write(f'{priznak} || Имя файла: {name_file} ||  {mes}\n')
+
     def log_new_data(self, e = None, name_txt = None):
         with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',encoding="utf-8") as file:
                 file.write(f'----------------------------------------\n')

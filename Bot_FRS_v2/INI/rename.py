@@ -9,8 +9,6 @@ import pandas as pd
 import os
 from Bot_FRS_v2.INI import ini
 
-
-
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 

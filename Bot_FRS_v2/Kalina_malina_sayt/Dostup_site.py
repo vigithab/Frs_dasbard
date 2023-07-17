@@ -26,19 +26,15 @@ def check_website():
         response = requests.get(url)
         # Записываем время, затраченное на получение ответа
         response_time = round(time.time() - start_time, 2)
-
         start_time = time.time()
         response2 = requests.get(url2)
         response_time2 = round(time.time() - start_time, 2)
-
         start_time = time.time()
         response3 = requests.get(url3)
         response_time3 = round(time.time() - start_time, 2)
-
         start_time = time.time()
         response4 = requests.get(url4)
         response_time4 = round(time.time() - start_time, 2)
-
 
         t = "✅"
         # Проверка статуса ответа
@@ -59,7 +55,6 @@ def check_website():
             r13 = f" - sbermarket: {response_time3} сек"
             r14 = f" - eda.yandex: {response_time4} сек"
 
-
         # Проверка содержимого страницы
         if expected_content in response.text:
             r22 = f"✅ Найден номер - {expected_content}"
@@ -75,14 +70,13 @@ def check_website():
               f'{r12}\n' \
               f'{r13}\n' \
               f'{r14}\n'
-
-
     except requests.ConnectionError:
+
         mes = f"отказ в подключении или нет интернета"
     BOT.BOT().bot_proverka_KM(mes=mes)
     return
-check_website()
 
+check_website()
 """while True:
     current_time = datetime.datetime.now().time()
     print(current_time)

@@ -140,8 +140,7 @@ class tbl:
     # запись данных в таблицу
     def dele(self):
         alltbl,service,creds= tbl().Info()
-        alltbl = ["13ut7U19bGUjnvfOxYCl2AijEujmgvlcm-1ZjFZNFSNU",
-                    "1AKNZBVr0v4VabphWxHgjD3kKV1yQ3jvhIOGUXRJr6Ps"]
+        alltbl = ["1EGp5OvPyr5jmWB2sy0ZkUEeW4UWKFQ-dBsdolGg2Mm4"]
 
         for i in alltbl:
             file_id = i
@@ -162,7 +161,7 @@ class tbl:
         credentials_file = PUT + 'BOT\\key\\client_secret.json'
 
         # Идентификатор (ID) существующей таблицы, к которой нужно предоставить доступ
-        spreadsheet_id = '1-nH_gnyl3LEb4WUosMvAhZrfcxwikwnEB86CPwcJESY'
+        spreadsheet_id = '1VovT4hnKs9u4WqChRv-GglvOdLEnNIwN0ZxRfWufSaI'
 
         # Создание объекта сервиса для работы с Google Drive API
         credentials = service_account.Credentials.from_service_account_file(credentials_file)
@@ -324,9 +323,9 @@ class tbl_bot():
 
 #tbl().dele()
 #tbl().new()
-"""ln = ['Показатели сети для собрания']
+"""ln = ['Количество магазинов сети']
 for i in ln:
-    tbl().new_taybl(name_tabl= i, name_list="Показатели сети")"""
+    tbl().new_taybl(name_tabl= i, name_list="Количество магазинов сети")"""
 #tbl().record(name="Карпова Е.Э_Прошлый день")
 #tbl().dostup()
 #tbl().stil()

@@ -46,7 +46,7 @@ class NEW_data:
             log.LOG().log_new_data(name_txt="Сетевой диск", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
 
-        """# Получение С СЕТРЕТЕЙЛА
+        # Получение С СЕТРЕТЕЙЛА
         try:
             set.SET().Set_obrabotka()
             log.LOG().log_new_data(name_txt="Cетритеил")
@@ -54,7 +54,7 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Cетритеил", e=mes)
-            BOT.BOT().bot_mes_html(mes=mes, silka=0)"""
+            BOT.BOT().bot_mes_html(mes=mes, silka=0)
 
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
 
