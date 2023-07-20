@@ -161,7 +161,7 @@ class tbl:
         credentials_file = PUT + 'BOT\\key\\client_secret.json'
 
         # Идентификатор (ID) существующей таблицы, к которой нужно предоставить доступ
-        spreadsheet_id = '1VovT4hnKs9u4WqChRv-GglvOdLEnNIwN0ZxRfWufSaI'
+        spreadsheet_id = '1AQRPnFgoA_UJniGKhSe4dd_jZDinUoG7PHN-WwsFNQ8'
 
         # Создание объекта сервиса для работы с Google Drive API
         credentials = service_account.Credentials.from_service_account_file(credentials_file)
@@ -290,9 +290,13 @@ class tbl_bot():
         tbl_id = tbl_bot().tbl_id(name=name_tbl)
         time.sleep(2)
         zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
+        print(zagolovok_name)
         # Записываем дату
         values = [[str(zagolovok_name)]]
-        range_ = f'{sheet_name}!C1'
+        if name_tbl =="Количество магазинов сети" or "Планы_2023":
+            range_ = f'{sheet_name}!A1'
+        else :
+            range_ = f'{sheet_name}!C1'
         # Запись данных в таблицу
         body = {'values': values}
         result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
@@ -320,13 +324,14 @@ class tbl_bot():
         return Goole_url
 
 
-
-#tbl().dele()
-#tbl().new()
-"""ln = ['Количество магазинов сети']
-for i in ln:
-    tbl().new_taybl(name_tabl= i, name_list="Количество магазинов сети")"""
-#tbl().record(name="Карпова Е.Э_Прошлый день")
-#tbl().dostup()
-#tbl().stil()
-#tbl().Info()
+if __name__ == '__main__':
+    #plan = plan()
+    #tbl().dele()
+    #tbl().new()
+    """ln = ['Планы_2023']
+    for i in ln:
+        tbl().new_taybl(name_tabl= i, name_list="Планы_2023")"""
+    #tbl().record(name="Карпова Е.Э_Прошлый день")
+    #tbl().dostup()
+    #tbl().stil()
+    #tbl().Info()

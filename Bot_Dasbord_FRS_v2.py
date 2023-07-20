@@ -7,18 +7,13 @@ import pandas as pd
 import gc
 import datetime
 import time
-from Bot_FRS_v2.INI import memory
-from Bot_FRS_v2.INI import ini
 from Bot_FRS_v2.NEW_DATA.SET_SD import run_NEW_DATA_sd
-from Bot_FRS_v2.NEW_DATA import SORT_FILE
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
-from Bot_FRS_v2.INI import rename
-from Bot_FRS_v2.INI import Float
-from Bot_FRS_v2.NEW_DATA import GRUP_FILE
-from Bot_FRS_v2.INI import log
-from Bot_FRS_v2.RASSILKA import Voropaev
-from Bot_FRS_v2.NEW_DATA import Personal_v2
+from Bot_FRS_v2.INI import Float, log, rename, ini, memory
+from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
+from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE
+
 
 PUT = ini.PUT
 class NEW_data:
@@ -194,7 +189,6 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Сортировка продаж", e=mes)
-
         try:
             SORT_FILE.SORT().sort_files_chek()
             log.LOG().log_new_data(name_txt="Сортировка чеков")
@@ -256,7 +250,7 @@ class NEW_data:
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Перенос шашлычного сезона", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка Перенос шашлычного сезона", silka=0)
-
+        # Формирование таблицы шашлыка
         try:
             Voropaev.Degustacia().sotka()
             log.LOG().log_new_data(name_txt="Гугл таблица шашлычный сезон")
@@ -266,11 +260,33 @@ class NEW_data:
             log.LOG().log_new_data(name_txt="Гугл таблица шашлычный сезон", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке дегустации(ворп)", silka=0)
 
+        # Формирование таблицы подсчета ТТ
+        try:
+            count_tt.tabl_count_tt().tabl_form()
+            log.LOG().log_new_data(name_txt="Подсчет количества ТТ")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Подсчет количества ТТ", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке Подсчет количества ТТ", silka=0)
+
+        # Формирование Талицы планов
+        try:
+            Plan_2023.plan()
+            log.LOG().log_new_data(name_txt="Таблица планов")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Таблица планов", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
+
+
         BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
         with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',
                   encoding="utf-8") as file:
             file.write(f'**************************************************************************\n')
         time.sleep(240)
+
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
         # групировка файлов продаж по дням
