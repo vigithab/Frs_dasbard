@@ -205,5 +205,5 @@ class Degustacia:
             g.tbl().record(name="Дегустация шашлыка(за последние 7 дней)", name_df=df, sheet_name="НЕТ ДЕГУСТАЦИЙ",)
 
 
-
-#Degustacia().sotka()
+if __name__ == '__main__':
+    Degustacia().sotka()

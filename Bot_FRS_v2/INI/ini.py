@@ -36,7 +36,7 @@ km = keys_dict.get("km_test")
 
 
 # Время рассылки сообщений
-time_bot_vrem = "10:00:00"
+time_bot_vrem = "23:30:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 0
@@ -220,7 +220,4 @@ def num_pn(yea, mon):
         spis.append(monday)
     numbered_dict = {date: i for i, date in enumerate(spis)}
     return numbered_dict
-
-
-
 

@@ -108,12 +108,14 @@ def plan():
     g.tbl_bot().svodniy_itog(name_tbl="Планы_2023", df=plan, sheet_name="Планы_2023")
 
 
-    sprav_magaz_copy = sprav_magaz_copy.loc[(sprav_magaz_copy["Старые/Новые"] == "Новые ТТ") |
+    """sprav_magaz_copy = sprav_magaz_copy.loc[(sprav_magaz_copy["Старые/Новые"] == "Новые ТТ") |
                                (sprav_magaz_copy["Старые/Новые"] == "Релокация") |
-                               (sprav_magaz_copy["Старые/Новые"] == "Без новых ТТ")]
+                               (sprav_magaz_copy["Старые/Новые"] == "Без новых ТТ")
+                               (sprav_magaz_copy["Старые/Новые"] == "Без новых ТТ")
+    ]"""
 
     print(sprav_magaz_copy)
-    sprav_magaz_copy = sprav_magaz_copy[["ID","МАГАЗИН","Адрес ТТ","!ГОРОД!","!ОБЛАСТЬ!","Канал"]]
+    sprav_magaz_copy = sprav_magaz_copy[["ID","МАГАЗИН","Адрес ТТ","!ГОРОД!","!ОБЛАСТЬ!","Работают или нет","Канал"]]
     sprav_magaz_copy.replace([np.inf, -np.inf], np.nan, inplace=True)
     sprav_magaz_copy.fillna('', inplace=True)
     g.tbl_bot().svodniy_itog(name_tbl="Планы_2023", df=sprav_magaz_copy, sheet_name="Актуальный список ТТ")

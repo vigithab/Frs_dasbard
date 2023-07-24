@@ -163,6 +163,16 @@ class groups:
             sales = None
             chek = None
 
+        print(df)
+        # групировка по магазинам
+        df = df.groupby(["магазин", "канал", "Менеджер"],
+                                      as_index=False) \
+            .agg({'выручка': "sum",
+                  'дата': "nunique",
+                  'Количество чеков': "sum",
+                  "Средний чек": "mean", "вес_продаж":"sum",
+                  "списания_оказатель":"mean"}).reset_index(drop=True)
+        print(df[:50])
         # продажи
         sales_forecast = ((df['выручка'].sum() / df["Прошло дней"].max() *
                   df["осталось дней"].min()) + df['выручка'].sum()).astype(int)
@@ -176,13 +186,12 @@ class groups:
         # Списания
         spisania =((df["списания_оказатель"].sum() / df["Прошло дней"].max() *
                  df["осталось дней"].min()) + df["списания_оказатель"].sum()).astype(int)
-
         # Списания процент
         spisania_P = spisania / sales_forecast
         # вес продаж
         ves_prodaj = df["вес_продаж"].sum().astype(int)
-
         if prinak == "Прошлый год":
+
             sales_forecast = df_last_year_total['выручка'].sum().astype(int)
             chek_forecast = df_last_year_total['Количество чеков'].sum().astype(int)
             aver_chek_forecast = (sales / chek).astype(int)
