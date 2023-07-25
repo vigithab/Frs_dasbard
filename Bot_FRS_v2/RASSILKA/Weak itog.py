@@ -163,7 +163,7 @@ class groups:
             sales = None
             chek = None
 
-        print(df)
+        """print(df)
         # групировка по магазинам
         df = df.groupby(["магазин", "канал", "Менеджер"],
                                       as_index=False) \
@@ -172,7 +172,7 @@ class groups:
                   'Количество чеков': "sum",
                   "Средний чек": "mean", "вес_продаж":"sum",
                   "списания_оказатель":"mean"}).reset_index(drop=True)
-        print(df[:50])
+        print(df[:50])"""
         # продажи
         sales_forecast = ((df['выручка'].sum() / df["Прошло дней"].max() *
                   df["осталось дней"].min()) + df['выручка'].sum()).astype(int)
@@ -189,9 +189,10 @@ class groups:
         # Списания процент
         spisania_P = spisania / sales_forecast
         # вес продаж
-        ves_prodaj = df["вес_продаж"].sum().astype(int)
-        if prinak == "Прошлый год":
+        ves_prodaj = ((df["вес_продаж"].sum() / df["Прошло дней"].max() * df["осталось дней"].min()) + df["вес_продаж"].sum()).astype(int)
 
+
+        if prinak == "Прошлый год":
             sales_forecast = df_last_year_total['выручка'].sum().astype(int)
             chek_forecast = df_last_year_total['Количество чеков'].sum().astype(int)
             aver_chek_forecast = (sales / chek).astype(int)
@@ -234,13 +235,14 @@ class groups:
         for i in self.ty_list:
                 mabager = df.loc[df["Менеджер"] == i]
                 # продажи
-                sales = ((mabager['выручка'].sum() /mabager["Прошло дней"].max() *
+                sales = ((mabager['выручка'].sum() / mabager["Прошло дней"].max() *
                           mabager["осталось дней"].min()) + mabager['выручка'].sum()).astype(int)
                 # чеки
                 chek = ((mabager['Количество чеков'].sum() / mabager["Прошло дней"].max() *
                          mabager["осталось дней"].min()) + mabager['Количество чеков'].sum()).astype(int)
                 # Средний чек
-                aver_chek = mabager['Средний чек'].mean().astype(int)
+                aver_chek = sales /  chek
+                    #mabager['Средний чек'].mean().astype(int)
                 # Счет количество а точек
                 count_TT = mabager[mabager['выручка'] > 1000]['магазин'].nunique()
                 # Списания
@@ -248,7 +250,10 @@ class groups:
                 # Списания процент
                 spisania_P = spisania / sales
                 # вес продаж
-                ves_prodaj = mabager["вес_продаж"].sum().astype(int)
+                ves_prodaj = ((mabager["вес_продаж"].sum() / mabager["Прошло дней"].max() *
+                         mabager["осталось дней"].min()) + mabager["вес_продаж"].sum()).astype(int)
+
+                #mabager["вес_продаж"].sum().astype(int)
 
                 if prinak =="Прошлый год":
                     mabager_total = df_last_year_total.loc[df_last_year_total["Менеджер"] == i]
