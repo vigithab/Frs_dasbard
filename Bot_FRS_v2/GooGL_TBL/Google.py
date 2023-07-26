@@ -1,9 +1,7 @@
 import sys
 import time
-
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
 import pandas as pd
 import gspread
 from gspread_dataframe import get_as_dataframe
@@ -302,7 +300,6 @@ class tbl_bot():
         result = service.spreadsheets().values().update(spreadsheetId=tbl_id, range=range_,
                                                         valueInputOption='RAW',
                                                         body=body).execute()
-
         # Диапазон
         range_ = f'{sheet_name}!A2'
         del_dat = f'{sheet_name}!A2:Z'
