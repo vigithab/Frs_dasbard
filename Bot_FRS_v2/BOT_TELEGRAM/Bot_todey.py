@@ -94,8 +94,7 @@ class bot_mesege:
                     fil_vchera.append(date_str)
 
             VCHERA = fil_vchera
-            # print("Прошлый день\n",VCHERA)
-            # endregion
+
 
             # region ТЕКУШИЙ МЕСЯЦ
             TODEY_month_min_day = MAX_DATE.replace(day=1)
@@ -170,8 +169,6 @@ class bot_mesege:
         for i  in TODEY_month:
             i = i.replace('2023', '2022')
             self.LAST_year.append(i)
-        #self.LAST_year = self.TODEY_month.replace('2023', '2022')
-        #self.LAST_year = [datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d') for date in self.LAST_year]
 
         # список для фолрмирование даты в сообщении.
         self.VCHERA_date_info = VCHERA
@@ -667,8 +664,7 @@ class google_tabl():
         else:
             date1 = self.bot.min_date
             date2 = self.bot.max_date
-            #date1 = datetime.datetime.strptime(self.bot.min_date, "%Y-%m-%d").strftime("%d.%m.%Y")
-            #date2 = datetime.datetime.strptime(self.bot.max_date, "%Y-%m-%d").strftime("%d.%m.%Y")
+
             zagolovok_name = f'Результаты прошедших выходных дней: {date1} - {date2}'
         g.tbl_bot().sheet(name_tbl=self.bot.i, df=df, sheet_name="Результаты прошлого дня", one_stroka=zagolovok_name)
 

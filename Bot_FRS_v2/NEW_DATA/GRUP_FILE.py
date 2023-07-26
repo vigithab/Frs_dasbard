@@ -42,7 +42,6 @@ class FLOAT:
     """для одного столбца"""
     # перевод в число
 
-
 class Spr:
     def Shahlik(self):
         spisok_shash = ['Купаты Барбекю, охл, 0,5 кг', 'Купаты куриные, охл, 0,5 кг',
@@ -615,8 +614,6 @@ class Grup():
                  "количество уникальных товаров в чеке",
                  "количество товаров в чеке"]].copy()
 
-            # sales_itog.to_excel(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.xlsx", index=False)
-            print(sales_itog_seve)
             sales_itog_seve.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
                               decimal=".", index=False)
             try:
@@ -629,14 +626,14 @@ class Grup():
         #if ini.time_seychas < ini.time_bot_vrem:
         sales()
 
-# todey_ear()
-# lastear()
-# d2022()
-# Scepka()
-# LFL()
-# spis()
-# Grup().spisania_nistory()
-# Grup().Sales()
-#Grup().grups()
-
-# test()
+if __name__ == '__main__':
+    # todey_ear()
+    # lastear()
+    # d2022()
+    # Scepka()
+    # LFL()
+    # spis()
+    # Grup().spisania_nistory()
+    # Grup().Sales()
+    Grup().grups()
+    # test()

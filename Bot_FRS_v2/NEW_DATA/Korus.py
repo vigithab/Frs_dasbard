@@ -2,15 +2,13 @@ import re
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
-import selenium
 import warnings
 import time
 import pandas as pd
-##import chromedriver_binary
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import shutil
@@ -47,7 +45,7 @@ class Koreus():
         warnings.filterwarnings('ignore')  ##отключаем warnings
         ua = UserAgent()
         options = webdriver.ChromeOptions()
-        #options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -103,8 +101,6 @@ class Koreus():
             login_button.click()
             time.sleep(2)
 
-
-
             print(1)
             filter_button = self.driver.find_element(By.XPATH, '/html/body/div/div/div[1]/main/div/div/div/div[1]/button[1]')
             filter_button.click()
@@ -139,9 +135,6 @@ class Koreus():
             wait = WebDriverWait(self.driver, timeout=90, poll_frequency=2)
             download_button = wait.until(EC.presence_of_element_located(
                 (By.XPATH, '//a[contains(@class, "v-btn--is-elevated") and contains(., "Скачать")]')))
-            # time.sleep(30)
-            # Переделать на ожидание
-            # button = self.driver.find_element(By.XPATH, '/html/body/div/div[3]/div/div/div[1]/a/span')
             download_button.click()
             print("2 кнопка нажата")
             while sum("orders" in file.lower() and file.endswith(".csv") for file in os.listdir(self.path_download)) != 2:
@@ -171,7 +164,6 @@ class Koreus():
 start = Koreus()
 start.zagruxka()
 path_download = start.path_download
-#path_download =r"C:\Users\Lebedevvv\Downloads"
 
 files=os.listdir(path_download)
 print(files,  " и ", path_download)

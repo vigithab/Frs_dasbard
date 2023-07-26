@@ -1,7 +1,3 @@
-"""import sys
-from Bot_FRS_v2.INI import ini
-PUT = ini.PUT
-sys.path.append(ini.PUT_python)"""
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
@@ -13,7 +9,6 @@ pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 
 PUT = ini.PUT
-
 
 class RENAME:
     def Rread(self, name_data, name_col, name = None):
@@ -75,6 +70,7 @@ class RENAME:
                   'Вакансия': 'Вакансия',
                   'Сергеев Алексей Сергеевич': 'Сергеев А.С',
                   'Карпова Екатерина Эдуардовна': 'Карпова Е.Э'}
+
         ty["Менеджер"] = ty["Менеджер"].map(Ln_tip)
         ty = ty.rename(columns={"!МАГАЗИН!": "магазин"})
         # только открытые
@@ -96,10 +92,10 @@ class RENAME:
             folder2 = PUT + "♀Сибестоемость\\Архив\\"
             folder1 = PUT + "♀Сибестоемость\\Текущий месяц\\"
             folders = [folder2, folder1]
-            # Получение списка всех файлов в папках и подпапках
+
             all_files = []
             for folder in folders:
-                for root, dirs, files in os.walk(folder):  # folder2,folder1,folder3
+                for root, dirs, files in os.walk(folder):
                     for file in files:
                         file_path = os.path.join(root, file)
                         all_files.append(file_path)
@@ -110,16 +106,13 @@ class RENAME:
                     if folder == "C:\\Users\\Lebedevvv\\Desktop\\FRS\\DATA_copy\\♀Сибестоемость\\Архив\\":
                         print(folder)
                         x.to_csv("C:\\Users\\Lebedevvv\\Desktop\\Новая папка\\♀Сибестоемость\\Архив\\" + file[:-4] + ".csv", sep=";", encoding="utf-8", index=False)
-
                         file_path = os.path.join(root, file)
 
-                    # Сохранение DataFrame в новом пути
-                    #x
+
         def spis():
             folder2 = PUT + "♀Списания\\История\\"
             folder1 = PUT + "♀Списания\\Текущий месяц\\"
             folders = [folder1, folder2]
-            # Получение списка всех файлов в папках и подпапках
             all_files = []
             for folder in folders:
                 for root, dirs, files in os.walk(folder):
@@ -129,16 +122,11 @@ class RENAME:
                 for i in all_files:
                     x = pd.read_csv(i, sep="\t", encoding="utf-8", parse_dates=["дата"], date_format='%Y-%m-%d')
                     x['Номенклатура'] = x['Номенклатура'].map(dictionary).fillna(x['Номенклатура'])
-
                     new_directory = 'C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\'
-                    # Получение относительного пути от исходного пути
                     relative_path = os.path.relpath(i)
-                    # Создание нового пути на основе новой директории и относительного пути
                     new_path = os.path.join(new_directory, relative_path)
-                    # Создание директории, если она не существует
                     os.makedirs(os.path.dirname(new_path), exist_ok=True)
                     print(new_path)
-                    # Сохранение DataFrame в новом пути
                     x.to_csv(new_path[:-4] + ".csv", sep=";", encoding="utf-8", index=False)
         def sales():
             folder2 = PUT + "♀Продажи\\2023\\"
@@ -156,44 +144,30 @@ class RENAME:
                 for file_path in all_files:
                     file_extension = os.path.splitext(file_path)[-1].lower()
                     if file_extension == '.txt':
-                        # Обработка TXT файла
                         x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["По дням"], date_format='%Y-%m-%d')
 
                         x['Номенклатура'] = x['Номенклатура'].map(dictionary).fillna(x['Номенклатура'])
 
                         new_directory ='C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\'
-                        # Получение относительного пути от исходного пути
                         relative_path = os.path.relpath(file_path)
-                        # Создание нового пути на основе новой директории и относительного пути
                         new_path = os.path.join(new_directory, relative_path)
-                        # Создание директории, если она не существует
                         os.makedirs(os.path.dirname(new_path), exist_ok=True)
                         print(new_path)
-                        # Сохранение DataFrame в новом пути
                         x.to_csv(new_path[:-4]+".csv", sep=";", encoding="utf-8", index=False)
 
-                        #x.to_csv(PUT + "♀Продажи\\Сгрупированные файлы по дням\\" + str(os.path.basename(file_path)[:-4]) + ".csv", encoding="utf=8", sep='\t', index=False,decimal=',')
-
                     elif file_extension in ['.xls', '.xlsx']:
-                        # Обработка Excel файла
                         x = pd.read_excel(file_path, parse_dates=["Дата/Время чека"], date_format='%Y-%m-%d %H:%M:%S')
                         x.loc[x["номенклатура_1с"].isnull(),"номенклатура_1с"]=x["Наименование товара"]
                         x['номенклатура_1с'] = x['номенклатура_1с'].map(dictionary).fillna(x['номенклатура_1с'])
                         print(x)
                         new_directory = 'C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\'
-                        # Получение относительного пути от исходного пути
                         relative_path = os.path.relpath(file_path)
-                        # Создание нового пути на основе новой директории и относительного пути
                         new_path = os.path.join(new_directory, relative_path)
-                        # Создание директории, если она не существует
                         os.makedirs(os.path.dirname(new_path), exist_ok=True)
-                        print(new_path)
-                        # Сохранение DataFrame в новом пути
                         print(new_directory + str(os.path.basename(file_path)[:-5]))
                         x.to_csv(new_directory + str(os.path.basename(file_path)[:-5]) + ".csv", sep=";", encoding="utf-8", index=False)
         SEB()
         sales()
-
         spis()
 
     def Rread_kassa(self, name_data, name_col, name):
@@ -203,7 +177,6 @@ class RENAME:
         for i in range(rng):
             name_data[name_col] = name_data[name_col].replace(replacements["Найти"][i], replacements["заменить"][i],
                                                               regex=False)
-            # print(replacements["Найти"][i], " / ", replacements["заменить"][i])
         return name_data
 
 #RENAME().nomenklatura_rename()

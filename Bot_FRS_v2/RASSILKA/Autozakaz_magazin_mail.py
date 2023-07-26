@@ -29,7 +29,6 @@ class avtozakaz_sent():
         # Выбор двух столбцов из датафрейма
         open_mag = open_mag[['!МАГАЗИН!', 'Почта магазина']]
         self.EMAIL_mag = open_mag.set_index('!МАГАЗИН!')['Почта магазина'].to_dict()
-
         self.EMAIL_TY = TY_open_mag.set_index('!МАГАЗИН!')["Электронный адрес"].to_dict()
 
 
@@ -40,17 +39,12 @@ class avtozakaz_sent():
             msg['To'] = Email_magaz
             msg['Cc'] = Email_cc
             msg['Subject'] = mes_zagolovok
-
             # Прикрепление текста сообщения
             message = mes
             msg.attach(MIMEText(message))
-
             # Сохранение датафрейма в файл Excel
-
             excel_file_path = self.excel_file_path + Email_magaz + self.format
-
             dataframe.to_excel(excel_file_path, index=False)
-
             # Прикрепление файла Excel
             with open(excel_file_path, 'rb') as file:
                 attachment = MIMEApplication(file.read(), 'xlsx')
@@ -79,10 +73,9 @@ class avtozakaz_sent():
                 n00 = ini.dat_seychas
                 n01 = ini.time_seychas
                 file.write(f'{n00} : {n01} : {mes_zagolovok} :\n   {mes}')
-
         return
+
     def data(self):
-        #spravochnik_TT=pd.read_excel(r'https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx')
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
         spravochnik_TT= sprav_magaz[['!МАГАЗИН!','Менеджер','Работают или нет']]
         spravochnik_TT=spravochnik_TT.dropna(subset='Менеджер')
@@ -99,10 +92,8 @@ class avtozakaz_sent():
         #переименовать
         spr=spr.dropna(subset=['Менеджер Корус'])
 
-
         spr['Shsh'] = np.where(spr['Номенклатура'].str.contains('Р/К', regex=True), "N",
-                               np.where(spr['Входит в группу'].str.contains('200', regex=True),"N" ,
-                                        "Y" ))
+                               np.where(spr['Входит в группу'].str.contains('200', regex=True),"N" ,"Y" ))
 
         spr = spr.dropna(subset='Входит в группу')
         spr = spr[['Номенклатура', 'Входит в группу', 'Shsh']]
@@ -216,11 +207,6 @@ class avtozakaz_sent():
 
         df_ost = df_ost.drop(columns=["Отрицательное"], axis=1)
 
-        # df_ost фрейм с отрицательными остатками
-        print(data)
-        print(df_ost)
-        #data =data.loc[data["Магазин"] != "40 лет Октября, 20"]
-        #data = data.loc[data["Магазин"] != "Анжер. 50-летия Октября 1"]
         spip_mag = data["Магазин"].unique().tolist()
         df_ost.to_excel(r"C:\Users\Lebedevvv\Desktop\FRS\Dashbord_new\csv1.xlsx", index=False)
 
@@ -248,7 +234,6 @@ class avtozakaz_sent():
                 f'Список товаров с отрицательными остатками находится во вложении.'\
                 f''\
                 f'Данное письмо создано автоматически, отвечать на него не нужно!'\
-
 
             Email_magaz_test = "lebedevvv@volcov.ru"
             Email_cc_test =    "erterwertwertwert@gmail.com"

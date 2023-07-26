@@ -72,5 +72,7 @@ class new_data():
                          decimal=".")
         self.__googl_sheet()
         return
-#new = new_data()
-#new.tudey()
+
+if __name__ == '__main__':
+    new = new_data()
+    new.tudey()

@@ -12,9 +12,6 @@ from Bot_FRS_v2.INI import ini
 from Bot_FRS_v2.INI import log
 from Bot_FRS_v2.INI import memory
 
-
-import time
-# try :
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 
@@ -22,14 +19,6 @@ BOT.BOT().bot_mes_html(mes="Скрипт Частота запущен",silka=0)
 try:
     nachalo = dt.datetime.now()
     tek_m=dt.datetime.now().month
-    ##if tek_d==1 :
-    ##    nuzhen_m="0"+str(tek_m-1)
-    ##    spisok_m_number.append(nuzhen_m)
-    ##else :
-    ##    nuzhen_m="0"+str(tek_m)
-    ##    spisok_m_number.append(nuzhen_m)
-    # ОБНОВИТЬ В РУЧНУЮ В НАЧАЛЕ МЕСЯЦА
-    #spisok_m_number = ['07']
     spisok_m_number=['04','05',"06"]
 
 

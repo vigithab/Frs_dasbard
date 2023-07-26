@@ -5,19 +5,11 @@ sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import holidays
 import timeit
 from datetime import datetime, timedelta, time, date
-import datetime
-import time as t
-import os
 import pandas as pd
-import calendar
-import gc
 import requests
 import json
-from Bot_FRS_v2.INI import Float
-from Bot_FRS_v2.GooGL_TBL import Google as g
 from Bot_FRS_v2.INI import ini
-from Bot_FRS_v2.INI import memory
-from Bot_FRS_v2.INI import rename
+
 
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
@@ -25,7 +17,6 @@ pd.set_option('display.max_colwidth', None)
 TY_GROP =  ini.TY_GROP
 TEST_BOT = ini.TEST_BOT
 PUT = ini.PUT
-
 
 class CustomRusHolidays(holidays.RU):
     def _populate(self, year,):

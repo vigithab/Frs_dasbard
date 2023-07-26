@@ -3,7 +3,6 @@ sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
 ##########Отчет формировать по средней цене
-import os
 import pandas as pd
 import warnings
 import datetime as dt

@@ -1,17 +1,12 @@
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
-from datetime import datetime, timedelta, time, date
-import datetime
 import os
 import shutil
 import zipfile
 import pandas as pd
-import sys
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.INI import ini
-
 
 ta = ini.time_bot_vrem
 PUT = ini.PUT
@@ -113,7 +108,6 @@ class NEW_DATA_sd:
             else:
                 print("Файл не найден:", zip_files)
             return
-    #
     def setevoy_spisania(self):
         # Пути к файлам и папкам
         BOT.BOT().bot_mes_html(mes="- Списания", silka=0)
@@ -145,19 +139,15 @@ class NEW_DATA_sd:
         destination_folder =  PUT +  'NEW\\Дегустации\\'
 
         if os.path.isfile(source_file):
-            # Копирование файла в папку назначения
             shutil.copy2(source_file, destination_folder)
-            # Получение пути к скопированному файлу
             copied_file = os.path.join(destination_folder, os.path.basename(source_file))
-            # Разархивирование файла
             with zipfile.ZipFile(copied_file, 'r') as zip_ref:
                 zip_ref.extractall(destination_folder)
-            # Удаление архива
+
             os.remove(copied_file)
 
         else:
             BOT.BOT().bot_mes_html(mes="❗Нет файла дегустации", silka=0)
-    # получение данных  сетевого диска
     def Nmenklatura(self, rows=None):
         # Пути к файлам и папкам
         BOT.BOT().bot_mes_html(mes="- дегустации", silka=0)
@@ -182,13 +172,8 @@ class NEW_DATA_sd:
             r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_свежий.txt",
             sep="\t", encoding="utf-8")
         print(spravk_sku)
-
         spravk_sku.loc[spravk_sku["Номенклатура"] == "Не исп Эклер СХ смородиновый, 50г", "Номенклатура"] = "Бедрышко цыпленка-бройлера (в подложке), охл"
-
-        #spravk_sku = spravk_sku.loc[spravk_sku["Номенклатура"] == "Бедрышко цыпленка-бройлера (в подложке), охл"]
-
         spravk_sku.to_csv(PUT + "Справочники\\номенклатура\\Список.txt", sep="\t", encoding="utf-8")
-
 
 def run_NEW_DATA_sd():
     if ini.time_seychas < ini.time_bot_vrem:
@@ -197,7 +182,6 @@ def run_NEW_DATA_sd():
         NEW_DATA_sd().setevoy()
         NEW_DATA_sd().setevoy_spisania()
         NEW_DATA_sd().setevoy_degustacia()
-        #NEW_DATA_sd().Nmenklatura()
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
 

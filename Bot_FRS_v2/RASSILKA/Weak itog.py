@@ -3,7 +3,6 @@ import os
 
 import numpy as np
 import pandas as pd
-from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.INI import ini
 from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.INI import rename

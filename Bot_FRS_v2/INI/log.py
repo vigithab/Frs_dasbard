@@ -5,9 +5,6 @@ sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 from Bot_FRS_v2.INI import ini
 PUT = ini.PUT
 
-
-
-
 def log_file(n1, n2, n3,n4, razdel):
     with open(PUT + 'Log\\log_file.txt', 'a') as file:
         if razdel == 1:

@@ -442,17 +442,14 @@ class NEW_data:
             sales_day_cehk = sales_day_cehk.drop(['дата'], axis=1)
             sales_day_cehk = sales_day_cehk.rename(columns={'filename': 'дата'})
             sales_day_cehk["дата"] = pd.to_datetime(sales_day_cehk["дата"], format='%d.%m.%Y')
-
-            #memory.MEMORY().mem_total(x="Обработан - Фаил чеков: " + str(name_file))
             return sales_day_cehk
+
+
         sales_day_cehk = cnevk(tip="Продажа")
-
         sales_day_cehk = sales_day_cehk.rename(columns={"Количество чеков": "Количество чеков_продажа"})
-
         vozvrat = cnevk(tip="Возврат")
         vozvrat = vozvrat[["!МАГАЗИН!","Количество чеков","дата"]]
         vozvrat = vozvrat.rename(columns={"Количество чеков": "Количество чеков_возврат"})
-
         sales_day_cehk = sales_day_cehk.merge(vozvrat,
                                                 on=["!МАГАЗИН!","дата"], how="left").reset_index(drop=True)
 
@@ -460,6 +457,7 @@ class NEW_data:
         sales_day_cehk["Количество чеков"] = sales_day_cehk["Количество чеков_продажа"]
         sales_day_cehk = sales_day_cehk.drop(["Количество чеков_продажа"], axis=1)
         return sales_day_cehk
+
     # обработка файлов Чеков
     def selenium_day_Spisania(self):
         print("Обработка списания")
@@ -562,7 +560,10 @@ class NEW_data:
                 for file in files:
                     os.path.basename(file)
                     file_path = os.path.join(root, file)
-                    df = pd.read_csv(file_path, sep="\t", encoding='utf-8',parse_dates=["Дата/Время чека"], date_format="%d.%m.%Y",  skiprows=2, names=("Дата/Время чека", "!МАГАЗИН!","номенклатура_1с", "Сибистоемость", "Вес_продаж", "прибыль"))
+                    df = pd.read_csv(file_path, sep="\t", encoding='utf-8',parse_dates=["Дата/Время чека"],
+                                     date_format="%d.%m.%Y",  skiprows=2, names=("Дата/Время чека", "!МАГАЗИН!",
+                                                                                 "номенклатура_1с", "Сибистоемость",
+                                                                                 "Вес_продаж", "прибыль"))
                     rename.RENAME().Rread(name_data=df, name_col="!МАГАЗИН!", name="Списания")
                     df = df.loc[df["!МАГАЗИН!"] != "Итого"]
                     df = df.loc[df["Дата/Время чека"] != "Итого"]

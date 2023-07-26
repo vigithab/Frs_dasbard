@@ -1,4 +1,3 @@
-python
 import csv
 import os
 
@@ -36,9 +35,7 @@ def split_file(file_path, chunk_size):
 
         if output_file is not None:
             output_file.close()
-
         print(f"Split file into {i} parts.")
-
 
 # Пример использования
 file_path = "путь_к_вашему_файлу.csv"

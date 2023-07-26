@@ -2,21 +2,9 @@ from datetime import datetime, timedelta, time, date
 import os
 import pandas as pd
 import gc
-import datetime
-import time
-from Bot_FRS_v2.INI import memory
 from Bot_FRS_v2.INI import ini
-from Bot_FRS_v2.NEW_DATA.SET_SD import run_NEW_DATA_sd
-from Bot_FRS_v2.NEW_DATA import SORT_FILE
-from Bot_FRS_v2.BOT_TELEGRAM import BOT
-from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
 import numpy as np
 from Bot_FRS_v2.INI import rename
-from Bot_FRS_v2.INI import Float
-from Bot_FRS_v2.NEW_DATA import GRUP_FILE
-from Bot_FRS_v2.INI import log
-from Bot_FRS_v2.RASSILKA import Voropaev
-from Bot_FRS_v2.NEW_DATA import Personal_v2
 
 
 class finrez_obrabotka():
@@ -461,9 +449,10 @@ class finrez_obrabotka():
         forecast_df.to_csv(ini.PUT + "Финрез\\Данные для ДШ\\↓Прогноз.csv", encoding="ANSI", sep=';',
                                   index=False, decimal=',')
 
-finrez_obrabotka = finrez_obrabotka()
-finrez_obrabotka.finrez_itog()
-finrez_obrabotka.prgnoz()
+if __name__ == '__main__':
+    finrez_obrabotka = finrez_obrabotka()
+    finrez_obrabotka.finrez_itog()
+    finrez_obrabotka.prgnoz()
 
 
 
