@@ -13,7 +13,7 @@ from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
 from Bot_FRS_v2.INI import Float, log, rename, ini, memory
 from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
-from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE
+from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers
 
 
 PUT = ini.PUT
@@ -142,25 +142,16 @@ class NEW_data:
                         gc.collect()
                     except:
                         print("Ошибка при сохранении анулированные и возвращенные чеки")
+
+                    # Формирование Конверсии
                     try:
-                        # Сохранение ночные магазины
-                        noch = table.loc[(table["ID"] == 42008) | (table["ID"] == 42017) | (table["ID"] == 42025)]
-
-                        noch.to_csv(PUT + "Selenium\\Анулированные и возврат чеки\\" +
-                                          new_filename[:-5] + ".csv",
-                                          encoding="utf-8",
-                                          sep=';', index=False,
-                                          decimal=",")
-
-                        noch.to_csv(ini.PUT_public + "Фирменная розница\\ФРС\\Данные из 1 С\\Ночные_магазины_set\\" +
-                                    new_filename[:-5] + ".csv",
-                                    encoding="utf-8",
-                                    sep=';', index=False,
-                                    decimal=",")
-                        del noch, table
-                        gc.collect()
-                    except:
-                        print("Ошибка при сохранении ночные магазины")
+                        Konvers.konvers().selenium_day_chek()
+                        log.LOG().log_new_data(name_txt="Таблица Конверсии")
+                    except Exception as e:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+                        log.LOG().log_new_data(name_txt="Конверсии", e=mes)
+                        BOT.BOT().bot_mes_html(mes="Ошибка при обработке Конверсии", silka=0)
 
         # обработка списания
         try:
@@ -251,6 +242,7 @@ class NEW_data:
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Перенос шашлычного сезона", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка Перенос шашлычного сезона", silka=0)
+
         # Формирование таблицы шашлыка
         try:
             Voropaev.Degustacia().sotka()
@@ -282,12 +274,12 @@ class NEW_data:
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
 
 
+
         BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
         with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',
                   encoding="utf-8") as file:
             file.write(f'**************************************************************************\n')
         time.sleep(240)
-
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
         # групировка файлов продаж по дням
@@ -613,8 +605,10 @@ class NEW_data:
                 gc.collect()
     # Обработка сиестомости
 
-#GRUP_FILE.Grup().grups()
-NEW_data().Obrabotka()
+if __name__ == '__main__':
+    NEW_data().Obrabotka()
+
+
 
 
 

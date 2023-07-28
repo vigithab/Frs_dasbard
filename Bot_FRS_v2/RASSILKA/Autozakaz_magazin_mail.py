@@ -32,12 +32,12 @@ class avtozakaz_sent():
         self.EMAIL_TY = TY_open_mag.set_index('!МАГАЗИН!')["Электронный адрес"].to_dict()
 
 
-    def sent(self, Email_magaz ,Email_cc, mes_zagolovok, mes, dataframe):
+    def sent(self, Email_magaz, mes_zagolovok, mes, dataframe):
         try:
             msg = MIMEMultipart()
             msg['From'] = self.avtozakaz_mail
             msg['To'] = Email_magaz
-            msg['Cc'] = Email_cc
+            #msg['Cc'] = Email_cc
             msg['Subject'] = mes_zagolovok
             # Прикрепление текста сообщения
             message = mes
@@ -235,22 +235,21 @@ class avtozakaz_sent():
                 f''\
                 f'Данное письмо создано автоматически, отвечать на него не нужно!'\
 
-            Email_magaz_test = "lebedevvv@volcov.ru"
-            Email_cc_test =    "erterwertwertwert@gmail.com"
+            #Email_magaz = "lebedevvv@volcov.ru"
+            #Email_cc =    "erterwertwertwert@gmail.com"
             mes_zagolovok = f'{data_m_tema} - {i}'
-
 
             Email_magaz = self.EMAIL_mag.get(i)
             Email_cc = self.EMAIL_mag.get(i)
-
 
             print("отправлено: ", i)
             print("отправлено: ", Email_magaz)
             print("отправлено: ", Email_cc)
             print(f"Сообщение: \n", mes )
             print(df_ost_m)
+            avtozakaz_sent.sent(Email_magaz=Email_magaz, mes_zagolovok=mes_zagolovok, mes=mes, dataframe=df_ost_m)
+            avtozakaz_sent.sent(Email_magaz=Email_cc, mes_zagolovok=mes_zagolovok, mes=mes, dataframe=df_ost_m)
 
-            avtozakaz_sent.sent(Email_magaz=Email_magaz, Email_cc=Email_cc, mes_zagolovok=mes_zagolovok, mes=mes, dataframe=df_ost_m)
             BOT.BOT().bot_mes_html(mes=f"Отправлено\n {i}\n {Email_magaz}", silka=0)
 
             with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_sent.txt", 'a',

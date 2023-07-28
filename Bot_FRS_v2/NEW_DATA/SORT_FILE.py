@@ -194,6 +194,6 @@ class SORT:
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
 
-
-#SORT().Ostatki_chas()
+if __name__ == '__main__':
+    SORT().Ostatki_chas()
 

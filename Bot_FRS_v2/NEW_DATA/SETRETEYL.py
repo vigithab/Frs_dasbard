@@ -90,7 +90,8 @@ class SET:
         warnings.filterwarnings('ignore')  ##отключаем warnings
         ua = UserAgent()
         options = webdriver.ChromeOptions()
-        #options.add_argument("--headless")
+        if ini.golova == 1:
+            options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -302,4 +303,5 @@ class SET:
         #SET().History()
         return
     # Загрузка с сайта сетретейл
-#SET().Set_obrabotka()
+if __name__ == '__main__':
+    SET().Set_obrabotka()

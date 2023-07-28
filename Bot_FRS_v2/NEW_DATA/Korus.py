@@ -45,7 +45,8 @@ class Koreus():
         warnings.filterwarnings('ignore')  ##отключаем warnings
         ua = UserAgent()
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
+        if ini.golova == 1:
+            options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -165,7 +166,7 @@ start = Koreus()
 start.zagruxka()
 path_download = start.path_download
 
-files=os.listdir(path_download)
+files = os.listdir(path_download)
 print(files,  " и ", path_download)
 for f in files :
     nachalo=f[:6]

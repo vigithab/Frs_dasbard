@@ -143,7 +143,6 @@ class NEW_DATA_sd:
             copied_file = os.path.join(destination_folder, os.path.basename(source_file))
             with zipfile.ZipFile(copied_file, 'r') as zip_ref:
                 zip_ref.extractall(destination_folder)
-
             os.remove(copied_file)
 
         else:
@@ -184,6 +183,8 @@ def run_NEW_DATA_sd():
         NEW_DATA_sd().setevoy_degustacia()
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
+
+
 
 if __name__ == '__main__':
     NEW_DATA_sd().Nmenklatura()

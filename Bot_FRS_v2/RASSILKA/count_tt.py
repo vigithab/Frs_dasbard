@@ -36,7 +36,7 @@ class tabl_count_tt():
             print(tabl)
             tabl = tabl.loc[tabl["год"] != 2021]
             Float.FLOAT().float_colm(name_data=tabl,name_col="выручка")
-            tabl = tabl.loc[tabl["выручка"] > 5000]
+            tabl = tabl.loc[tabl["выручка"] > 10000]
             tabl = tabl[["магазин","год","месяц"]]
             spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
             sprav_magaz = sprav_magaz.rename(columns={"!МАГАЗИН!": "магазин"})

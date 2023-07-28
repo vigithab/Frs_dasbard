@@ -7,6 +7,8 @@ import time as t
 import pandas as pd
 from datetime import date, timedelta
 
+# безголовый режим
+golova = 1
 # Определение корнеыйх путей в файле
 PUT = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\"
 #PUT = "D:\\РАБОТА\\Дашборд_бот — копия\\"
@@ -21,6 +23,7 @@ dat_seychas = datetime.date.today()
 date_seychas = dat_seychas.strftime("%Y-%m-%d")
 time_seychas = datetime.datetime.now()
 time_seychas  = time_seychas.strftime("%H:%M:%S")
+month_todey = datetime.datetime.now().month
 
 # получение ключей
 dat = pd.read_excel(PUT + 'Bot\\key\\id.xlsx')
@@ -36,7 +39,7 @@ km = keys_dict.get("km_test")
 
 
 # Время рассылки сообщений
-time_bot_vrem = "10:00:00"
+time_bot_vrem = "12:00:00"
 
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
 zaderjka = 0
