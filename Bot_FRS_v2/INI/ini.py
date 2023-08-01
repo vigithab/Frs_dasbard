@@ -10,7 +10,7 @@ import threading
 import sys
 import msvcrt
 import time
-import asyncio
+
 
 # безголовый режим
 golova = 1
