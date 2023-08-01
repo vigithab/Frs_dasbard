@@ -354,13 +354,12 @@ class Grup():
     # обрабока данных за последний месяц
     def grups(self):
         print("групировка файлов")
-
         # Grup().spisania_nistory()
         # Grup().sebes_history()
         # Grup().sales_history()
         # Обновление тлько последнего месяца и справочника
         def sales():
-            BOT.BOT().bot_mes_html(mes="Групировка файлов....", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Групировка файлов....", silka=0)
             # Файлы Продаж
             folder1 = PUT + "♀Продажи\\Сгрупированные файлы по дням\\"
             # Получение списка всех файлов в папках и подпапках
@@ -464,7 +463,6 @@ class Grup():
                     file_path = os.path.join(root, file)
                     all_files.append(file_path)
             for file_path in all_files:
-                print(file_path)
                 try:
                     x = pd.read_excel(file_path, parse_dates=["дата"], date_format='%Y-%m-%d %H:%M:%S')
                 except:
@@ -474,7 +472,7 @@ class Grup():
                     except:
                         x = pd.read_csv(file_path, sep="\t", encoding="utf-8", parse_dates=["дата"],
                                         date_format='%Y-%m-%d %H:%M:%S')
-                print(file_path)
+
                 x = x.rename(columns={"!МАГАЗИН!": "магазин"})
                 chek = pd.concat([chek, x], ignore_index=True)
             # Получение списка всех файлов в папках и подпапках
@@ -489,7 +487,6 @@ class Grup():
                 except:
                     x = pd.read_csv(file_path, sep=";", encoding="utf-8", parse_dates=["дата"],
                                     date_format='%Y-%m-%d %H:%M:%S')
-                print(file_path)
                 x = x.rename(columns={"Магазин": "магазин", "Дата": "дата", "Чеков": "Количество чеков",
                                       "SKU в чеке": "количество уникальных товаров в чеке",
                                       "Длина": "количество товаров в чеке"})
@@ -533,7 +530,6 @@ class Grup():
             sales_itog = sales_itog.rename(columns={"выручка_x": "выручка"})
             # добавление панов прдаж
             x = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
-            print(x)
             x['дата'] = pd.to_datetime(x['дата'], format='%d.%m.%Y')
             x = x[["магазин", "ПЛАН", "дата", "Показатель"]]
             FLOAT().float_colm(name_data=x, name_col="ПЛАН")
@@ -623,8 +619,8 @@ class Grup():
             except:
                 BOT.BOT().bot_mes_html(mes="Ошибка....", silka=0)
 
-        #if ini.time_seychas < ini.time_bot_vrem:
-        sales()
+        if ini.time_seychas < ini.time_bot_vrem:
+            sales()
 
 if __name__ == '__main__':
     # todey_ear()

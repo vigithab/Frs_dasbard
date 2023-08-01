@@ -48,6 +48,8 @@ class SET:
             if tame_Filter < ini.time_bot_vrem:
                 day_1 = today - timedelta(days=1)
                 spisok_d = day_1.strftime('%d.%m.%Y')
+
+
                 try:
                     os.remove(PUT + "♀Чеки\\Чеки текущий день\\" + str(spisok_d)+ ".csv" )
                     os.remove(PUT + "♀Продажи\\текущий день\\" + str(spisok_d) + ".csv")
@@ -83,7 +85,8 @@ class SET:
                 start_date += delta
                 spisok_d = dates_list"""
             #spisok_d = ['12.06.2023']
-            #spisok_d = ['08.07.2023','09.07.2023']
+            #spisok_d = ['13.07.2023','14.07.2023','15.07.2023', '31.07.2023','01.07.2023']
+
             print(spisok_d)
             return spisok_d
         # region СКАЧИВАНИЕ С САЙТА
@@ -177,7 +180,7 @@ class SET:
 
         spisok_d = spisok_dat()
         for day in spisok_d:
-            BOT.BOT().bot_mes_html(mes="Скачивание файла :" + str(day), silka=0)
+            BOT.BOT().bot_mes_html(mes="Скачивание файла: \n" + str(day), silka=0)
             new_day_1 = day + " 00:00"
             t.sleep(0.5)
             new_day_2 = day + " 23:59"
@@ -259,6 +262,7 @@ class SET:
                     if partial_name in filename and filename.endswith(".xlsx"):
                         # найден файл, удовлетворяющий условиям
                         print(f"Найден файл: {filename}")
+                        BOT.BOT().bot_mes_html(mes="✅ Найден файл", silka=0)
                         found_file = True
 
                         t.sleep(0.7)
@@ -289,7 +293,7 @@ class SET:
                                     t.sleep(60)
                                     os.remove(file)
                                     SET().Set_obrabotka()
-                                    BOT.BOT().bot_mes_html(mes=str(day) + "Ошибка при скачивании возврат", silka=0)
+                                    BOT.BOT().bot_mes_html(mes=f"📛 {str(day)}  Ошибка при скачивании возврат", silka=0)
                                     #continue  # продолжить выполнение цикла
 
                 # Проверьте, был ли найден файл. Если нет, подождите несколько секунд и повторите попытку

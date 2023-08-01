@@ -16,6 +16,7 @@ class NEW_DATA_sd:
         try:
             replacements = pd.read_excel("https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
             replacements.to_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx", index=False)
+            BOT.BOT().bot_mes_html(mes="✅ Справочники магазинов(резерв)", silka=0)
         except:
             print("Справочники не обновлены")
     def setevoy(self):
@@ -48,8 +49,8 @@ class NEW_DATA_sd:
 
             put_sebes_extract = os.path.join(put_zip_extract, 'Финрез лебедев (TXT).txt')
             print("Получение: Финрез лебедев (TXT).txt")
-            BOT.BOT().bot_mes_html(mes="- Себестоемость", silka=0)
-            BOT.BOT().bot_mes_html(mes="- Вес", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Себестоемость", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Вес", silka=0)
             if os.path.isfile(put_sebes_extract):
                 shutil.copy(put_sebes_extract, put_sebes)
 
@@ -65,7 +66,7 @@ class NEW_DATA_sd:
 
             put_proverca_extract = os.path.join(put_zip_extract, 'Финрез лебедев ПРоверка (TXT).txt')
             print("Получение: Финрез лебедев ПРоверка (TXT).txt")
-            BOT.BOT().bot_mes_html(mes="- Продажи",silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Продажи",silka=0)
             if os.path.isfile(put_proverca_extract):
                 shutil.copy(put_proverca_extract, put_proverca)
 
@@ -81,7 +82,7 @@ class NEW_DATA_sd:
             put_spravka_extract = os.path.join(put_zip_extract, 'Штрихкоды (TXT).txt')
             print("Получение: Штрихкоды (TXT).txt")
 
-            BOT.BOT().bot_mes_html(mes="- Штрихкода(НСИ)", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Штрихкода(НСИ)", silka=0)
             if os.path.isfile(put_spravka_extract):
                 shutil.copy(put_spravka_extract, put_spravka)
 
@@ -110,7 +111,6 @@ class NEW_DATA_sd:
             return
     def setevoy_spisania(self):
         # Пути к файлам и папкам
-        BOT.BOT().bot_mes_html(mes="- Списания", silka=0)
         print("Получение: Списания")
         source_file = r'\\rtlfranch3\Данные из 1С\Для Дашборда\Списания\Списания тек.м..zip'
         #source_file = r'\\rtlfranch3\Данные из 1С\Для Дашборда\Списания\Списания мес..zip'
@@ -119,21 +119,31 @@ class NEW_DATA_sd:
         if os.path.isfile(source_file):
             # Копирование файла в папку назначения
             shutil.copy2(source_file, destination_folder)
-
             # Получение пути к скопированному файлу
             copied_file = os.path.join(destination_folder, os.path.basename(source_file))
-
             # Разархивирование файла
             with zipfile.ZipFile(copied_file, 'r') as zip_ref:
                 zip_ref.extractall(destination_folder)
             # Удаление архива
             os.remove(copied_file)
+            BOT.BOT().bot_mes_html(mes="✅ Списание обновление последних 7 дней", silka=0)
 
         else:
-            BOT.BOT().bot_mes_html(mes="- списания ОТСУТСТВУЕТ", silka=0)
+            source_file = r"\\rtlfranch3\Данные из 1С\Для Дашборда\Списания\Списания мес..zip"
+            # Копирование файла в папку назначения
+            shutil.copy2(source_file, destination_folder)
+            # Получение пути к скопированному файлу
+            copied_file = os.path.join(destination_folder, os.path.basename(source_file))
+            # Разархивирование файла
+            with zipfile.ZipFile(copied_file, 'r') as zip_ref:
+                zip_ref.extractall(destination_folder)
+            # Удаление архива
+            os.remove(copied_file)
+            BOT.BOT().bot_mes_html(mes="✅ Списание обновление месяца", silka=0)
+
     def setevoy_degustacia(self):
         # Пути к файлам и папкам
-        BOT.BOT().bot_mes_html(mes="- дегустации", silka=0)
+        BOT.BOT().bot_mes_html(mes="✅ дегустации", silka=0)
         print("Получение: дегустации")
         source_file = r'\\rtlfranch3\Данные из 1С\Для Дашборда\Дегустации\Дегустации прошлая неделя.zip'
         destination_folder =  PUT +  'NEW\\Дегустации\\'
@@ -149,38 +159,55 @@ class NEW_DATA_sd:
             BOT.BOT().bot_mes_html(mes="❗Нет файла дегустации", silka=0)
     def Nmenklatura(self, rows=None):
         # Пути к файлам и папкам
-        BOT.BOT().bot_mes_html(mes="- дегустации", silka=0)
+        BOT.BOT().bot_mes_html(mes="✅ обновление справочников", silka=0)
         print("Получение: Справочников")
         ot = r"\\rtlfranch3\Данные из 1С\Для Дашборда\SKU и Номенклатура"
-        to = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\NEW\Справочники"
-        to_sku = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура"
+        to = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура"
         for filename in os.listdir(ot):
-            pabl = os.path.join(ot, filename)
-            save = os.path.join(to, filename)
+            filename = filename[:-4]
+            pabl = os.path.join(ot, filename + ".txt")
+            save = os.path.join(to, filename+ "_new.txt")
             shutil.copy2(pabl, save)
-            if filename == "GROUPS.txt":
+            if filename == "GROUPS":
                 spravka = pd.read_csv(
-                    r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\GROUPS_Свежий.txt",
+                    r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\GROUPS_new.txt",
                     sep="\t", encoding="utf-8")
                 komanda = pd.read_excel(
                     "https://docs.google.com/spreadsheets/d/1dNt8qpZL_ST8aF_iBqV7oVQvH1tsExMd6uLCiC_UtfQ/export?exportFormat=xlsx")
                 spravka = spravka.merge(komanda, on=['Входит в группу'], how="left")
                 spravka.to_csv(PUT + "Справочники\\номенклатура\\GROUPS.txt", sep="\t", encoding="utf-8")
-
         spravk_sku = pd.read_csv(
-            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_свежий.txt",
+            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_new.txt",
             sep="\t", encoding="utf-8")
-        print(spravk_sku)
         spravk_sku.loc[spravk_sku["Номенклатура"] == "Не исп Эклер СХ смородиновый, 50г", "Номенклатура"] = "Бедрышко цыпленка-бройлера (в подложке), охл"
         spravk_sku.to_csv(PUT + "Справочники\\номенклатура\\Список.txt", sep="\t", encoding="utf-8")
+        os.remove(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\GROUPS_new.txt")
+        os.remove(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_new.txt")
 
 def run_NEW_DATA_sd():
     if ini.time_seychas < ini.time_bot_vrem:
         # вставить йенкцию проверки доступности
-        NEW_DATA_sd().reserv()
-        NEW_DATA_sd().setevoy()
-        NEW_DATA_sd().setevoy_spisania()
-        NEW_DATA_sd().setevoy_degustacia()
+        try:
+            NEW_DATA_sd().reserv()
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 ошибка копирования справочников", silka=0)
+        try:
+            NEW_DATA_sd().setevoy()
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 Не получена себестоемость", silka=0)
+        try:
+            NEW_DATA_sd().setevoy_spisania()
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 Не получены списания", silka=0)
+        try:
+            NEW_DATA_sd().setevoy_degustacia()
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 Не получены дегустации шашлыка", silka=0)
+        try:
+            NEW_DATA_sd().Nmenklatura()
+
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 Не оновлена номенклатура", silka=0)
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
 

@@ -91,7 +91,6 @@ class recwest():
                 mes = f"✅❌ Работает, время ответа: {self.response_time}"
                 print(mes)
                 BOT.BOT().bot_proverka_KM(mes=mes)
-
         return
 
 recwest().check_website()

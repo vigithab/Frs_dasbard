@@ -7,6 +7,7 @@ import shutil
 import datetime
 from Bot_FRS_v2.INI import ini
 PUT = ini.PUT
+import pandas as pd
 
 import os
 import shutil
@@ -28,7 +29,6 @@ class SORT:
             if d == "month":
                 for filename in os.listdir(source_folder):
                     file_date = filename[:-4]
-
                     if file_date != day:
                         src = os.path.join(source_folder, filename)
                         dst = os.path.join(destination_folder, filename)
@@ -151,10 +151,8 @@ class SORT:
     def original(self):
         # Путь до папки с оригинальными файлами
         original_files_path = PUT + "Selenium\\Оригинальные файлы\\"
-
         # Путь до папки, в которую копировать файлы
         copy_files_path = PUT + "Selenium\\исходники\\"
-
         # Перебираем все файлы в папке с оригинальными файлами
         for filename in os.listdir(original_files_path):
             # Если файл оканчивается на ".xlsx" или ".xls"
@@ -174,7 +172,6 @@ class SORT:
                 pabl = os.path.join(p_palic, filename)
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
-
     def Ostatki_chas(self):
         if ini.time_seychas < ini.time_bot_vrem:
             print("перемещение ежедневного списания")
@@ -193,7 +190,27 @@ class SORT:
                 pabl = os.path.join(p_palic, filename)
                 local = os.path.join(p_local, filename)
                 shutil.copy(pabl, local)
+    def pysto_sales_month(self):
+        folder_path = ini.PUT + '♀Продажи\\текущий месяц\\'
+        if len(os.listdir(folder_path)) == 0:
+            df = pd.DataFrame(columns=['!МАГАЗИН!', 'ID', 'Наименование товара',"Код товара", "Стоимость позиции","Количество","Сумма скидки",
+                                       "номенклатура_1с","Дата/Время чека"])
+            df.to_csv(ini.PUT + '♀Продажи\\текущий месяц\\' +  str(ini.dat_seychas.strftime("%d.%m.%Y")) + ".csv", encoding="utf-8",
+                                              sep=';', index=False,
+                                              decimal=",")
+
+    def pysto_sebes_month(self):
+        folder_path = ini.PUT + '♀Сибестоемость\\Текущий месяц\\'
+        if len(os.listdir(folder_path)) == 0:
+            df = pd.DataFrame(columns=['Дата/Время чека', '!МАГАЗИН!', 'номенклатура_1с',"Сибистоемость", "Вес_продаж","прибыль"])
+            df.to_csv(ini.PUT + '♀Сибестоемость\\Текущий месяц\\' +  str(ini.dat_seychas.strftime("%d.%m.%Y")) + ".csv", encoding="utf-8",
+                                              sep=';', index=False,
+                                              decimal=",")
+        else:
+            print("Папка cb сибестоймости текущий месяц не пуста")
 
 if __name__ == '__main__':
-    SORT().Ostatki_chas()
-
+    #SORT().Ostatki_chas()
+    #SORT().original()
+    SORT().pysto_sales_month()
+    SORT().pysto_sebes_month()

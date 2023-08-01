@@ -6,9 +6,27 @@ import datetime
 import time as t
 import pandas as pd
 from datetime import date, timedelta
+import threading
+import sys
+import msvcrt
+import time
+import asyncio
 
 # безголовый режим
 golova = 1
+
+# Время рассылки сообщений
+# БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
+time_bot_vrem = "23:50:00"
+
+# ожидание перед отправкой соощения
+zaderjka = 0
+TY_GROP = 1
+TEST_BOT = 1
+# если 1 то вскачать с сетретейлоа или 0 если трехануть историю
+set_ = 1
+
+
 # Определение корнеыйх путей в файле
 PUT = "C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\"
 #PUT = "D:\\РАБОТА\\Дашборд_бот — копия\\"
@@ -29,23 +47,15 @@ month_todey = datetime.datetime.now().month
 dat = pd.read_excel(PUT + 'Bot\\key\\id.xlsx')
 keys_dict = dict(zip(dat.iloc[:, 0], dat.iloc[:, 1]))
 token = keys_dict.get('token')
+token2 = keys_dict.get('token_n')
 test_all= keys_dict.get('Мой_канал')
+test_all2 = keys_dict.get('Катрин_канал')
 #TY_id = keys_dict.get('Мой_канал')
 TY_id = keys_dict.get('Мой_канал_ТУ')
 avtozakaz_mail = keys_dict.get('avtozakaz_mail')
 ya_mail_aps = keys_dict.get('ya_mail_aps')
 km = keys_dict.get("km_test")
 #test_not = keys_dict.get('testovaya')
-
-
-# Время рассылки сообщений
-time_bot_vrem = "12:00:00"
-
-# БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
-zaderjka = 0
-# ожидание перед отправкой соощения
-TY_GROP = 1
-TEST_BOT = 1
 
 
 def name_day():

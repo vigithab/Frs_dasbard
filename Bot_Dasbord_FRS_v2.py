@@ -1,3 +1,4 @@
+import shutil
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
@@ -15,7 +16,6 @@ from Bot_FRS_v2.INI import Float, log, rename, ini, memory
 from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
 from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers
 
-
 PUT = ini.PUT
 class NEW_data:
     def Obrabotka(self):
@@ -30,8 +30,7 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Персонал", e=mes)
-            BOT.BOT().bot_mes_html(mes="Ошибка при Обновлении ФОТ", silka=0)
-
+            BOT.BOT().bot_mes_html(mes="Ошибка при Обновлении Персонал", silka=0)
         # Получение С сетевого диска
         try:
             run_NEW_DATA_sd()
@@ -40,18 +39,38 @@ class NEW_data:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Сетевой диск", e=mes)
-            BOT.BOT().bot_mes_html(mes="Ошибка при получение данных с сетевого диска", silka=0)
+            BOT.BOT().bot_mes_html(mes="📛 Ошибка при получение данных с сетевого диска", silka=0)
 
-        # Получение С СЕТРЕТЕЙЛА
-        try:
-            set.SET().Set_obrabotka()
-            log.LOG().log_new_data(name_txt="Cетритеил")
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
-            log.LOG().log_new_data(name_txt="Cетритеил", e=mes)
-            BOT.BOT().bot_mes_html(mes=mes, silka=0)
-
+        if ini.set_== 1:
+            print("Будеть обновлены данные с сета")
+            # Получение С СЕТРЕТЕЙЛА
+            try:
+                set.SET().Set_obrabotka()
+                log.LOG().log_new_data(name_txt="Cетритеил")
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+                log.LOG().log_new_data(name_txt="Ошибка Cетритеил", e=mes)
+                BOT.BOT().bot_mes_html(mes=mes, silka=0)
+        if ini.set_ != 1:
+            BOT.BOT().bot_mes_html(mes="🟡 Нужно выбрать сколько фалов нужно обработать", silka=0)
+            print("данные с сента обнгалены не будут, тресем историю")
+            def copy_last_n_files(source_folder, destination_folder, n):
+                files = [(os.path.join(source_folder, f), os.path.getctime(os.path.join(source_folder, f))) for f in
+                         os.listdir(source_folder)]
+                files.sort(key=lambda x: x[1])
+                last_n_files = [f[0] for f in files[-n:]]
+                for file in last_n_files:
+                    shutil.copy(file, destination_folder)
+            source_folder = ini.PUT +"\\Selenium\\исходники\\"
+            destination_folder = ini.PUT + "Selenium\\Оригинальные файлы\\"
+            count = 0
+            for _, _, files in os.walk(source_folder):
+                count += len(files)
+            print(f"Файлов в базе: {count}")
+            n = int(input(f"Сколько последних файлов обработать? ввести цифру: "))
+            copy_last_n_files(source_folder, destination_folder, n)
+            print(f"Скопировано последних {n} файлов:\nиз {source_folder}\nв {destination_folder}.")
         spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
 
         for root, dirs, files in os.walk(PUT + "Selenium\\Оригинальные файлы\\"):
@@ -96,6 +115,17 @@ class NEW_data:
                     sales_day_cehk.to_csv(PUT + "♀Чеки\\2023\\" + new_filename[:-5] + ".csv", encoding="utf-8",
                                           sep=';',index=False,
                                           decimal=",")
+                    try:
+                        sales_day_cehk.to_csv("P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Чеки_Сгруппированные_конверсия\\Чеки_сгруппированные\\2023\\"+
+                                              new_filename[:-5] + ".csv", encoding="utf-8",
+                                              sep=';', index=False,
+                                              decimal=",")
+                    except Exception as e:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+                        log.LOG().log_new_data(name_txt="Файлы чеков паблик", e=mes)
+                        BOT.BOT().bot_mes_html(mes="Ошибка при сохранении Файлы чеков паблик", silka=0)
+
 
                     # сохранение Сгрупированного файла продаж;
                     sales_day_sales = NEW_data().Set_sales(name_datafreme=sales_day, name_file=str(new_filename))
@@ -145,14 +175,13 @@ class NEW_data:
 
                     # Формирование Конверсии
                     try:
-                        Konvers.konvers().selenium_day_chek()
+                        Konvers.konvers().selenium_day_chek(name_datafreme=table,name_file=str(new_filename) )
                         log.LOG().log_new_data(name_txt="Таблица Конверсии")
                     except Exception as e:
                         exc_type, exc_obj, exc_tb = sys.exc_info()
                         mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
                         log.LOG().log_new_data(name_txt="Конверсии", e=mes)
                         BOT.BOT().bot_mes_html(mes="Ошибка при обработке Конверсии", silka=0)
-
         # обработка списания
         try:
             NEW_data().selenium_day_Spisania()
@@ -172,7 +201,6 @@ class NEW_data:
             mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Себестоемости", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Сбестоймости", silka=0)
-
         # обработка СОРТИРОВКА ФАЙЛОВ
         try:
             SORT_FILE.SORT().sort_files_sales()
@@ -207,6 +235,8 @@ class NEW_data:
 
         try:
             SORT_FILE.SORT().original()
+            SORT_FILE.SORT().pysto_sales_month()
+            SORT_FILE.SORT().pysto_sebes_month()
             log.LOG().log_new_data(name_txt="Сортировка исходников")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -273,12 +303,11 @@ class NEW_data:
             log.LOG().log_new_data(name_txt="Таблица планов", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
 
-
-
-        BOT.BOT().bot_mes_html(mes="Завершено успешно",silka=0)
+        BOT.BOT().bot_mes_html(mes="😃 Завершено успешно ☺️",silka=0)
         with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',
                   encoding="utf-8") as file:
             file.write(f'**************************************************************************\n')
+        print("завершено")
         time.sleep(240)
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
@@ -308,7 +337,6 @@ class NEW_data:
             return
         name_datafreme["Касса"] = name_datafreme["Касса"].astype(str)
         name_datafreme = name_datafreme.loc[~((name_datafreme["!МАГАЗИН!"] == "Таврическая 37") & (name_datafreme["Касса"] == "4.0"))]
-
 
         sales_day_sales = name_datafreme[
             ["ID", "!МАГАЗИН!", "Код товара", "Тип", "Наименование товара", "Количество", "Стоимость позиции",
@@ -346,12 +374,13 @@ class NEW_data:
 
         sales_day_sales_null = sales_day_sales.loc[sales_day_sales["номенклатура_1с"].isnull()]
         sales_day_sales_null = len(sales_day_sales_null)
-        txt = f'{name_file}\nНоменклатура не найдено - {sales_day_sales_null}'
+        txt = f'📛 Номенклатура не найдено - {sales_day_sales_null} 📛'
         if sales_day_sales_null > 0:
             BOT.BOT().bot_mes_html(mes=txt, silka=0)
-        txt = f'Номенклатура не найдено - {sales_day_sales_null}'
-        print(txt)
-        log.LOG().log_obrabotka(mes=txt, priznak="Номенклатура", name_file=name_file)
+        else:
+            txt = f'✅ Номенклатура не найдено - {sales_day_sales_null}'
+            print(txt)
+            log.LOG().log_obrabotka(mes=txt, priznak="Номенклатура", name_file=name_file)
         del spravka_nom
         gc.collect()
         # название файл и даты ####################################################################
@@ -359,6 +388,7 @@ class NEW_data:
         sales_day_sales = sales_day_sales.rename(columns={'filename': "Дата/Время чека"})
         sales_day_sales["Дата/Время чека"] = pd.to_datetime(sales_day_sales["Дата/Время чека"], format='%d.%m.%Y')
         grup_sales(sales_day_sales,name_file=name_file)
+        BOT.BOT().bot_mes_html(mes="✅ Обработка продаж", silka=0)
         return sales_day_sales
     # обработка файлов продаж
     def selenium_day_chek(self, name_datafreme, name_file):
@@ -436,7 +466,6 @@ class NEW_data:
             sales_day_cehk["дата"] = pd.to_datetime(sales_day_cehk["дата"], format='%d.%m.%Y')
             return sales_day_cehk
 
-
         sales_day_cehk = cnevk(tip="Продажа")
         sales_day_cehk = sales_day_cehk.rename(columns={"Количество чеков": "Количество чеков_продажа"})
         vozvrat = cnevk(tip="Возврат")
@@ -448,13 +477,13 @@ class NEW_data:
         sales_day_cehk["Количество чеков_возврат"] = sales_day_cehk["Количество чеков_возврат"].fillna(0)
         sales_day_cehk["Количество чеков"] = sales_day_cehk["Количество чеков_продажа"]
         sales_day_cehk = sales_day_cehk.drop(["Количество чеков_продажа"], axis=1)
+        BOT.BOT().bot_mes_html(mes="✅ Обработка Чеков", silka=0)
         return sales_day_cehk
-
     # обработка файлов Чеков
     def selenium_day_Spisania(self):
         print("Обработка списания")
         if ini.time_seychas <ini.time_bot_vrem:
-            BOT.BOT().bot_mes_html(mes="Обработка списания....",silka=0)
+
             for root, dirs, files in os.walk(PUT + "NEW\\Списания\\"):
                 for file in files:
                     os.path.basename(file)
@@ -532,6 +561,7 @@ class NEW_data:
                             y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" +
                                      date + ".csv", encoding="utf-8", sep='\t', index=False,
                                      decimal=',')
+                            BOT.BOT().bot_mes_html(mes="✅ Обработка списания....", silka=0)
                             del x,y
                             gc.collect()
                             memory.MEMORY().mem_total(x="Списания")
@@ -540,14 +570,14 @@ class NEW_data:
                         except:
                             print("Нет файл для удаления")
                     except:
-                        BOT.BOT().bot_mes_html(mes="Фаил списания не найден",silka=0)
+                        BOT.BOT().bot_mes_html(mes="📛 Фаил списания не найден",silka=0)
                 gc.collect()
         return
     # Обработка файлов списания
     def sebest(self):
         if ini.time_seychas < ini.time_bot_vrem:
             print("Обработка сибестоймости")
-            BOT.BOT().bot_mes_html(mes="Обработка сибестоемости....",silka=0)
+
             for root, dirs, files in os.walk(PUT + "NEW\\Сибестоемость\\"):
                 for file in files:
                     os.path.basename(file)
@@ -602,6 +632,7 @@ class NEW_data:
                         gc.collect()
                         memory.MEMORY().mem_total(x="Сибестоемость")
                     os.remove(PUT + "NEW\\Сибестоемость\\" +file)
+                BOT.BOT().bot_mes_html(mes="✅ Обработка сибестоемости....", silka=0)
                 gc.collect()
     # Обработка сиестомости
 

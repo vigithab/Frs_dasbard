@@ -230,6 +230,7 @@ class bot_mesege:
                     VCHERA_date = f'🕙 Результаты вчерашнего дня:\n'
                     VCHERA_date += f' •\u200E {self.date}\n'
                 else:
+                    print(self.VCHERA_date_info)
                     self.min_date = min(self.VCHERA_date_info)
                     self.max_date = max(self.VCHERA_date_info)
 
@@ -609,8 +610,6 @@ class google_tabl():
         df = pd.concat([df, total_row], ignore_index=True)
         df.replace([np.inf, -np.inf], np.nan, inplace=True)
         df.fillna('', inplace=True)
-
-        print(df)
         zagolovok_name = f'Результаты текущего месяца: {ini.month_and_god()}'
         url = g.tbl_bot().sheet(name_tbl=self.bot.i,df=df,sheet_name="Результаты текущего месяца",
                                 one_stroka=zagolovok_name)
@@ -669,8 +668,6 @@ class google_tabl():
         g.tbl_bot().sheet(name_tbl=self.bot.i, df=df, sheet_name="Результаты прошлого дня", one_stroka=zagolovok_name)
 
         return
-
-
 #BOT_rashet().rashet()
 if ini.time_seychas<ini.time_bot_vrem:
     bot_mesege = bot_mesege()

@@ -3,7 +3,6 @@ sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
 import holidays
-import timeit
 from datetime import datetime, timedelta, time, date
 import pandas as pd
 import requests
@@ -102,8 +101,12 @@ class BOT:
         reply_markup = {"inline_keyboard": [[button] for button in buttons]}
         # фильтр прикрепления ссылок
         if silka == 1:
-            message_id = send_message(chat_id, mes, token, reply_markup)
+            message_id = send_message(ini.test_all, mes,  ini.token)
+
+            send_message(ini.test_all2, mes, ini.token2)
         else:
+            send_message(ini.test_all2, mes, ini.token2)
+
             message_id = send_message(chat_id, mes, token)
 
         # Сохранение айд сообщения
@@ -151,14 +154,12 @@ class BOT:
             except:
                 # Если удаление сообщения не удалось, оставляем его в списке
                 updated_message_ids.append(message_id)
-
-
         # обновление файла с айди сообщений
         with open(PUT + "BOT\\Temp\\ID_messege\\" + file_name + ".txt", 'w') as file:
             file.write('\n'.join(updated_message_ids))
 
     def bot_proverka_KM(self, mes):
-        token = ini.token
+        token = ini.token2
         chat_id = ini.km
         url = f'https://api.telegram.org/bot{token}/sendMessage'
         data = {'chat_id': chat_id,'text': mes, 'parse_mode': 'HTML',}
@@ -168,7 +169,6 @@ class BOT:
             return response.json().get('result', {}).get('message_id')
         else:
             print(f'Ошибка при отправке сообщения: {response.status_code}')
-
-
-
-
+if __name__ == '__main__':
+    for i in range(1,20):
+        BOT().bot_mes_html(mes="Test",silka=0)

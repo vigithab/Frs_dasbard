@@ -93,8 +93,8 @@ def plan():
         plan = pd.concat([plan, plan_sales], axis=0).reset_index(drop=True)
         plan = plan.round(2)
 
+        plan.to_excel("C:\\Users\\Lebedevvv\\Desktop\\FRS\\Dashbord_new\\♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx", index=False)
         plan.to_excel("C:\\Users\\Lebedevvv\\Desktop\\FRS\\DATA_copy\\♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx", index=False)
-
 
         # для хедо
         plan = plan.loc[plan["ПЛАН"].notnull()]

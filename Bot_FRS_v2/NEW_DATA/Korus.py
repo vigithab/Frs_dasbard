@@ -120,6 +120,7 @@ class Koreus():
                 print("Ждем")
                 time.sleep(0.5)
             time.sleep(60)
+            BOT.BOT().bot_mes_html(mes="Корус - первый файл скачан", silka=0)
             filter_button_scroll = self.driver.find_element(By.XPATH,
                                                        '/html/body/div/div[1]/div[1]/main/div/div/div/div[2]/div/div[10]/div/div/div')
             time.sleep(5)
@@ -141,9 +142,9 @@ class Koreus():
             while sum("orders" in file.lower() and file.endswith(".csv") for file in os.listdir(self.path_download)) != 2:
                 print("Ждем")
                 time.sleep(0.5)
-
+            BOT.BOT().bot_mes_html(mes="Корус - второй файл скачан", silka=0)
             print("ОК2")
-            BOT.BOT().bot_mes_html(mes="Корус скачан", silka=0)
+
 
 
         except Exception as e:
@@ -168,6 +169,7 @@ path_download = start.path_download
 
 files = os.listdir(path_download)
 print(files,  " и ", path_download)
+BOT.BOT().bot_mes_html(mes="Корус - обработка", silka=0)
 for f in files :
     nachalo=f[:6]
     file=path_download+"\\"+f
@@ -212,4 +214,4 @@ gc.collect()
 pathKuda=("C:\\Users\\lebedevvv\\Desktop\\FRS\\Автозаказ\\Списания ежедневные\\Коректировки\\Корректировки2023.xlsx")
 combined.to_excel(pathKuda,index=False)
 print("BCE")
-BOT.BOT().bot_mes_html(mes="Скрипт Корус успешно завершен",silka=0)
+BOT.BOT().bot_mes_html(mes="✅ Скрипт Корус успешно завершен",silka=0)
