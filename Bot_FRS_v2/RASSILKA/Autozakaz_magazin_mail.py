@@ -250,7 +250,7 @@ class avtozakaz_sent():
             avtozakaz_sent.sent(Email_magaz=Email_magaz, mes_zagolovok=mes_zagolovok, mes=mes, dataframe=df_ost_m)
             avtozakaz_sent.sent(Email_magaz=Email_cc, mes_zagolovok=mes_zagolovok, mes=mes, dataframe=df_ost_m)
 
-            BOT.BOT().bot_mes_html(mes=f"Отправлено\n {i}\n {Email_magaz}", silka=0)
+            BOT.BOT().bot_mes_html(mes=f"😳 Отправлено\n {i}\n {Email_magaz}", silka=0)
 
             with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_sent.txt", 'a',
                       encoding="utf-8") as file:

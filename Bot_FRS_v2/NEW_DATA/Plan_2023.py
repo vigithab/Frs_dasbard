@@ -10,6 +10,7 @@ from Bot_FRS_v2.INI import rename
 from Bot_FRS_v2.INI import ini
 from datetime import datetime, timedelta
 from Bot_FRS_v2.GooGL_TBL import Google as g
+from Bot_FRS_v2.BOT_TELEGRAM import BOT
 
 def plan():
     current_date = datetime.now().date()
@@ -120,7 +121,7 @@ def plan():
 
 
         g.tbl_bot().svodniy_itog(name_tbl="Планы_2023", df=sprav_magaz_copy, sheet_name="Актуальный список ТТ")
-
+        BOT.BOT().bot_mes_html(mes="✅ Таблица планов обновлена....", silka=0)
         return plan
 
 if __name__ == '__main__':

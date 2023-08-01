@@ -13,6 +13,8 @@ pd.set_option('display.max_colwidth', None)
 
 class konvers():
     def __init__(self):
+        BOT.BOT().bot_mes_html(mes="✅ Обработка конверсии",
+                               silka=0)
         print("Оработка конверсии...")
         pd.set_option("expand_frame_repr", False)
         pd.set_option('display.max_colwidth', None)
@@ -113,8 +115,9 @@ class konvers():
                 os.makedirs(year_month_dir)
 
             df_itog.to_csv(year_month_dir + f"{str(name_file)[:-5]}_num.csv", index=False)
+
         except:
-            zx = "Ошибка при обработке конверсии номенклатура"
+            zx = "📛 Ошибка при обработке конверсии номенклатура"
             print(zx)
             BOT.BOT().bot_mes_html(mes=zx, silka=0)
         return

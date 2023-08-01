@@ -235,8 +235,6 @@ class NEW_data:
 
         try:
             SORT_FILE.SORT().original()
-            SORT_FILE.SORT().pysto_sales_month()
-            SORT_FILE.SORT().pysto_sebes_month()
             log.LOG().log_new_data(name_txt="Сортировка исходников")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -304,6 +302,8 @@ class NEW_data:
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
 
         BOT.BOT().bot_mes_html(mes="😃 Завершено успешно ☺️",silka=0)
+        SORT_FILE.SORT().pysto_sales_month()
+        SORT_FILE.SORT().pysto_sebes_month()
         with open(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\Bot_FRS_v2\LOGI\log_new_data.txt", 'a',
                   encoding="utf-8") as file:
             file.write(f'**************************************************************************\n')
@@ -379,6 +379,8 @@ class NEW_data:
             BOT.BOT().bot_mes_html(mes=txt, silka=0)
         else:
             txt = f'✅ Номенклатура не найдено - {sales_day_sales_null}'
+            BOT.BOT().bot_mes_html(mes=txt, silka=0)
+            txt = f'Номенклатура не найдено - {sales_day_sales_null}'
             print(txt)
             log.LOG().log_obrabotka(mes=txt, priznak="Номенклатура", name_file=name_file)
         del spravka_nom
@@ -561,10 +563,11 @@ class NEW_data:
                             y.to_csv(PUT + "♀Списания\\Сгрупированные файлы по дням\\" +
                                      date + ".csv", encoding="utf-8", sep='\t', index=False,
                                      decimal=',')
-                            BOT.BOT().bot_mes_html(mes="✅ Обработка списания....", silka=0)
+
                             del x,y
                             gc.collect()
                             memory.MEMORY().mem_total(x="Списания")
+
                         try:
                             os.remove(PUT + "NEW\\Списания\\" + file)
                         except:
@@ -572,6 +575,7 @@ class NEW_data:
                     except:
                         BOT.BOT().bot_mes_html(mes="📛 Фаил списания не найден",silka=0)
                 gc.collect()
+        BOT.BOT().bot_mes_html(mes="✅ Обработка списания....", silka=0)
         return
     # Обработка файлов списания
     def sebest(self):

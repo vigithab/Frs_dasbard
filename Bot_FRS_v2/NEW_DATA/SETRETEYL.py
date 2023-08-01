@@ -256,7 +256,7 @@ class SET:
             folder_path = ini.PUT_download  # путь до папки, которую необходимо мониторить
             partial_name = "PurchasePositions"  # подстрока, которую необходимо найти
             found_file = False
-            BOT.BOT().bot_mes_html(mes=str(day)+ " - Ожидание файла.... ", silka=0)
+            BOT.BOT().bot_mes_html(mes=f"⏳ {str(day)} Ожидание файла....", silka=0)
             while not found_file:
                 for filename in os.listdir(folder_path):
                     if partial_name in filename and filename.endswith(".xlsx"):

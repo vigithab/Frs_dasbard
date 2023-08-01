@@ -512,6 +512,7 @@ class Grup():
                 x = x.sort_values('дата')
                 # Создание столбцов для накопительных итогов
                 for column in columns_to_cumulate:
+                    print(column)
                     # Накопительный итог по месяцам
                     x[f'накопительный_итог_{column}_месяц'] = x.groupby(['магазин', 'месяц'])[f'{column}'].cumsum()
                     x[f'накопительный_итог_{column}_год'] = x.groupby(['магазин', 'год'])[f'{column}'].cumsum()

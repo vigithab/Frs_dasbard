@@ -8,7 +8,7 @@ from Bot_FRS_v2.INI.ini import PUT
 from Bot_FRS_v2.INI import rename, ini
 from Bot_FRS_v2.INI import Float
 from Bot_FRS_v2.GooGL_TBL import Google as g
-
+from Bot_FRS_v2.BOT_TELEGRAM import BOT
 
 class tabl_count_tt():
         def __init__(self):
@@ -65,7 +65,7 @@ class tabl_count_tt():
                 df_pivot.replace([np.inf, -np.inf], np.nan, inplace=True)
                 df_pivot.fillna('', inplace=True)
                 g.tbl_bot().svodniy_itog(name_tbl="Количество магазинов сети", df=df_pivot, sheet_name="Количество магазинов сети")
-
+                BOT.BOT().bot_mes_html(mes="✅ Таблица подсчета количества ТТ обновлена", silka=0)
             return df_pivot
 
 if __name__ == '__main__':

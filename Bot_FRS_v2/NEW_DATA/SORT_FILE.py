@@ -8,7 +8,7 @@ import datetime
 from Bot_FRS_v2.INI import ini
 PUT = ini.PUT
 import pandas as pd
-
+from Bot_FRS_v2.BOT_TELEGRAM import BOT
 import os
 import shutil
 import datetime
@@ -198,6 +198,11 @@ class SORT:
             df.to_csv(ini.PUT + '♀Продажи\\текущий месяц\\' +  str(ini.dat_seychas.strftime("%d.%m.%Y")) + ".csv", encoding="utf-8",
                                               sep=';', index=False,
                                               decimal=",")
+            BOT.BOT().bot_mes_html(mes="⚠️⚠️НЕОБХОДИМО ОБНОВИТЬ ДАШБОРД ВРУЧНУЮ(ТЕКУЩИЙ ГОД Выручка)⚠️⚠️", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Создан пустой файл Выручка",
+                                   silka=0)
+        else:
+            print("Папка вырука текущий месяц не пуста")
 
     def pysto_sebes_month(self):
         folder_path = ini.PUT + '♀Сибестоемость\\Текущий месяц\\'
@@ -206,6 +211,9 @@ class SORT:
             df.to_csv(ini.PUT + '♀Сибестоемость\\Текущий месяц\\' +  str(ini.dat_seychas.strftime("%d.%m.%Y")) + ".csv", encoding="utf-8",
                                               sep=';', index=False,
                                               decimal=",")
+            BOT.BOT().bot_mes_html(mes="⚠️⚠️НЕОБХОДИМО ОБНОВИТЬ ДАШБОРД ВРУЧНУЮ(ТЕКУЩИЙ ГОД Сибестоймость)⚠️⚠️", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Создан пустой файл сибестоймости",
+                                   silka=0)
         else:
             print("Папка cb сибестоймости текущий месяц не пуста")
 

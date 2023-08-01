@@ -88,9 +88,8 @@ class FLOAT:
         return name_data
 class Degustacia:
     def sotka(self):
-
         if ini.time_seychas <ini.time_bot_vrem:
-            BOT.BOT().bot_mes_html(mes="Оновление таблицы шашлыка", silka=0)
+            BOT.BOT().bot_mes_html(mes="✅ Обновление дашборда шашлыка", silka=0)
             file = PUT + 'NEW\\Дегустации\\Отчет по дегустациям - X (TXT).txt'
 
             replacements = pd.read_excel(r'https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx')
@@ -203,7 +202,7 @@ class Degustacia:
             df.fillna('', inplace=True)
             print("Запись")
             g.tbl().record(name="Дегустация шашлыка(за последние 7 дней)", name_df=df, sheet_name="НЕТ ДЕГУСТАЦИЙ",)
-
+            BOT.BOT().bot_mes_html(mes="✅ Обновление таблицы шашлыка", silka=0)
 
 if __name__ == '__main__':
     Degustacia().sotka()
