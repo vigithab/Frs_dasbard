@@ -17,7 +17,7 @@ from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.INI import ini
 import tkinter as tk
 from fake_useragent import UserAgent
-
+from Bot_FRS_v2.INI import rename
 
 class Koreus():
     def __init__(self):
@@ -183,7 +183,12 @@ for f in files :
             path_to="P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Корректировки\\Все товары\\2023\\"
         else :
             path_to="P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Корректировки\\Только корректировки\\"
+
         shutil.copy2(file,path_to+new_filename)
+
+
+
+
         print(f, "переименован в ", new_filename, "и перенесен."," в ", path_to)
         os.remove(file)
         print(file, " удален")
@@ -199,9 +204,11 @@ files=(os.listdir(path))
 allfiles=len(files)
 #counter=0
 for file in files :
+
     fil=path+file
     print(file)
     data=pd.read_csv(fil,sep=";",decimal=',')
+
     agg_func_count = {'Наименование товара': ['count']}
     table = data.groupby(['Магазин/Склад получатель', 'Дата заказа'], as_index=False).agg(agg_func_count)
     del data

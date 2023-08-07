@@ -75,8 +75,6 @@ class recwest():
             # Write the row to the file
             with open(path + "\Log_site.txt", 'a', encoding="utf-8") as file:
                 file.write(row_data)
-
-
         #self.response.status_code = 202
         if self.response.status_code != 200:
             current_time = datetime.datetime.now().time()
@@ -84,7 +82,6 @@ class recwest():
                 print(mes)
                 BOT.BOT().bot_proverka_KM(mes=mes)
                 return
-
         if self.response_time > 10:
             current_time = datetime.datetime.now().time()
             if current_time.hour != 0 and current_time.minute != 0:

@@ -1,12 +1,18 @@
 import sys
+
+import numpy as np
+import xlrd
+
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import os
 import shutil
 import zipfile
+import openpyxl
 import pandas as pd
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
-from Bot_FRS_v2.INI import ini
+from Bot_FRS_v2.INI import ini,rename
+from fuzzywuzzy import fuzz, process
 
 ta = ini.time_bot_vrem
 PUT = ini.PUT
@@ -16,8 +22,41 @@ class NEW_DATA_sd:
         try:
             replacements = pd.read_excel("https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
             replacements.to_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx", index=False)
+
+
+            spravka = pd.read_excel("https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx")
+            spravka.to_excel(PUT + "Справочники\\Магазины\\Справочник ТТ.xlsx")
+            spravka = spravka.loc[spravka["Менеджер"].notnull()]
+            spravka = spravka.loc[spravka["Менеджер"]!= "нет магазина"]
+            spravka = spravka.loc[spravka["Менеджер"] != "Отдел торговой сети"]
+            spravka = spravka.loc[spravka["Менеджер"] != "Не назначен(ТТ еще не открыто)"]
+
+            # Получаем уникальные значения менеджеров
+            unique_managers = spravka["Менеджер"].unique()
+            # Сортируем уникальные значения по алфавиту
+            unique_managers_sorted = sorted(unique_managers)
+            # Создаем DataFrame с уникальными менеджерами и их нумерацией
+            unique_managers = pd.DataFrame(
+                {'Менеджер': unique_managers_sorted, 'Нумерация': range(1, len(unique_managers_sorted) + 1)})
+
+            unique_managers["Мененджер коротко"] = unique_managers ["Менеджер"]
+
+            Ln_tip = {'Турова Анна Сергеевна': 'Турова А.С',
+                      'Баранова Лариса Викторовна': 'Баранова Л.В',
+                      'Геровский Иван Владимирович': 'Геровский И.В',
+                      'Изотов Вадим Валентинович': 'Изотов В.В',
+                      'Томск': 'Томск',
+                      'Павлова Анна Александровна': 'Павлова А.А',
+                      'Вакансия': 'Вакансия',
+                      'Сергеев Алексей Сергеевич': 'Сергеев А.С',
+                      'Карпова Екатерина Эдуардовна': 'Карпова Е.Э'}
+
+            unique_managers["Мененджер коротко"] = unique_managers["Мененджер коротко"].map(Ln_tip)
+            print(unique_managers)
+            unique_managers.to_csv(PUT + "Справочники\\Магазины\\unique_managers.csv",index=True)
             BOT.BOT().bot_mes_html(mes="✅ Справочники магазинов(резерв)", silka=0)
         except:
+            BOT.BOT().bot_mes_html(mes="📛 Справочники магазинов(резерв) - Ошибка", silka=0)
             print("Справочники не обновлены")
     def setevoy(self):
             put_zip = r'\\rtlfranch3\Данные из 1С\Для Дашборда\Себестоимость'
@@ -159,7 +198,6 @@ class NEW_DATA_sd:
             BOT.BOT().bot_mes_html(mes="❗Нет файла дегустации", silka=0)
     def Nmenklatura(self, rows=None):
         # Пути к файлам и папкам
-        BOT.BOT().bot_mes_html(mes="✅ обновление справочников", silka=0)
         print("Получение: Справочников")
         ot = r"\\rtlfranch3\Данные из 1С\Для Дашборда\SKU и Номенклатура"
         to = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура"
@@ -183,6 +221,98 @@ class NEW_DATA_sd:
         spravk_sku.to_csv(PUT + "Справочники\\номенклатура\\Список.txt", sep="\t", encoding="utf-8")
         os.remove(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\GROUPS_new.txt")
         os.remove(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Справочники\номенклатура\Список_new.txt")
+        BOT.BOT().bot_mes_html(mes="✅ Справоники обновлены", silka=0)
+    def jalob(self):
+        start = r"\\rtlfranch3\Данные из 1С\Для Дашборда\Жалобы"
+        end = r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\Исходники"
+        # Создаем временную папку
+        tmp_folder = r'C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\tmp'
+        os.makedirs(tmp_folder, exist_ok=True)
+        for filename in os.listdir(start):
+
+            PUT_File_start = os.path.join(start, filename)
+            PUT_File_end = os.path.join(end, filename)
+            # Копирование файла в папку назначения
+            shutil.copy2(PUT_File_start, PUT_File_end)
+            # Получение пути к скопированному файлу
+            new_file = PUT_File_end
+            # Путь к вашему исходному файлу .xlsx
+            xlsx_file_path = new_file
+
+            # Распаковываем excel как zip в нашу временную папку
+            with zipfile.ZipFile(xlsx_file_path) as excel_container:
+                excel_container.extractall(tmp_folder)
+
+            # Переименовываем файл с неверным названием
+            wrong_file_path = os.path.join(tmp_folder, 'xl', 'SharedStrings.xml')
+            correct_file_path = os.path.join(tmp_folder, 'xl', 'sharedStrings.xml')
+
+            os.rename(wrong_file_path, correct_file_path)
+            # Запаковываем excel обратно в zip и переименовываем в исходный файл
+            shutil.make_archive(xlsx_file_path, 'zip', tmp_folder)
+            os.remove(xlsx_file_path)
+            os.rename(f'{xlsx_file_path}.zip', xlsx_file_path)
+            shutil.rmtree(tmp_folder)
+        df_grup = pd.DataFrame()
+        for filename in os.listdir(end):
+            end_file = os.path.join(end, filename)
+            df = pd.read_excel(end_file,skiprows=4)
+            df = df.loc[df["Виновное подразделение.Вышестоящее подразделение"]!= "Итого"]
+            df = df.drop(columns=["Виновное подразделение.Вышестоящее подразделение","Unnamed: 1","Unnamed: 2"])
+
+            df_grup = pd.concat([df_grup, df],axis=0)
+        df_grup["Участники.Партнер_Проверка"] =  df_grup["Участники.Партнер"]
+
+        rename.RENAME().Rread(name_data=df_grup,name_col="Участники.Партнер")
+        df_grup_nik = df_grup[["Участники.Партнер","Участники.Партнер_Проверка"]]
+        df_grup_nik = df_grup_nik.drop_duplicates().reset_index(drop=True)
+        df_grup_nik.to_excel(
+            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\Уникальные магазины\уникальные магазины.xlsx", index=False)
+        df_grup =  df_grup.drop(columns=["Участники.Партнер_Проверка",'Виновное подразделение','Итог',"Время затраченое","Клиент"])
+        del df_grup_nik
+        #в формат даты
+        df_grup['Дата регистрации'] = pd.to_datetime(df_grup['Дата регистрации'], format='%d.%m.%Y %H:%M:%S')
+        # только дату
+        df_grup['Дата регистрации'] = df_grup['Дата регистрации'].dt.date
+        # доавление ТУ
+        TY, ty_open_magaz = rename.RENAME().TY_Spravochnik()
+
+        TY = TY.loc[TY["Менеджер"].notnull()]
+        df_grup  = df_grup.rename(columns={'Участники.Партнер':"магазин"})
+        df_grup = df_grup.merge(TY, on=["магазин"], how="left").reset_index(drop=True)
+        df_grup  = df_grup.loc[df_grup ["Менеджер"].notnull()]
+        df_grup['Дата регистрации'] = pd.to_datetime(df_grup['Дата регистрации'], format='%Y-%m-%d')
+
+        # Выполните группировку по менеджерам, наименованию и посчитайте количество жалоб и благодарностей для каждой группы
+        result = df_grup.groupby(['Дата регистрации',"магазин",'Менеджер','Наименование'])['Дата регистрации'].count().unstack(fill_value=0).reset_index()
+        # Выведите результат
+        new_columns_order = [
+            "Менеджер",
+            'Наименование',
+            'Дата регистрации',
+            "магазин",
+            'Номенклатура.Группа.Наименование',
+            'Номенклатура',
+            'Причина возникновения',
+            'Результаты отработки',
+            'Дата окончания',
+            'Статус',
+            'Дата изготовления',
+            'Канал связи',
+            'Категория обращения',
+            'Производитель',
+            'Группа связи',
+            'Снята с продажи вся партия',
+            'Описание претензии']
+        # Переупорядочите столбцы в исходном датафрейме
+        df_grup = df_grup[new_columns_order]
+        df_grup.to_excel(
+            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\Для_дашборда(Жалобы).xlsx",
+            index=False)
+        result.to_excel(
+            r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\Для_дашборда(Жалобы)_сгрупированные.xlsx",
+            index=False)
+        BOT.BOT().bot_mes_html(mes="✅ Жалобы обновлены", silka=0)
 
 def run_NEW_DATA_sd():
     if ini.time_seychas < ini.time_bot_vrem:
@@ -205,13 +335,17 @@ def run_NEW_DATA_sd():
             BOT.BOT().bot_mes_html(mes="📛 Не получены дегустации шашлыка", silka=0)
         try:
             NEW_DATA_sd().Nmenklatura()
-
         except:
             BOT.BOT().bot_mes_html(mes="📛 Не оновлена номенклатура", silka=0)
+        try:
+            NEW_DATA_sd().jalob()
+        except:
+            BOT.BOT().bot_mes_html(mes="📛 Не обновлены жалобы", silka=0)
     else:
         print("Время: ", ini.time_seychas, "Ограничение: ", ini.time_bot_vrem)
 
 
 
 if __name__ == '__main__':
-    NEW_DATA_sd().Nmenklatura()
+    NEW_DATA_sd().jalob()
+    #NEW_DATA_sd().reserv()

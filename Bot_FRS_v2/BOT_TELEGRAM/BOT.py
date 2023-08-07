@@ -159,7 +159,7 @@ class BOT:
             file.write('\n'.join(updated_message_ids))
 
     def bot_proverka_KM(self, mes):
-        token = ini.token2
+        token = ini.token
         chat_id = ini.km
         url = f'https://api.telegram.org/bot{token}/sendMessage'
         data = {'chat_id': chat_id,'text': mes, 'parse_mode': 'HTML',}

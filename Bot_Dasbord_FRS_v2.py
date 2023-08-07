@@ -13,7 +13,7 @@ from Bot_FRS_v2.NEW_DATA.SET_SD import run_NEW_DATA_sd
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
 from Bot_FRS_v2.INI import Float, log, rename, ini, memory
-from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
+from Bot_FRS_v2.RASSILKA import Voropaev,count_tt,Storno
 from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers
 
 PUT = ini.PUT
@@ -311,6 +311,11 @@ class NEW_data:
         time.sleep(240)
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
+        try:
+            Storno.STORNO().storno(disk=name_file[:-5])
+        except:
+            txt = f'📛 Сторно ошибка {name_file}'
+            BOT.BOT().bot_mes_html(mes=txt, silka=0)
         # групировка файлов продаж по дням
         def grup_sales(name_df, name_file):
             x = name_df

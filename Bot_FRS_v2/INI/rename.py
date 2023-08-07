@@ -27,6 +27,14 @@ class RENAME:
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
             return name_data
     """функция переименование"""
+    def Zamena(self):
+        try:
+            df = pd.read_excel(
+                "https://docs.google.com/spreadsheets/d/1SfuC2zKUFt6PQOYhB8EEivRjy4Dz-o4WDL-IR7CT3Eg/export?exportFormat=xlsx")
+        except:
+            df = pd.read_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
+        return df
+
     def magazin_info(self):
             print("Загрузка справочника магазинов...")
             try:
@@ -52,7 +60,6 @@ class RENAME:
         RENAME().Rread(name_data = ty, name_col= "Название 1 С (для фин реза)", name="TY")
         ty = ty.rename(columns={"Название 1 С (для фин реза)": "!МАГАЗИН!"})
         return ty
-
     def TY_Spravochnik(self):
         try:
             print("Загрузка справочника магазинов...")
@@ -169,7 +176,6 @@ class RENAME:
         SEB()
         sales()
         spis()
-
     def Rread_kassa(self, name_data, name_col, name):
         print("Загрузка справочника кассы...")
         replacements = pd.read_excel(PUT + "Справочники\\Кассы\\Найи_заменить касса.xlsx", sheet_name="Sheet1")

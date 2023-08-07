@@ -19,6 +19,7 @@ class groups:
         self.list_month = None
         self.PUT = ini.PUT
         format_date_str = "%Y-%m-%d"
+        #self.date_todey = ini.dat_seychas - datetime.timedelta(days=6)
         self.date_todey = ini.dat_seychas
         print(self.date_todey)
         # нумерация понедельников
@@ -173,6 +174,7 @@ class groups:
                   "списания_оказатель":"mean"}).reset_index(drop=True)
         print(df[:50])"""
         # продажи
+        sales_forecast_spis = df['выручка'].sum().astype(int)
         sales_forecast = ((df['выручка'].sum() / df["Прошло дней"].max() *
                   df["осталось дней"].min()) + df['выручка'].sum()).astype(int)
         # чеки
@@ -183,10 +185,11 @@ class groups:
         # Счет количество а точек
         count_TT = df[df['выручка'] > 1000]['магазин'].nunique()
         # Списания
-        spisania =((df["списания_оказатель"].sum() / df["Прошло дней"].max() *
-                 df["осталось дней"].min()) + df["списания_оказатель"].sum()).astype(int)
+        spisania = df["списания_оказатель"].sum().astype(int)
+        """spisania =((df["списания_оказатель"].sum() / df["Прошло дней"].max() *
+                 df["осталось дней"].min()) + df["списания_оказатель"].sum()).astype(int)"""
         # Списания процент
-        spisania_P = spisania / sales_forecast
+        spisania_P = spisania / sales_forecast_spis
         # вес продаж
         ves_prodaj = ((df["вес_продаж"].sum() / df["Прошло дней"].max() * df["осталось дней"].min()) + df["вес_продаж"].sum()).astype(int)
 
@@ -232,8 +235,10 @@ class groups:
         #print(df_total)
 
         for i in self.ty_list:
+
                 mabager = df.loc[df["Менеджер"] == i]
                 # продажи
+                sales_spis = mabager['выручка'].sum().astype(int)
                 sales = ((mabager['выручка'].sum() / mabager["Прошло дней"].max() *
                           mabager["осталось дней"].min()) + mabager['выручка'].sum()).astype(int)
                 # чеки
@@ -245,9 +250,10 @@ class groups:
                 # Счет количество а точек
                 count_TT = mabager[mabager['выручка'] > 1000]['магазин'].nunique()
                 # Списания
+
                 spisania = mabager["списания_оказатель"].sum().astype(int)
                 # Списания процент
-                spisania_P = spisania / sales
+                spisania_P = spisania / sales_spis
                 # вес продаж
                 ves_prodaj = ((mabager["вес_продаж"].sum() / mabager["Прошло дней"].max() *
                          mabager["осталось дней"].min()) + mabager["вес_продаж"].sum()).astype(int)
@@ -255,6 +261,7 @@ class groups:
                 #mabager["вес_продаж"].sum().astype(int)
 
                 if prinak =="Прошлый год":
+
                     mabager_total = df_last_year_total.loc[df_last_year_total["Менеджер"] == i]
                     print(mabager_total)
                     sales =  mabager_total['выручка'].sum().astype(int)
