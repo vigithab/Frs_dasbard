@@ -43,36 +43,37 @@ def check_website():
             if response_time>3:
                 t = "❌"
             r2 = f"{t} Время ответа: {response_time} сек"
-            r11 = f"Немного для сравнения"
-            r12 = f" - Жизньмарт : {response_time2} сек"
-            r13 = f" - sbermarket: {response_time3} сек"
-            r14 = f" - eda.yandex: {response_time4} сек"
+            #r11 = f"Немного для сравнения"
+            #r12 = f" - Жизньмарт : {response_time2} сек"
+            #r13 = f" - sbermarket: {response_time3} сек"
+            #r14 = f" - eda.yandex: {response_time4} сек"
         else:
             r1 = f"❌ Не доступен: {response.status_code}"
             r2 = f"{t} Время ответа: {response_time} сек"
-            r11 = f"Немного для сравнения"
-            r12 = f" - Жизньмарт : {response_time2} сек"
-            r13 = f" - sbermarket: {response_time3} сек"
-            r14 = f" - eda.yandex: {response_time4} сек"
+            #r11 = f"Немного для сравнения"
+            # r12 = f" - Жизньмарт : {response_time2} сек"
+            #r13 = f" - sbermarket: {response_time3} сек"
+            #r14 = f" - eda.yandex: {response_time4} сек"
 
-        # Проверка содержимого страницы
+        '''# Проверка содержимого страницы
         if expected_content in response.text:
             r22 = f"✅ Найден номер - {expected_content}"
         else:
-            r22 = f"❌ Не найден номер телефона"
+            r22 = f"❌ Не найден номер телефона"'''
 
         mes = f'<b>Проверка сайта kalina-malina.ru</b>\n' \
               f'{ini.dat_seychas} {ini.time_seychas}\n'\
               f'{r1}\n' \
-              f'{r22}\n' \
-              f'{r2}\n' \
-              f'{r11}\n' \
-              f'{r12}\n' \
-              f'{r13}\n' \
-              f'{r14}\n'
+              f'{r2}\n'
+              #f'{r22}\n' \
+
+              #f'{r11}\n' \
+              #f'{r12}\n' \
+              #f'{r13}\n' \
+              #f'{r14}\n'
     except requests.ConnectionError:
 
-        mes = f"отказ в подключении или нет интернета"
+        mes = f"❌ отказ в подключении или нет интернета"
     BOT.BOT().bot_proverka_KM(mes=mes)
     return
 

@@ -53,8 +53,9 @@ class recwest():
             mes = f'<b>Проверка сайта kalina-malina.ru</b>\n' \
                   f'{ini.dat_seychas} {ini.time_seychas}\n'\
                   f'{r1}\n' \
-                  f'{r22}\n' \
                   f'{r2}\n'
+                  #f'{r22}\n' \
+
         except requests.ConnectionError:
             mes = f"отказ в подключении или нет интернета"
         finally:

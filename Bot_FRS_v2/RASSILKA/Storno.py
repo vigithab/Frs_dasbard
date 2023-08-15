@@ -80,14 +80,11 @@ class STORNO():
         for filename in os.listdir(start):
             file_pach = os.path.join(start,filename)
             file_pach_original = os.path.join(start_original, filename[:-4]+".xlsx")
-            print(file_pach_original)
-            print(file_pach)
             def original():
                 orig =pd.read_excel(file_pach_original)
                 orig["Дата/Время чека"] = pd.to_datetime(orig["Дата/Время чека"],
                                                         format="%d.%m.%Y %H:%M:%S").dt.date
                 orig =orig.loc[orig["Магазин"].notnull()]
-                print(orig)
                 # Преобразуем числовые столбцы в строковый тип и удаляем десятичные части (.0)
                 orig["ID_Chek"] = orig["Магазин"].astype(str).replace('\.0', '', regex=True) + \
                                  orig["Касса"].astype(str).replace('\.0', '', regex=True) + \
@@ -95,20 +92,18 @@ class STORNO():
                                  orig["Дата/Время чека"].astype(str) + \
                                  orig["Смена"].astype(str).replace('\.0', '', regex=True)
 
-
                 return orig
 
             def storno():
-                sto = pd.read_csv(file_pach,sep="\t",encoding="utf-8")
-                sto["Дата/Время чека"] = pd.to_datetime(sto["Дата/Время чека"],
-                                                                   format="%d.%m.%Y %H:%M:%S").dt.date
-                sto = sto.loc[sto["Магазин"]!= "NaN"]
+                sto = pd.read_csv(file_pach,encoding="utf-8")
                 print(sto)
+                sto["Дата"] = pd.to_datetime(sto["Дата"],format="%d.%m.%Y").dt.date
+                sto = sto.loc[sto["магазин"].notnull()]
                 # Преобразуем числовые столбцы в строковый тип и удаляем десятичные части (.0)
-                sto["ID_Chek"] = sto["Магазин"].astype(str).replace('\.0', '', regex=True) + \
+                sto["ID_Chek"] = sto["магазин"].astype(str).replace('\.0', '', regex=True) + \
                                  sto["Касса"].astype(str).replace('\.0', '', regex=True) + \
                                  sto["Чек"].astype(str).replace('\.0', '', regex=True) + \
-                                 sto["Дата/Время чека"].astype(str).replace('\.0', '', regex=True) + \
+                                 sto["Дата"].astype(str).replace('\.0', '', regex=True) + \
                                  sto["Смена"].astype(str).replace('\.0', '', regex=True)
                 return sto
             original = original()

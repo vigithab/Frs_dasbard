@@ -67,7 +67,6 @@ class tbl:
         # Параметры авторизации
         # creds = service_account.Credentials.from_service_account_file('C:\\Users\\lebedevvv\\Desktop\\PYTHON PROJECT\\DASH_FRS\\Progect\\client_secret.json')
         service = build('drive', 'v3', credentials=creds)
-
         # Выполняем запрос к Google Drive API для получения списка файлов таблиц Google Sheets
         results = service.files().list(q="mimeType='application/vnd.google-apps.spreadsheet' and trashed = false").execute()
         items = results.get('files', [])
