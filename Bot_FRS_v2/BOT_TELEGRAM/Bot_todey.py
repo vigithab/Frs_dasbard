@@ -659,13 +659,11 @@ class google_tabl():
         if self.bot.kol_day == 1:
             #date = datetime.datetime.strptime(self.bot.date, "%Y-%m-%d").strftime("%d.%m.%Y")
             zagolovok_name = f'Результаты прошедшего дня: {self.bot.date}'
-
         else:
             date1 = self.bot.min_date
             date2 = self.bot.max_date
-
             zagolovok_name = f'Результаты прошедших выходных дней: {date1} - {date2}'
-        g.tbl_bot().sheet(name_tbl=self.bot.i, df=df, sheet_name="Результаты прошлого дня", one_stroka=zagolovok_name)
+        g.tbl_bot().Last_day(name_tbl=self.bot.i, df=df, sheet_name="Результаты прошлого дня", one_stroka=zagolovok_name)
 
         return
 #BOT_rashet().rashet()

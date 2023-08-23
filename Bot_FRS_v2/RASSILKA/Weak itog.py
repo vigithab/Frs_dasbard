@@ -54,7 +54,7 @@ class groups:
         # Формирвание списка ТУ
         def ty(name_df):
             # доавление ТУ
-            TY, ty_open_magaz = rename.RENAME().TY_Spravochnik()
+            TY, ty_open_magaz = rename.RENAME().magazin_info()
             TY = TY.loc[TY["Менеджер"].notnull()]
             tabl = name_df.merge(TY, on=["магазин"], how="left").reset_index(drop=True)
             # создание списка ТУ

@@ -623,6 +623,7 @@ class Grup():
         if ini.time_seychas < ini.time_bot_vrem:
             sales()
 
+
 if __name__ == '__main__':
     # todey_ear()
     # lastear()
