@@ -268,7 +268,7 @@ class NEW_DATA_sd:
         df_grup_nik = df_grup_nik.drop_duplicates().reset_index(drop=True)
         df_grup_nik.to_excel(
             r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Жалобы\Уникальные магазины\уникальные магазины.xlsx", index=False)
-        df_grup =  df_grup.drop(columns=["Участники.Партнер_Проверка",'Виновное подразделение','Итог',"Время затраченое","Клиент"])
+        df_grup =  df_grup.drop(columns=["Участники.Партнер_Проверка",'Виновное подразделение','Итог',"Клиент"])
         del df_grup_nik
         #в формат даты
         df_grup['Дата регистрации'] = pd.to_datetime(df_grup['Дата регистрации'], format='%d.%m.%Y %H:%M:%S')

@@ -21,6 +21,7 @@ class groups:
         format_date_str = "%Y-%m-%d"
         #self.date_todey = ini.dat_seychas - datetime.timedelta(days=6)
         self.date_todey = ini.dat_seychas
+        self.date_todey = self.date_todey - datetime.timedelta(days=1)
         print(self.date_todey)
         # нумерация понедельников
         def num_pn():
@@ -54,7 +55,7 @@ class groups:
         # Формирвание списка ТУ
         def ty(name_df):
             # доавление ТУ
-            TY, ty_open_magaz = rename.RENAME().magazin_info()
+            TY, ty_open_magaz = rename.RENAME().TY_Spravochnik()
             TY = TY.loc[TY["Менеджер"].notnull()]
             tabl = name_df.merge(TY, on=["магазин"], how="left").reset_index(drop=True)
             # создание списка ТУ
@@ -88,8 +89,12 @@ class groups:
                 # список дат текущего месяца
                 min_date = self.date_todey.replace(day=1)
                 # список дат отчетной недели
-                self.list_month = pd.date_range(start=min_date, end=self.date_todey - datetime.timedelta(days=1),
-                                            freq='D').strftime(format_date_str).tolist()
+
+                self.list_month = pd.date_range(start=min_date, end=self.date_todey,
+                                                freq='D').strftime(format_date_str).tolist()
+
+                """self.list_month = pd.date_range(start=min_date, end=self.date_todey - datetime.timedelta(days=1),
+                                            freq='D').strftime(format_date_str).tolist()"""
                 print("Отчетна неделя(Период)")
                 # список дат прошлой прошлого периода полный месяц
                 last_month_min_day = min_date - pd.offsets.MonthBegin(1)

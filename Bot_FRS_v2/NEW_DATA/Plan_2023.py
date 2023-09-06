@@ -52,6 +52,7 @@ def plan():
     for root, dirs, files in os.walk(ini.PUT + "♀Планы\\Исходник\\"):
         for file in files:
             all_files.append(os.path.join(root, file))
+
     for i in all_files:
         plan = pd.read_excel(i, skiprows=4)
 
@@ -62,6 +63,7 @@ def plan():
         plan[777] = plan[5]
 
         plan= plan.loc[plan[4].notnull()]
+        print(plan)
         # Продажи
         plan_sales = plan[[5,777, 59,60,61,62,63,64,65,66,67,69,69,70]]
         plan_sales= plan_sales.rename(columns=slov_sales)

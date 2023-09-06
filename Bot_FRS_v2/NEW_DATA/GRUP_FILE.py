@@ -549,8 +549,17 @@ class Grup():
             # Преобразование столбца 'date' в тип данных даты
             # sales_itog["дата"] = pd.to_datetime(df['date'])
 
+            # Сортируйте DataFrame по магазину и дате
+            df = sales_itog.sort_values(by=['магазин', 'дата'])
+
+            # Группируйте данные по магазину и применяйте функцию cumcount для подсчета дней от начала
+            sales_itog['Прошло дней'] = df.groupby(['магазин',sales_itog['дата'].dt.year,sales_itog['дата'].dt.month]).cumcount() + 1
+
+
+
+
             # Создание столбца с количеством прошедших дней от начала месяца
-            sales_itog['Прошло дней'] = sales_itog["дата"].dt.day
+            #sales_itog['Прошло дней'] = sales_itog["дата"].dt.day
             # Создание столбца с количеством оставшихся дней до конца месяца
             sales_itog['осталось дней'] = sales_itog["дата"].dt.daysinmonth - sales_itog["дата"].dt.day
             # Создание столбца с общим количеством дней в месяце
@@ -610,7 +619,7 @@ class Grup():
 
                  "количество уникальных товаров в чеке",
                  "количество товаров в чеке"]].copy()
-
+            print(sales_itog[:50])
             sales_itog_seve.to_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
                               decimal=".", index=False)
             try:

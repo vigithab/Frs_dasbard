@@ -9,7 +9,6 @@ pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 
 PUT = ini.PUT
-
 class RENAME:
     def Rread(self, name_data, name_col, name = None):
             try:
@@ -19,8 +18,10 @@ class RENAME:
                 rng = len(replacements)
                 for i in range(rng):
                     name_data[name_col] = name_data[name_col].replace(replacements["НАЙТИ"][i], replacements["ЗАМЕНИТЬ"][i], regex=False)
-            except:
-                print("Не удалось загрузить справоник найти знаменить, данные с пк")
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                s = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+                print("Не удалось загрузить справоник найти знаменить, данные с пк\n", e)
                 replacements = pd.read_excel(PUT + "Справочники\\Найти_заменить\\Замена адресов.xlsx")
                 rng = len(replacements)
                 for i in range(rng):
@@ -73,7 +74,7 @@ class RENAME:
         Ln_tip = {'Турова Анна Сергеевна': 'Турова А.С',
                   'Баранова Лариса Викторовна': 'Баранова Л.В',
                   'Геровский Иван Владимирович': 'Геровский И.В',
-                  'Качалова Юлия': 'Качалова Ю.',
+                  'Качалова Юлия Андреевна': 'Качалова Ю.',
                   'Павлова Анна Александровна': 'Павлова А.А',
                   'Вакансия': 'Вакансия',
                   'Сергеев Алексей Сергеевич': 'Сергеев А.С',

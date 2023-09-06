@@ -109,8 +109,9 @@ class SET:
             "safebrowsing.enabled": True
         })
         options.add_argument("user_agent=" + ua.random)
-        driver = webdriver.Chrome(chrome_options=options)
-        url = 'http://10.32.2.51:8443/operday/checks'
+        driver = webdriver.Chrome(options=options)
+        #url = 'http://10.32.2.51:8443/operday/checks'
+        url = 'http://10.32.2.51:8443'
         driver.get(url)
         t.sleep(3)
         if screen_width > screen_height:

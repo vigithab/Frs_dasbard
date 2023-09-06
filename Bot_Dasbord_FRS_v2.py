@@ -14,7 +14,7 @@ from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
 from Bot_FRS_v2.INI import Float, log, rename, ini, memory
 from Bot_FRS_v2.RASSILKA import Voropaev,count_tt,Storno
-from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers
+from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers,Reting
 
 PUT = ini.PUT
 class NEW_data:
@@ -300,6 +300,15 @@ class NEW_data:
             mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Таблица планов", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
+        # Формирование таблиц рейтинга
+        try:
+            Reting.reting()
+            log.LOG().log_new_data(name_txt="Таблица Рейтинга")
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
+            log.LOG().log_new_data(name_txt="Таблица Рейтинга", e=mes)
+            BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица рейтингов", silka=0)
 
         BOT.BOT().bot_mes_html(mes="😃 Завершено успешно ☺️",silka=0)
         SORT_FILE.SORT().pysto_sales_month()
@@ -311,11 +320,6 @@ class NEW_data:
         time.sleep(240)
     # главная функция запускает все
     def Set_sales(self, name_datafreme, name_file):
-        try:
-            Storno.STORNO().storno(disk=name_file[:-5])
-        except:
-            txt = f'📛 Сторно ошибка {name_file}'
-            BOT.BOT().bot_mes_html(mes=txt, silka=0)
         # групировка файлов продаж по дням
         def grup_sales(name_df, name_file):
             x = name_df

@@ -58,6 +58,7 @@ class bot_mesege:
             # date_str = "2023-05-10 10:00:36.001115"
             # Дата обновления
             MAX_DATE = datetime.datetime.strptime(date_str[:10], '%Y-%m-%d').date()
+
             TODEY = [MAX_DATE.strftime(format_date_str)]
             LAST_DATE = MAX_DATE - datetime.timedelta(days=1)
             # print("Дата в файле\n", MAX_DATE)
@@ -95,12 +96,15 @@ class bot_mesege:
 
             VCHERA = fil_vchera
 
-
             # region ТЕКУШИЙ МЕСЯЦ
             TODEY_month_min_day = MAX_DATE.replace(day=1)
             # список дат
             TODEY_month = pd.date_range(start=TODEY_month_min_day, end=MAX_DATE - datetime.timedelta(days=1),
                                         freq='D').strftime(format_date_str).tolist()
+
+            # если конец месяца
+            MAX_DATE_TODEY_month_itog = datetime.datetime.strptime("2023-08-31", '%Y-%m-%d').date()
+            TODEY_month_itog = pd.date_range(start=TODEY_month_min_day, end=MAX_DATE, freq='D').strftime(format_date_str).tolist()
             # print("Текущий месяц\n",TODEY_month)
             # endregion
 
@@ -137,7 +141,6 @@ class bot_mesege:
             save_date(TODEY_month, "TODEY_month")
             save_date(LAST_month, "LAST_month")
             save_date(new_month, "new_month")
-
             return TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month
 
         # Формирвание списка ТУ
@@ -198,7 +201,6 @@ class bot_mesege:
         All_colms = list(set(df_today.columns) - {'магазин','Менеджер'})
         Float.FLOAT().float_colms(name_data=df_today, name_col=All_colms)
         ty_list, self.df_today = ty(name_df=df_today)
-
     def ff(self):
         print("Сегодняшняя дата: ", self.TODEY)
         print("Вчерашняя дата: ", self.VCHERA)
@@ -206,7 +208,6 @@ class bot_mesege:
         print("Даты прошлого месяца: ", self.LAST_month)
         print("Список дат прошлого года: ", self.LAST_year)
         print("Список территориалов: ", self.ty_list)
-
     # формирование сообщений вчерашнего дня
     def vchera(self):
         if ini.time_seychas < ini.time_bot_vrem:
@@ -237,7 +238,6 @@ class bot_mesege:
                     VCHERA_date = f"🕙 Результаты за выходные:\n"
                     VCHERA_date += f" •{self.min_date} - {self.max_date}\n"
                 return VCHERA_date
-
             # результаты за вчера
             VCHERA_tabl = self.tabl[self.tabl['дата'].isin(self.VCHERA)]
             VCHERA_tabl = VCHERA_tabl.groupby(["магазин", "Менеджер"],
@@ -283,7 +283,7 @@ class bot_mesege:
                 ((TODEY_month_tabl["Количество чеков"] / TODEY_month_tabl["-прошло дней"] *
                   TODEY_month_tabl["-осталось дней"]) + TODEY_month_tabl["Количество чеков"]).round(2)
             TODEY_month_tabl = TODEY_month_tabl.drop(columns={"-осталось дней", "-прошло дней"})
-
+            seve_totalitog = pd.DataFrame()
             for i in self.ty_list:
                 # выруча за месяц
                 manager_data_total = TODEY_month_tabl.loc[TODEY_month_tabl["Менеджер"] == i]
@@ -433,6 +433,7 @@ class bot_mesege:
 
                 # отправка на создание гугл таблицы за месяц
                 url_month = g.vchera_googl_tbl(df=manager_data_total)
+                seve_totalitog = pd.concat([seve_totalitog ,manager_data_total],axis=0)
                 url = f'<b>\n 📎 <a href="{url_month}">Ссылка Google таблицу</a></b>'
                 print(ini.TY_id)
                 #BOT().__del_lost(priznak_grup="TY")
@@ -440,12 +441,15 @@ class bot_mesege:
                     mes_sales_total+mes_check_total + mes_aver_chek_total + mes_spisania_total + url, silka=0)
                 t.sleep(10)
 
+            seve_totalitog.to_csv(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\BOT\Расчет_гуглтаблиц.csv",sep="\t",encoding="utf-8",index=False)
     # формирование таблиц дневных
     def to_day(self):
         for i in self.ty_list:
             manager_data = self.df_today.loc[self.df_today["Менеджер"] == i]
             sales_day = manager_data["выручка"].sum()
             print( i , " ", sales_day)
+
+
 class google_tabl():
     def __init__(self,self_bot):
         self.bot = self_bot
