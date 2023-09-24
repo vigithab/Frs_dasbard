@@ -87,7 +87,6 @@ class Spr:
                    decimal=',')
         return spr
 
-
 class Grup():
     def spisania_nistory(self):
         folder2 = PUT + "♀Списания\\История\\"

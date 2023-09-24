@@ -158,7 +158,7 @@ class tbl:
         credentials_file = PUT + 'BOT\\key\\client_secret.json'
 
         # Идентификатор (ID) существующей таблицы, к которой нужно предоставить доступ
-        spreadsheet_id = '1CdOvV2uPgSRO06KwHRtqc3f0DbXOAy-gxlAZP1F9lqY'
+        spreadsheet_id = '1M0PxgE1aGQCFOrLQBw7Ng7sQ4cHy5w-0WlY-FKAMkMA'
 
         # Создание объекта сервиса для работы с Google Drive API
         credentials = service_account.Credentials.from_service_account_file(credentials_file)
@@ -368,9 +368,9 @@ if __name__ == '__main__':
     #plan = plan()
     #tbl().dele()
     #tbl().new()
-    """ln = ['Франшиза_балы']
+    """ln = ['Средний_чек_Паша']
     for i in ln:
-        tbl().new_taybl(name_tabl= i, name_list="Франшиза_по магазинам")"""
+        tbl().new_taybl(name_tabl= i, name_list="Средний_чек_Паша")"""
     #tbl().record(name="Карпова Е.Э_Прошлый день")
     #tbl().dostup()
     #tbl().stil()

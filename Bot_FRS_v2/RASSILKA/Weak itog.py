@@ -89,20 +89,30 @@ class groups:
                 # список дат текущего месяца
                 min_date = self.date_todey.replace(day=1)
                 # список дат отчетной недели
-
                 self.list_month = pd.date_range(start=min_date, end=self.date_todey,
                                                 freq='D').strftime(format_date_str).tolist()
 
-                """self.list_month = pd.date_range(start=min_date, end=self.date_todey - datetime.timedelta(days=1),
-                                            freq='D').strftime(format_date_str).tolist()"""
+                self.list_last_month = pd.date_range(start=min_date, end=self.date_todey - datetime.timedelta(days=7),
+                                            freq='D').strftime(format_date_str).tolist()
+                print(self.list_last_month)
+
                 print("Отчетна неделя(Период)")
-                # список дат прошлой прошлого периода полный месяц
+                """# список дат прошлой прошлого периода полный месяц
                 last_month_min_day = min_date - pd.offsets.MonthBegin(1)
                 # Определяем последний день прошлого месяца
                 last_month_max_day = min_date - pd.offsets.Day(1)
                 # Создаем список дат прошлого месяца
                 self.list_last_month = pd.date_range(start=last_month_min_day, end= last_month_max_day, freq='D').strftime(
-                    format_date_str).tolist()
+                    format_date_str).tolist()"""
+
+                """# список дат прошлой прошлого периода полный месяц
+                last_month_min_day = min_date - pd.offsets.MonthBegin(1)
+                # Определяем последний день прошлого месяца
+                last_month_max_day = min_date - datetime.timedelta(days=7)
+                # Создаем список дат прошлого месяца
+                self.list_last_month = pd.date_range(start= last_month_min_day, end= last_month_max_day, freq='D').strftime(
+                    format_date_str).tolist()"""
+
                 print("Отчетна неделя(Период)")
                 # список дат прошлой прошлого периода сопоставимый месяц
                 days_in_today_month = len(self.list_month)

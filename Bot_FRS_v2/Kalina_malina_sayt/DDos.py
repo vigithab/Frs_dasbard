@@ -20,7 +20,7 @@ url = "https://kalina-malina.ru/"
 
 # Запуск асинхронных запросов с постепенным увеличением количества потоков до 49
 async def main():
-    for num_threads in range(15, 50):
+    for num_threads in range(10, 50):
         print(f"\nТестирование с {num_threads} потоками:")
         async with aiohttp.ClientSession() as session:
             tasks = []

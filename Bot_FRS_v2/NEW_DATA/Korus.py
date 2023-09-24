@@ -61,7 +61,7 @@ class Koreus():
             "safebrowsing.enabled": True
         })
         options.add_argument("user_agent=" + ua.random)
-        self.driver = webdriver.Chrome(chrome_options=options)
+        self.driver = webdriver.Chrome(options=options)
         print("")
         self.driver.get(url)
         print("ход на сайт Корус")

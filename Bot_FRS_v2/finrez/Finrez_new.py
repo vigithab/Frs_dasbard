@@ -422,6 +422,8 @@ class finrez_obrabotka():
             FINREZ.to_csv(ini.PUT + "Финрез\\Данные для ДШ\\↓Финрез_Обработанный.csv", encoding="ANSI", sep=';',
                           index=False, decimal=',')
             print("Сохранено - Финрез_Обработанный.csv")
+
+
     def prgnoz(self):
         print("self.FINREZ")
         print(self.FINREZ)

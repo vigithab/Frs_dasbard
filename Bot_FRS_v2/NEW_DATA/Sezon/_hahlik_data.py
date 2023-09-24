@@ -50,7 +50,7 @@ try:
         spisok_ost.append(ost)
         spisok_prod.append(prod)
         spisok_zo.append(zo)
-    ##input("Relax maan")
+
     spisok_shash=['Купаты Барбекю, охл, 0,5 кг','Купаты куриные, охл, 0,5 кг','Колбаски для гриля Улитка, охл, 0,5 кг',\
                   'Колбаски для гриля Ассорти, охл, 0,5 кг','Сердце цыпленка-бройлера (шашлык из сердечек), охл, 0,4 кг',\
                   'Шашлык из индейки в маринаде, охл, 0,35 кг','Колбаски Свиные с вяленными томатами, вар, в/у, охл, 0,3 кг',\
@@ -72,7 +72,7 @@ try:
                                                                         np.where(spr['Владелец'].isin(spisok_shash), "Y",
                                                                             "N")))))))
 
-    ##input("Relax maan")
+
     spr['Штрихкод'] = spr['Штрихкод'].astype(str)
     spr = spr.dropna(subset='Входит в группу')
     spr["Владелец"] = spr["Владелец"].astype(str).apply(lambda x: (x.replace('Не исп ', '')))
@@ -108,7 +108,7 @@ try:
 
     mes='Начато продажи '+str(dt.datetime.now().strftime('%H:%M:%S'))
     print(mes)
-    ##input("Relax maan")
+
     ###############################################Продажи##########################################
     for file in spisok_prod :
         df=pd.read_csv(file,sep="\t",encoding='utf-8',decimal=",",dayfirst=True,parse_dates=["Дата"])
@@ -172,7 +172,7 @@ try:
     table_ost.columns=['Магазин','Дата','Номенклатура','Начальный остаток','Конечный остаток']
     combined_ost_all=pd.DataFrame()
     ###########ЗО###########
-    ##input("Relax maan")
+
 
 
     # заявлено отгружено
@@ -195,7 +195,7 @@ try:
     table_ch_zo.columns=['_'.join(col).rstrip('_') for col in table_ch_zo.columns.values]
     table_ch_zo.columns=['Магазин','Дата','Номенклатура','Заказано','Отгружено']
     #########################Чеки###########
-    ##input("Relax maan")
+
     print('Начато чеки ',dt.datetime.now().strftime('%H:%M:%S'))
     combined_ch=pd.DataFrame()
 

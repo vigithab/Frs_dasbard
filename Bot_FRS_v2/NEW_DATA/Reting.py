@@ -1,10 +1,13 @@
+import sys
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
+sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
+
 import datetime
 import os
 from Bot_FRS_v2.GooGL_TBL import Google as g
 import numpy as np
 import pandas as pd
 from Bot_FRS_v2.INI import ini, rename
-import reprlib
 
 pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
@@ -26,111 +29,6 @@ class reting():
         plan = plan.groupby(["магазин", "дата"]).sum().reset_index()
         self.plan = plan
 
-
-    def run(self):
-        df = self.df
-        plan = self.plan
-        df = df.loc[df["план_выручка"].notnull()]
-        df = df.rename(columns={"дата":"отработано_дней"})
-        df = df.groupby(["магазин", "год","месяц"],
-                              as_index=False).agg(
-            {"выручка": "sum", "Количество чеков": "sum",
-             "списания_оказатель": "sum", "списания_хозы": "sum","отработано_дней":"count"}).reset_index(drop=True)
-        month_dict = {
-            1: "2023-01-01",
-            2: "2023-02-01",
-            3: "2023-03-01",
-            4: "2023-04-01",
-            5: "2023-05-01",
-            6: "2023-06-01",
-            7: "2023-07-01",
-            8: "2023-08-01",
-            9: "2023-09-01",
-            10: "2023-10-01",
-            11: "2023-11-01",
-            12: "2023-12-01"}
-        df['месяц'] = df['месяц'].map(month_dict)
-        df['месяц'] = pd.to_datetime(df['месяц'], format='%Y-%m-%d')
-        df = df.rename(columns={"месяц":"дата"})
-
-        # Создание столбца с общим количеством дней в месяце
-        df['дней в месяце'] = df["дата"].dt.daysinmonth
-        # Создание столбца с количеством оставшихся дней до конца месяца
-        df['осталось дней'] = df["дней в месяце"] - df["отработано_дней"]
-
-        current_date = datetime.datetime.now()
-        # Форматирование текущей даты в нужный формат (год-месяц-01)
-        formatted_date = current_date.strftime("%Y-%m-01")
-        df.loc[df["дата"]!=formatted_date,"осталось дней"]= 0
-        df = pd.merge(df, plan, on=['магазин', "дата"], how='left')
-
-
-        spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
-        sprav_magaz = sprav_magaz.loc[sprav_magaz["Менеджер"].notnull()]
-        sprav_magaz = sprav_magaz.rename(columns={"!МАГАЗИН!": "магазин"})
-        sprav_magaz = sprav_magaz[["магазин","Менеджер"]]
-        df = pd.merge(df, sprav_magaz, on=["магазин"], how="left").reset_index(drop=True)
-
-        # прогноз выручка
-        df["прогноз_выручка"] = ((df["выручка"]/df["отработано_дней"]* df["осталось дней"])+df["выручка"])
-        # прогноз чеки
-        df["прогноз_количество_чеков"] = ((df["Количество чеков"] / df["отработано_дней"] * df["осталось дней"]) + df["Количество чеков"])
-        # прогноз средний чек
-        df["прогноз_Средний_чек"] = (df["прогноз_выручка"] / df["прогноз_количество_чеков"])
-
-        df = df.groupby(["Менеджер", "дата", "год"],
-                        as_index=False).agg(
-            {"выручка":"sum","прогноз_выручка": "sum", "план_выручка": "sum", "Количество чеков": "sum", "план_кол_чеков": "sum",
-             "прогноз_Средний_чек": "mean", "план_cредний_чек": "mean","списания_оказатель":"sum" }).reset_index(drop=True)
-
-        # ыполнение выручка
-        df["прогноз_выручка"] = (df["прогноз_выручка"] / df["план_выручка"])
-        # ыполнение кол клиентов
-        df["прогноз_количество_чеков"] =  df["Количество чеков"] / df["план_кол_чеков"]
-        # ыполнение средний чек
-        df["прогноз_Средний_чек"] = df["прогноз_Средний_чек"] / df["план_cредний_чек"]
-        # процент списаняи
-        df["Процент списания"] = df["списания_оказатель"] / df["выручка"]
-        #p(col="прогноз_количество_чеков")
-        print(df)
-
-
-        # Преобразуем столбец 'Дата' в формат даты и добавляем столбец 'Месяц'
-        df['дата'] = pd.to_datetime(df['дата'])
-        df['Месяц'] = df['дата'].dt.to_period('M')
-
-        # Рассчитываем Балллы для каждого показателя
-        max_score = 100
-
-        df['Баллл выручки'] = max_score * df['прогноз_выручка']
-        df['Баллл чеков'] = max_score * df['прогноз_количество_чеков']
-        df['Баллл среднего чека'] = max_score * df['прогноз_Средний_чек']
-
-        # Баллл списания будет рассчитываться иначе из-за влияния на Балллы
-        for index, row in df.iterrows():
-            if row['Процент списания'] > 0.025:
-                df.at[index, 'Баллл списания'] = max_score - (max_score * row['Процент списания'])
-            else:
-                df.at[index, 'Баллл списания'] = max_score + (max_score * row['Процент списания'] * 2)
-
-        # Рассчитываем общий Баллл с учетом весов
-        weights = {
-            'Баллл выручки': 0.6,
-            'Баллл чеков': 0.2,
-            'Баллл среднего чека': 0.1,
-            'Баллл списания': 0.1
-        }
-        df['Общий Баллл'] = (df[list(weights.keys())] * pd.Series(weights)).sum(axis=1)
-
-        step = 0.1
-        # Округляем Балллы до ближайшего меньшего числа, кратного шагу
-        for col in ['Баллл выручки', 'Баллл чеков', 'Баллл среднего чека', 'Баллл списания', 'Общий Баллл']:
-            df[col] = (df[col] // step) * step
-
-        df = df[["Менеджер","дата","год","выручка","Количество чеков","Процент списания","Общий Баллл","Баллл выручки","Баллл чеков","Баллл среднего чека","Баллл списания"]]
-        print(df[:50])
-        df.to_excel(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\♀Планы\Показатели для расчета рейтинга.xlsx",index=False)
-
     def run_2(self):
         df = self.df
         plan = self.plan
@@ -145,7 +43,6 @@ class reting():
 
                 if "Отчёт" in filename and "~$" not in filename:
                     report_files.append(filename)
-
 
             df = pd.DataFrame()
             for filename in report_files:
@@ -375,10 +272,7 @@ class reting():
         df_2023, maxdate = g_2023(df)
 
         audit =  audit()
-
-
         df = pd.merge(df_2023, g_2022(df,maxdate), on=["Менеджер","Месяц","магазин"], how="left").reset_index(drop=True)
-        print("dd", df[:50])
 
         df.fillna(0, inplace=True)
         df = pd.merge(df, audit[["дата","магазин","Прогресс"]], on=["магазин",'дата'], how="left").reset_index(drop=True)
@@ -388,7 +282,7 @@ class reting():
         df["YoY_check"] = ((df["Количество чеков_2023"] - df["Количество чеков_2022"])/ df["Количество чеков_2022"])*100
         df["YoY_aver_check"] = ((df["средний_чек_2023"] - df["средний_чек_2022"]) / df["средний_чек_2022"])*100
         df["YoY_drop_sales"] = (df["Процент списания_2023"] - df["Процент списания_2022"])
-        df = df.loc[df["YoY_sales"] != np.inf]
+        #df = df.loc[df["YoY_sales"] != np.inf]
         df = df.loc[df["магазин"] != "Барнаул Энтузиастов, 14"]
         df = df.drop(columns=["выручка_2023","Количество чеков_2023","средний_чек_2023","выручка_2022","Количество чеков_2022","средний_чек_2022","Месяц"])
 
@@ -410,6 +304,9 @@ class reting():
         def YoY(yoy_sales, max_points):
             if yoy_sales < 0:
                 return 0
+            if yoy_sales == np.inf:
+                max_points = max_points/2
+                return max_points
             elif yoy_sales >= 15:
                 return max_points
             else:
@@ -526,27 +423,27 @@ class reting():
 
                 print(df[:50])
             else:
-                print("franshiz")
-                d = franshiza(a)
+                df = franshiza(a)
 
-                d.fillna(0, inplace=True)
-                d['Общий'] =  d[ "Балл изменение к прошлому году выручка"] + \
-                              d["Балл изменение к прошлому году Кол.чеков"] + \
-                              d["Балл изменение к прошлому году Ср.чек"] + \
-                              d["Балл_Аудиты"].fillna(0)
+                df = df.fillna(0)
+                df['Общий'] =  df[ "Балл изменение к прошлому году выручка"] + \
+                              df["Балл изменение к прошлому году Кол.чеков"] + \
+                              df["Балл изменение к прошлому году Ср.чек"] + \
+                              df["Балл_Аудиты"].fillna(0)
 
-                d = d.rename(columns={"YoY_sales":"2022/2023 выручка",
+
+
+                df = df.rename(columns={"YoY_sales":"2022/2023 выручка",
                                         "YoY_check":"2022/2023 Кол.чеков","YoY_aver_check":"2022/2023 Ср.чек",
                                         "Прогресс":"Аудиты"})
 
-                d = d[["Менеджер","магазин","Канал","дата",
+                df = df[["Менеджер","магазин","Канал","дата",
                          "2022/2023 выручка","Балл изменение к прошлому году выручка","2022/2023 Кол.чеков",
                        "Балл изменение к прошлому году Кол.чеков",
                          "2022/2023 Ср.чек","Балл изменение к прошлому году Ср.чек","Аудиты","Балл_Аудиты",'Общий']]
 
-                df = d.loc[d["дата"]>="2023-01-01"]
+                df = df.loc[df["дата"]>="2023-01-01"]
 
-                print(df[:50])
             return df
 
 
@@ -573,12 +470,9 @@ class reting():
                            index=False)
 
         Franshiza = nextd(a = df_f, x="Franshiza")
-        df = df.drop(columns=["Менеджер"])
-        spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
-
-        sprav_magaz = sprav_magaz[["!МАГАЗИН!", "Юр. лицо"]]
-        sprav_magaz = sprav_magaz.rename(columns={"!МАГАЗИН!": "магазин","Юр. лицо":"Партнер"})
+        sprav_magaz = pd.read_excel(r"https://docs.google.com/spreadsheets/d/1CdOvV2uPgSRO06KwHRtqc3f0DbXOAy-gxlAZP1F9lqY/export?exportFormat=xlsx", sheet_name="Справочник партнеров")
         Franshiza = Franshiza.merge(sprav_magaz, on=["магазин"], how="left").reset_index(drop=True)
+
 
 
         Franshiza = Franshiza[["Партнер", "магазин", "Канал", "дата",
@@ -610,8 +504,10 @@ class reting():
                                  sheet_name="Франшиза_по_партнерам")
         return
 
-
-
+def run_reyting():
+    dat = reting()
+    raschet = dat.run_2()
+    return raschet
 
 if __name__ == '__main__':
     dat = reting()

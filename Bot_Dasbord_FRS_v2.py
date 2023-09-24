@@ -1,8 +1,7 @@
-import shutil
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
-
+import shutil
 from datetime import datetime, timedelta, time, date
 import os
 import pandas as pd
@@ -11,15 +10,15 @@ import datetime
 import time
 from Bot_FRS_v2.NEW_DATA.SET_SD import run_NEW_DATA_sd
 from Bot_FRS_v2.BOT_TELEGRAM import BOT
-from Bot_FRS_v2.NEW_DATA import SETRETEYL as set
+from Bot_FRS_v2.Databese import Oper_day as set
 from Bot_FRS_v2.INI import Float, log, rename, ini, memory
-from Bot_FRS_v2.RASSILKA import Voropaev,count_tt,Storno
+from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
 from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers,Reting
+
 
 PUT = ini.PUT
 class NEW_data:
     def Obrabotka(self):
-        log.LOG().log_data()
         BOT.BOT().bot_mes_html(mes="Скрипт Дашборда запущен",silka=0)
         # Получение данных для персонала
         try:
@@ -43,15 +42,10 @@ class NEW_data:
 
         if ini.set_== 1:
             print("Будеть обновлены данные с сета")
-            # Получение С СЕТРЕТЕЙЛА
-            try:
-                set.SET().Set_obrabotka()
-                log.LOG().log_new_data(name_txt="Cетритеил")
-            except Exception as e:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                mes = f"Ошибка при скачивании : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
-                log.LOG().log_new_data(name_txt="Ошибка Cетритеил", e=mes)
-                BOT.BOT().bot_mes_html(mes=mes, silka=0)
+
+            set.run_new_data()
+            log.LOG().log_new_data(name_txt="Cетритеил")
+
         if ini.set_ != 1:
             BOT.BOT().bot_mes_html(mes="🟡 Нужно выбрать сколько фалов нужно обработать", silka=0)
             print("данные с сента обнгалены не будут, тресем историю")
@@ -71,8 +65,8 @@ class NEW_data:
             n = int(input(f"Сколько последних файлов обработать? ввести цифру: "))
             copy_last_n_files(source_folder, destination_folder, n)
             print(f"Скопировано последних {n} файлов:\nиз {source_folder}\nв {destination_folder}.")
-        spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
 
+        spqr, sprav_magaz, open_mag = rename.RENAME().magazin_info()
         for root, dirs, files in os.walk(PUT + "Selenium\\Оригинальные файлы\\"):
             # "PUT + "Selenium\\Оригинальные файлы\\"
             for file in files:
@@ -87,26 +81,14 @@ class NEW_data:
                         df.drop("Магазин 1C", axis=1, inplace=True)
                     d = df['Дата/Время чека'][1]
                     new_filename = d[0:10] + ".xlsx"
-                    df = df.rename(columns={"Магазин": 'ID'})
-                    table = df.merge(spqr[['!МАГАЗИН!', 'ID']], on='ID', how="left")
+                    table = df.rename(columns={"Магазин": 'ID'})
+                    #table = df.merge(spqr[['!МАГАЗИН!', 'ID']], on='ID', how="left")
                     del df
                     table = table.loc[table["Тип"].notnull()]
                     table['!МАГАЗИН!'] = table['!МАГАЗИН!'].astype("str")
                     table['Наименование товара'] = table['Наименование товара'].fillna("неизвестно").astype("str")
 
                     sales_day = table.copy()
-                    # удаление микромаркетов
-                    l_mag = ("Микромаркет", "Экопункт", "Вендинг", "Итого")
-                    for w in l_mag:
-                        sales_day = sales_day[~sales_day["!МАГАЗИН!"].str.contains(w)].reset_index(drop=True)
-
-                    # удаление подарочных карт
-                    PODAROK = ["Подарочная карта КМ 500р+ конверт", "Подарочная карта КМ 1000р+ конверт",
-                               "подарочная карта КМ 500 НОВАЯ",
-                               "подарочная карта КМ 1000 НОВАЯ"]
-                    for x in PODAROK:
-                        sales_day = sales_day.loc[sales_day["Наименование товара"] != x]
-
                     # обработка файла чеков
                     sales_day_cehk = NEW_data().selenium_day_chek(name_datafreme=sales_day,
                                                                   name_file=str(new_filename))
@@ -136,42 +118,7 @@ class NEW_data:
                     del sales_day_cehk
                     del sales_day
                     gc.collect()
-                    # region СОХРАНЕНИЕ УДАЛЕННЫХ ДАННЫХ
-                    # Сохранение отдельно вейдинги и микромаркеты
-                    mask_VEN = table["!МАГАЗИН!"].str.contains("|".join(l_mag))
-                    sales_day_VEN = table[mask_VEN]
-                    sales_day_VEN.to_csv(PUT + "Selenium\\Вейдинги и микромаркет\\" + new_filename[:-5] + ".csv",
-                                           encoding="utf-8",
-                                           sep=';', index=False,
-                                           decimal=",")
 
-                    del sales_day_VEN
-                    gc.collect()
-                    # Сохранение отдельно подарочные карты
-                    sales_day_Podarok = \
-                        table.loc[(table["Наименование товара"] == "Подарочная карта КМ 500р+ конверт") |
-                        (table["Наименование товара"] == "Подарочная карта КМ 1000р+ конверт") |
-                        (table["Наименование товара"] == "подарочная карта КМ 500 НОВАЯ") |
-                        (table["Наименование товара"] == "подарочная карта КМ 1000 НОВАЯ")]
-
-                    sales_day_Podarok.to_csv(PUT + "Selenium\\Подарочные карты\\" + new_filename[:-5] + ".csv",
-                                           encoding="utf-8",
-                                           sep=';', index=False,
-                                           decimal=",")
-                    del sales_day_Podarok
-                    gc.collect()
-                    try:
-                        # Сохранение отдельно анулированные и возвращенные чеки
-                        sales_null = table.loc[(table["Тип"] == "Отмена") | (table["Тип"] == "Возврат")]
-                        sales_null.to_csv(PUT + "Selenium\\Анулированные и возврат чеки\\" +
-                                            new_filename[:-5] + ".csv",
-                                             encoding="utf-8",
-                                             sep=';', index=False,
-                                             decimal=",")
-                        del sales_null
-                        gc.collect()
-                    except:
-                        print("Ошибка при сохранении анулированные и возвращенные чеки")
 
                     # Формирование Конверсии
                     try:
@@ -182,6 +129,8 @@ class NEW_data:
                         mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
                         log.LOG().log_new_data(name_txt="Конверсии", e=mes)
                         BOT.BOT().bot_mes_html(mes="Ошибка при обработке Конверсии", silka=0)
+
+
         # обработка списания
         try:
             NEW_data().selenium_day_Spisania()
@@ -300,9 +249,11 @@ class NEW_data:
             mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
             log.LOG().log_new_data(name_txt="Таблица планов", e=mes)
             BOT.BOT().bot_mes_html(mes="Ошибка при обработке Таблица планов", silka=0)
+
         # Формирование таблиц рейтинга
         try:
-            Reting.reting()
+            BOT.BOT().bot_mes_html(mes="Попытка обновить рейтинг", silka=0)
+            Reting.run_reyting()
             log.LOG().log_new_data(name_txt="Таблица Рейтинга")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -349,7 +300,7 @@ class NEW_data:
 
         sales_day_sales = name_datafreme[
             ["ID", "!МАГАЗИН!", "Код товара", "Тип", "Наименование товара", "Количество", "Стоимость позиции",
-             "Сумма скидки", "Штрихкод"]]
+             "Сумма скидки"]]
         sales_day_sales = sales_day_sales.loc[(sales_day_sales["Тип"] == "Продажа") | (sales_day_sales["Тип"] ==
                                                                                        "Возврат")]
         sales_day_sales = sales_day_sales.drop(["Тип"], axis=1)

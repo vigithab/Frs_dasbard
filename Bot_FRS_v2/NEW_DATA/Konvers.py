@@ -103,9 +103,7 @@ class konvers():
             # вернуть локаль
             locale.setlocale(locale.LC_TIME, old_locale)
 
-            base_dir = \
-                "P:\\Фирменная розница\\ФРС\\Данные из 1 С\\Чеки_Сгруппированные_конверсия\\" \
-                "По_номенклатуре\\"  # Базовый каталог, в котором будут создаваться папки
+            base_dir ="P:\\Фирменная розница\\ФРС\\Данные из SetRetail\\Конверсия\\По_номенклатуре\\"
 
             # Сочетание года и месяца в одной строке, разделенной символом '/'
             year_month_dir = os.path.join(base_dir, f"{year}\\{month}\\")
@@ -122,3 +120,4 @@ class konvers():
             BOT.BOT().bot_mes_html(mes=zx, silka=0)
         return
 
+konvers().selenium_day_chek()
