@@ -332,6 +332,7 @@ class tbl_bot():
         time.sleep(2)
         zagolovok_name = f'Данные обновлены дата: {ini.dat_seychas} время: {ini.time_seychas}'
         print(zagolovok_name)
+        print(tbl_id)
         # Записываем дату
         values = [[str(zagolovok_name)]]
         if name_tbl =="Количество магазинов сети" or "Планы_2023":

@@ -1,3 +1,4 @@
+import gc
 import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
@@ -46,7 +47,7 @@ class konvers():
             ~((name_datafreme["!МАГАЗИН!"] == "Таврическая 37") & (name_datafreme["Касса"] == "4.0"))]
         sp = ["Касса"]
         Float.FLOAT().float_colms(name_data=name_datafreme,name_col=sp)
-
+        gc.collect()
         def cnevk_num(tip):
             df = name_datafreme[["Тип", "!МАГАЗИН!","Магазин", "Дата/Время чека", 'номенклатура_1с',"Касса",
                                  "Чек","Стоимость позиции", "Код товара", "Смена",]]
@@ -80,6 +81,7 @@ class konvers():
                 else:
                     df_filter = df_filter.rename(columns={'ID_Chek': "Возврат раз в чеках"})
                 df_itog = pd.concat([df_itog,  df_filter], axis=0)
+                gc.collect()
             return df_itog
 
 
@@ -93,7 +95,7 @@ class konvers():
                            "Возврат раз в чеках"]]
         date_obj = name_file[:-5]
         date_obj = datetime.datetime.strptime(date_obj, "%d.%m.%Y").date()
-
+        gc.collect()
         try:
             year = str(date_obj.year)  # Получение года в виде строки
             old_locale = locale.getlocale(locale.LC_TIME)
@@ -104,20 +106,17 @@ class konvers():
             locale.setlocale(locale.LC_TIME, old_locale)
 
             base_dir ="P:\\Фирменная розница\\ФРС\\Данные из SetRetail\\Конверсия\\По_номенклатуре\\"
-
             # Сочетание года и месяца в одной строке, разделенной символом '/'
             year_month_dir = os.path.join(base_dir, f"{year}\\{month}\\")
 
             # Проверка наличия папки года-месяца и создание при необходимости
             if not os.path.exists(year_month_dir):
                 os.makedirs(year_month_dir)
-
             df_itog.to_csv(year_month_dir + f"{str(name_file)[:-5]}_num.csv", index=False)
+            zx = "Конверсия обработанна"
+            BOT.BOT().bot_mes_html(mes=zx, silka=0)
 
         except:
             zx = "📛 Ошибка при обработке конверсии номенклатура"
-            print(zx)
             BOT.BOT().bot_mes_html(mes=zx, silka=0)
         return
-
-konvers().selenium_day_chek()

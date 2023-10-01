@@ -13,7 +13,7 @@ from Bot_FRS_v2.BOT_TELEGRAM import BOT
 from Bot_FRS_v2.Databese import Oper_day as set
 from Bot_FRS_v2.INI import Float, log, rename, ini, memory
 from Bot_FRS_v2.RASSILKA import Voropaev,count_tt
-from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers,Reting
+from Bot_FRS_v2.NEW_DATA import Personal_v2, Plan_2023, GRUP_FILE, SORT_FILE, Konvers, Reting
 
 
 PUT = ini.PUT
@@ -128,7 +128,7 @@ class NEW_data:
                         exc_type, exc_obj, exc_tb = sys.exc_info()
                         mes = f"Ошибка при : {exc_type.__name__} на строке {exc_tb.tb_lineno}: {e}\n"
                         log.LOG().log_new_data(name_txt="Конверсии", e=mes)
-                        BOT.BOT().bot_mes_html(mes="Ошибка при обработке Конверсии", silka=0)
+                        BOT.BOT().bot_mes_html(mes="Ошибка при обработке Конверсии" + mes, silka=0)
 
 
         # обработка списания

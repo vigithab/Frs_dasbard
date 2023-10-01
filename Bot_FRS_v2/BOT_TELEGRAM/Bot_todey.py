@@ -55,7 +55,115 @@ class bot_mesege:
                 date_str = f.readline().strip()
             format_date_str = '%d.%m.%Y'
             # тестовая дата скрыть ели боевой режим
-            # date_str = "2023-05-10 10:00:36.001115"
+            date_str = "2023-08-01 10:00:36.001115"
+            # Дата обновления
+            MAX_DATE = datetime.datetime.strptime(date_str[:10], '%Y-%m-%d').date()
+
+            TODEY = [MAX_DATE.strftime(format_date_str)]
+            LAST_DATE = MAX_DATE - datetime.timedelta(days=1)
+            # print("Дата в файле\n", MAX_DATE)
+
+            # тестовая
+            test = 0
+            if test == 1:
+                MAX_DATE = datetime.datetime.strptime("2023-05-10", '%Y-%m-%d').date()
+                LAST_DATE = MAX_DATE - datetime.timedelta(days=1)
+
+            # region ФОРМИРОВАНИЕ СПИСКА ВЧЕРАШНЕЙ ДАТЫ
+            priznzk = ""
+            VCHERA = []
+            if is_workday(MAX_DATE):
+                if is_workday(LAST_DATE):
+                    priznzk = 'середина недели'
+                    VCHERA.append(LAST_DATE.strftime(format_date_str))
+                else:
+                    priznzk = "начало недели"
+                    while not is_workday(LAST_DATE):
+                        VCHERA.append(LAST_DATE.strftime(format_date_str))
+                        LAST_DATE -= datetime.timedelta(days=1)
+                    VCHERA.append(LAST_DATE.strftime(format_date_str))
+            else:
+                priznzk = "выходной день"
+                VCHERA.append(LAST_DATE.strftime(format_date_str))
+            # Преобразование дат в списке TODEY в объект datetime
+            todey_date = datetime.datetime.strptime(TODEY[0], '%d.%m.%Y')
+            # Фильтрация списка VCHERA
+            fil_vchera = []
+            for date_str in VCHERA:
+                date = datetime.datetime.strptime(date_str, '%d.%m.%Y')
+                if date.month == todey_date.month:
+                    fil_vchera.append(date_str)
+
+            VCHERA = fil_vchera
+
+            # region ТЕКУШИЙ МЕСЯЦ
+            TODEY_month_min_day = MAX_DATE.replace(day=1)
+            # список дат
+            TODEY_month = pd.date_range(start=TODEY_month_min_day, end=MAX_DATE - datetime.timedelta(days=1),
+                                        freq='D').strftime(format_date_str).tolist()
+
+            # если конец месяца
+            MAX_DATE_TODEY_month_itog = datetime.datetime.strptime("2023-08-31", '%Y-%m-%d').date()
+            TODEY_month_itog = pd.date_range(start=TODEY_month_min_day, end=MAX_DATE, freq='D').strftime(format_date_str).tolist()
+            # print("Текущий месяц\n",TODEY_month)
+            # endregion
+
+            # region ПРОШЛЫЙ МЕСЯЦ
+            LAST_month_min_day = TODEY_month_min_day - pd.offsets.MonthBegin(1)
+            # Определяем последний день прошлого месяца
+            LAST_month_max_day = TODEY_month_min_day - pd.offsets.Day(1)
+            # Создаем список дат прошлого месяца
+            LAST_month = pd.date_range(start=LAST_month_min_day, end=LAST_month_max_day, freq='D').strftime(
+                format_date_str).tolist()
+            # Определяем количество дней в каждом месяце
+            days_in_today_month = len(TODEY_month)
+            days_in_last_month = len(LAST_month)
+            # Если количество дней в прошлом месяце больше, отфильтруем его, чтобы было равное количество дней
+            if days_in_last_month > days_in_today_month:
+                LAST_month = LAST_month[:days_in_today_month]
+            # print("Прошлый месяц\n",LAST_month)
+
+            # endregion
+            # region ЕРЕМЕННАЯ НАЧАЛО МЕСЯЦА
+            # Получаем текущую дату
+            t_date = datetime.datetime.now()
+            # Проверяем, является ли сегодня первым днем месяца
+            if t_date.day == 1:
+                # Если да, то устанавливаем значение переменной "Начало месяца"
+                new_month = "Начало месяца"
+            else:
+                # Если нет, то устанавливаем значение переменной "нет"
+                new_month = "нет"
+            # endregion
+            save_date(priznzk, "priznzk")
+            save_date(TODEY, "TODEY")
+            save_date(VCHERA, "VCHERA")
+            save_date(TODEY_month, "TODEY_month")
+            save_date(LAST_month, "LAST_month")
+            save_date(new_month, "new_month")
+            return TODEY, VCHERA, TODEY_month, LAST_month, priznzk, new_month
+
+        def tabl_bot_new_month():
+            # определение рабочего дня или выходного
+            def is_workday(date):
+                ru_holidays = CustomRusHolidays()
+                if date.weekday() >= 5:  # Если это суббота или воскресенье, то это выходной день.
+                    return False
+                elif date in ru_holidays:  # Если это праздничный день, то это выходной день.
+                    return False
+                else:
+                    return True  # Иначе это рабочий день.
+
+            def save_date(date_list, name):
+                with open(PUT + "BOT\\Temp\\даты_файлов\\" + name + '.txt', 'w') as f:
+                    f.write(str(date_list))
+
+            # Чтение даты из файла
+            with open(PUT + 'NEW\\дата обновления.txt', 'r') as f:
+                date_str = f.readline().strip()
+            format_date_str = '%d.%m.%Y'
+            # тестовая дата скрыть ели боевой режим
+            date_str = "2023-08-01 10:00:36.001115"
             # Дата обновления
             MAX_DATE = datetime.datetime.strptime(date_str[:10], '%Y-%m-%d').date()
 
@@ -173,6 +281,9 @@ class bot_mesege:
             i = i.replace('2023', '2022')
             self.LAST_year.append(i)
 
+        self.LAST_year = [datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d') for date in self.LAST_year]
+        print("*Список дат прошлого года: ", self.TODEY_month)
+        print("*Список дат прошлого года: ", self.LAST_year)
         # список для фолрмирование даты в сообщении.
         self.VCHERA_date_info = VCHERA
         # загрзка таблиц, формирование списка ТУ
@@ -256,6 +367,9 @@ class bot_mesege:
 
             # Результаты за прошлый год
             Last_year = self.tabl[self.tabl['дата'].isin(self.LAST_year)]
+
+            Last_year.to_excel(r'C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\BOT\Т.xlsx', index=False)
+
             Last_year = Last_year.groupby(["магазин"], as_index=False).agg(
                 {"выручка": "sum", "Количество чеков": "sum",
                  "списания_оказатель": "sum", "списания_хозы": "sum"}) \
@@ -264,6 +378,7 @@ class bot_mesege:
                 columns={"выручка": "выручка прошлый год", "Количество чеков": "Количество чеков, прошлый год",
                          "списания_оказатель": "списания_оказатель прошлый год",
                          "списания_хозы": "списания_хозы прошлый год"})
+
             # Результаты за прошлый месяц
             Last_nonth = self.tabl[self.tabl['дата'].isin(self.LAST_month)]
             Last_nonth = Last_nonth.groupby(["магазин"], as_index=False).agg(
@@ -292,6 +407,7 @@ class bot_mesege:
                                                          on=["магазин"], how="left").reset_index(drop=True)
                 manager_data_total = manager_data_total.merge(Last_year,
                                                               on=["магазин"], how="left").reset_index(drop=True)
+
                 sales_total = manager_data_total["выручка"].sum()
                 sales_total_plan = manager_data_total["план_выручка"].sum()
                 sales_total_itog = sales_total / sales_total_plan
@@ -455,6 +571,9 @@ class google_tabl():
         self.bot = self_bot
     # формирование таблиц вчерашнего дня
     def vchera_googl_tbl(self, df):
+
+
+
 
         df = df.rename(columns={"магазин":'Магазин',
                             "выручка":'Выручка Факт',

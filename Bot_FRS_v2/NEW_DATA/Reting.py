@@ -485,7 +485,7 @@ class reting():
         Franshiza .fillna('', inplace=True)
         Franshiza["дата"] = Franshiza["дата"].astype(str)
 
-        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_балы", df=Franshiza,
+        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
                                  sheet_name="Франшиза_по магазинам")
 
         Franshiza =  Franshiza.groupby(["Партнер","Канал","дата"], as_index=False).agg(
@@ -500,7 +500,7 @@ class reting():
         Franshiza.fillna('', inplace=True)
         Franshiza["дата"] = Franshiza["дата"].astype(str)
 
-        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_балы", df=Franshiza,
+        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
                                  sheet_name="Франшиза_по_партнерам")
         return
 

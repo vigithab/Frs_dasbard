@@ -2,7 +2,6 @@ import sys
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
 sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 import pandas as pd
-import os
 import datetime as dt
 import numpy as np
 from Bot_FRS_v2.GooGL_TBL import Google as g
