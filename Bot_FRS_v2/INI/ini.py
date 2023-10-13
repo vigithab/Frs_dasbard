@@ -17,7 +17,7 @@ golova = 0
 
 # Время рассылки сообщений
 # БОТ время деления на утреннее и вечернее время до этого времени отправляются итоги дня)
-time_bot_vrem = "16:50:00"
+time_bot_vrem = "09:50:00"
 
 
 # ожидание перед отправкой соощения
@@ -51,8 +51,8 @@ token = keys_dict.get('token')
 token2 = keys_dict.get('token_n')
 test_all= keys_dict.get('Мой_канал')
 test_all2 = keys_dict.get('Катрин_канал')
-TY_id = keys_dict.get('Мой_канал')
-#TY_id = keys_dict.get('Мой_канал_ТУ')
+#TY_id = keys_dict.get('Мой_канал')
+TY_id = keys_dict.get('Мой_канал_ТУ')
 avtozakaz_mail = keys_dict.get('avtozakaz_mail')
 ya_mail_aps = keys_dict.get('ya_mail_aps')
 km = keys_dict.get("km_test")

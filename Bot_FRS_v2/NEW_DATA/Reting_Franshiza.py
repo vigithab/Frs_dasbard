@@ -1,9 +1,7 @@
 import shutil
-import sys
-sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON\venv\Lib\site-packages")
-sys.path.append(r"C:\Users\Lebedevvv\Desktop\FRS\PYTHON")
 
 import datetime
+from datetime import date
 import os
 from Bot_FRS_v2.GooGL_TBL import Google as g
 import numpy as np
@@ -14,14 +12,13 @@ pd.set_option("expand_frame_repr", False)
 pd.set_option('display.max_colwidth', None)
 
 
-class reting():
+class reting_franshiza():
 
     def __init__(self):
-        PUT = ini.PUT
-        self.df = pd.read_csv(PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
-                              decimal=".")
-        # панов прдаж
-        plan = pd.read_excel(PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
+        self.df = pd.read_csv(ini.PUT + "♀Вычисляемые_таблицы\\Нарастающие итоги.csv", sep="\t", encoding="utf-8",
+                              decimal=".", low_memory=False)
+        # планов продаж
+        plan = pd.read_excel(ini.PUT + "♀Планы\\Планы ДЛЯ ДАШБОРДА.xlsx")
         plan['дата'] = pd.to_datetime(plan['дата'], format='%d.%m.%Y')
         plan.loc[plan["Показатель"] == "Выручка", "план_выручка"] = plan["ПЛАН"].round(0)
         plan.loc[plan["Показатель"] == "Средний чек", "план_cредний_чек"] = plan["ПЛАН"].round(0)
@@ -36,6 +33,8 @@ class reting():
 
         def audit():
             start = r'P:\Фирменная розница\ФРС\Аналитический отдел ФРС\аудиты_Петров_выгрузка.xlsx'
+            #start = r'C:\Рабочие документы\Python\Франшиза\аудиты_Петров_выгрузка.xlsx'
+            #end = r'C:\Рабочие документы\Python\Франшиза\Аудиты'
             end = r'C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Аудиты'
 
             shutil.copy2(start,end)
@@ -90,7 +89,7 @@ class reting():
                 df.loc[df["КУО / нет"] == "Нет", "Прогресс"] = 0
                 df = df[["магазин", "Прогресс", "дата"]]
                 df = df.drop_duplicates()
-                #№№№
+
                 # Прошлый месяц
                 df_last_month = df.loc[df["дата"] == (df["дата"].max()) - pd.DateOffset(months=1)]
                 df_last_month = df_last_month[["магазин", "Прогресс", "дата"]]
@@ -119,14 +118,11 @@ class reting():
 
                 df = pd.concat([df,  df_add], axis=0)
 
-
-                print(df)
                 # Сохранение обновленного DataFrame обратно в файл
-                df.to_excel('updated_file.xlsx', index=False)
-
+                #df.to_excel('updated_file.xlsx', index=False)
             return df
 
-
+# ФРС старт
         def g_2023(df):
             df = df.loc[df["план_выручка"].notnull()]
             maxdate = df["дата"].max()
@@ -177,12 +173,7 @@ class reting():
             # прогноз средний чек
             df["прогноз_Средний_чек"] = (df["прогноз_выручка"] / df["прогноз_количество_чеков"])
     
-            """df = df.groupby(["Менеджер", "дата", "год"],
-                            as_index=False).agg(
-                {"выручка":"sum","прогноз_выручка": "sum", "план_выручка": "sum", "Количество чеков": "sum", "план_кол_чеков": "sum",
-                 "прогноз_Средний_чек": "mean", "план_cредний_чек": "mean","списания_оказатель":"sum" }).reset_index(drop=True)"""
-    
-            # ыполнение выручка
+            # выполнение выручка
             df["прогноз_выручка"] = (df["прогноз_выручка"]  / df["план_выручка"])*100
             # ыполнение кол клиентов
             df["прогноз_количество_чеков"] =  (df["Количество чеков"] / df["план_кол_чеков"])*100
@@ -201,7 +192,7 @@ class reting():
 
         def g_2022(df,maxdate):
             maxdate = maxdate.replace("2023", "2022")
-            df = df.loc[df["год"]==2022]
+            df = df.loc[df["год"] == 2022]
             df = df.loc[df["дата"] <= maxdate]
             df = df.rename(columns={"дата": "отработано_дней"})
             df = df.groupby(["магазин", "год", "месяц"],
@@ -275,7 +266,123 @@ class reting():
                 df =df.rename(columns={i:f"{i}_2022"})
             return df
 
+        def personal():
+            df_personal = pd.read_excel(
+                "https://docs.google.com/spreadsheets/d/13tsxHb82mRcyQiYn78EGh7uV_6sUiq1zcAW3mo2aIFQ/export?exportFormat=xlsx",
+                skiprows=1)
+            df_personal["Укомплектованность %"] = (
+                        df_personal["Фактическая численность"] / df_personal["Плановая численность"] * 100).round(2)
 
+            df_shop = pd.read_excel(
+                "https://docs.google.com/spreadsheets/d/1qXyD0hr1sOzoMKvMyUBpfTXDwLkh0RwLcNLuiNbWmSM/export?exportFormat=xlsx")
+
+            df_personal = pd.merge(df_personal, df_shop[["МАГАЗИН", "!МАГАЗИН!"]], on=["МАГАЗИН"], how="left").reset_index(drop=True)
+            df_personal = df_personal.loc[:, ["Ответственный за персонал", "!МАГАЗИН!", "Плановая численность", "Фактическая численность", "Укомплектованность %"]]
+            df_personal = df_personal.rename(columns={"!МАГАЗИН!": "магазин"})
+
+            today = date.today()
+            df_personal["дата"] = today.strftime("%Y-%m") + "-" + "01"
+            df_personal['дата'] = pd.to_datetime(df_personal['дата'], format='%Y-%m-%d')
+            df_personal = df_personal[["Ответственный за персонал","магазин","дата","Плановая численность",
+                                       "Фактическая численность","Укомплектованность %"]]
+            return df_personal
+
+        def turnover():
+            df_turnover = pd.read_excel(
+                "https://docs.google.com/spreadsheets/d/1cHRLQFBJ7_xuuuQ287nZ6sAJeG18WVm6o0Zk6Yb2rWA/export?exportFormat=xlsx")
+
+            df_turnover["Текучесть"] = (df_turnover["Текучесть"] * 100).round(2)
+            #df_turnover.fillna('', inplace=True)
+
+            month_dict = {
+                "Январь": "2023-01-01",
+                "Февраль": "2023-02-01",
+                "Март": "2023-03-01",
+                "Апрель": "2023-04-01",
+                "Май": "2023-05-01",
+                "Июнь": "2023-06-01",
+                "Июль": "2023-07-01",
+                "Август": "2023-08-01",
+                "Сентябрь": "2023-09-01",
+                "Октябрь": "2023-10-01",
+                "Ноябрь": "2023-11-01",
+                "Декабрь": "2023-12-01"}
+            df_turnover['Месяц'] = df_turnover['Месяц'].map(month_dict)
+            df_turnover['Месяц'] = pd.to_datetime(df_turnover['Месяц'], format='%Y-%m-%d')
+            df_turnover = df_turnover.rename(columns={"Адрес": "магазин", "Месяц": "дата"})
+            df_turnover = df_turnover.dropna(subset=["ССЧ"])
+
+            # Заполнение текущего месяца, если он пустой
+            # Прошлый месяц
+            df_turnover_last_month = df_turnover.loc[df_turnover["дата"] == (df_turnover["дата"].max()) - pd.DateOffset(months=1)]
+            df_turnover_last_month = df_turnover_last_month[["Партнер", "магазин", "дата", "ССЧ", "Кол-во уволенных", "Текучесть"]]
+
+            # максимальный месяц
+            df_turnover_max_month = df_turnover.loc[df_turnover["дата"] == df_turnover["дата"].max()]
+            df_turnover_max_month = df_turnover_max_month[["Партнер", "магазин", "дата", "ССЧ", "Кол-во уволенных", "Текучесть"]]
+
+            # Создайте список уникальных магазинов в df_max_month
+            unique_max_month_stores = df_turnover_max_month['магазин'].unique()
+
+            # Код для пропуска текущего пустого месяца??
+            # Найдите магазины, которые отсутствуют в df_max_month
+            missing_stores = df_turnover_last_month[~df_turnover_last_month['магазин'].isin(unique_max_month_stores)]
+            df_turnover_max_mes = df_turnover["дата"].max()
+            df_turnover_max_mes_add = (df_turnover["дата"].max()) + pd.DateOffset(months=1)
+            missing_stores = missing_stores.drop(columns=["дата"])
+            missing_stores["дата"] = df_turnover_max_mes
+            df_turnover = pd.concat([df_turnover, missing_stores], axis=0)
+
+            # максимальный месяц
+            df_turnover_add = df_turnover.loc[df_turnover["дата"] == df_turnover["дата"].max()]
+            df_turnover_add = df_turnover_add[["Партнер", "магазин", "дата", "ССЧ", "Кол-во уволенных", "Текучесть"]]
+
+            df_turnover_add = df_turnover_add.drop(columns=["дата"])
+            df_turnover_add["дата"] = df_turnover_max_mes_add
+
+            df_turnover = pd.concat([df_turnover, df_turnover_add], axis=0)
+
+            #print(df_turnover)
+            #df_turnover.to_excel("df_turnover.xlsx", index=False)
+            return df_turnover
+
+        def loyalty():
+            path = r'P:\Фирменная розница\ФРС\Данные из SetRetail\Лояльность\Планы\Планы по проникновению(Раситанные).xlsx'
+            df_loyalty = pd.read_excel(path, sheet_name="Sheet1")
+
+            df_loyalty = df_loyalty.melt(id_vars="!МАГАЗИН!", var_name="дата", value_name="Лояльность")
+            df_loyalty["Лояльность"] = (df_loyalty["Лояльность"] * 100).round(2)
+            df_loyalty['дата'] = pd.to_datetime(df_loyalty['дата'], format='%Y-%m-%d')
+            df_loyalty = df_loyalty.rename(columns={"!МАГАЗИН!": "магазин"})
+
+            #print(df_loyalty)
+            # df_loyalty.to_excel("loyalty.xlsx", index=False)
+            return df_loyalty
+
+        def education():
+            path = r'C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\Обученность\Матрица обучения.xlsx'
+            df_education = pd.read_excel(path, sheet_name="Пользователи", skiprows=3)
+            df_education = df_education.loc[:, ["Отдел", "Итого - процент прохождения"]]
+
+            today = date.today()
+            df_education["дата"] = today.strftime("%Y-%m") + "-" + "01"
+            df_education['дата'] = pd.to_datetime(df_education['дата'], format='%Y-%m-%d')
+
+            df_education = df_education.rename(columns={"Отдел": "магазин", "Итого - процент прохождения": "Обученность"})
+            df_education = df_education[["магазин", "дата", "Обученность"]]
+
+            df_education = df_education.groupby(["магазин", "дата"], as_index=False).agg(
+                {"Обученность": "mean"}) \
+                .reset_index(drop=True)
+            df_education["Обученность"] = df_education["Обученность"].round(2)
+
+            rename.RENAME().Rread(name_data=df_education, name_col="магазин")
+
+            #print(df_education)
+            #df_education.to_excel("df_education.xlsx", index=False)
+            return df_education
+
+# ФРС финиш
         df_2023, maxdate = g_2023(df)
 
         audit =  audit()
@@ -284,7 +391,22 @@ class reting():
         df.fillna(0, inplace=True)
 
         df = pd.merge(df, audit[["дата","магазин","Прогресс"]], on=["магазин",'дата'], how="left").reset_index(drop=True)
-        df.to_excel("1.xlsx", index=False)
+
+        personal = personal()
+        #df = pd.merge(df, personal[["дата","магазин", "Укомплектованность %"]], on=["магазин",'дата'], how="left").reset_index(drop=True)
+        df = pd.merge(df, personal[["магазин", "Укомплектованность %"]], on=["магазин"], how="left").reset_index(
+            drop=True)
+
+
+        turnover = turnover()
+        df = pd.merge(df, turnover[["дата","магазин", "Текучесть"]], on=["магазин",'дата'], how="left").reset_index(drop=True)
+
+        loyalty = loyalty()
+        df = pd.merge(df, loyalty[["магазин","дата", "Лояльность"]], on=["магазин", 'дата'], how="left").reset_index(drop=True)
+
+        education = education()
+        #df = pd.merge(df, education[["магазин", "дата", "Обученность"]], on=["магазин", 'дата'], how="left").reset_index(drop=True)
+        df = pd.merge(df, education[["магазин", "Обученность"]], on=["магазин"], how="left").reset_index(drop=True)
 
         df["YoY_sales"] = ((df["выручка_2023"] -df["выручка_2022"])/df["выручка_2022"])*100
         df["YoY_check"] = ((df["Количество чеков_2023"] - df["Количество чеков_2022"])/ df["Количество чеков_2022"])*100
@@ -294,12 +416,7 @@ class reting():
         df = df.loc[df["магазин"] != "Барнаул Энтузиастов, 14"]
         df = df.drop(columns=["выручка_2023","Количество чеков_2023","средний_чек_2023","выручка_2022","Количество чеков_2022","средний_чек_2022","Месяц"])
 
-        """df_reting = pd.read_excel("https://docs.google.com/spreadsheets/d/1WuM9yLaSHvf32q_nQvQM_e8ivfWnc8Kq4ZbrfytjJQA/export?exportFormat=xlsx",skiprows=1)
-        print(df_reting)
-        forecast_FRS = df_reting.loc[df_reting['Канал'] == 'ФРС', 'Прогноз выполнения выручка'].values[0]
-        print("Максимальный Балл FRS", forecast_FRS)"""
-
-        def prognoz_sales(yoy_sales, max_points):
+        def prognoz_sales(yoy_sales, max_points): # Расчет баллов для выручки
             if yoy_sales < 80:
                 return 0
             elif yoy_sales >= 99:
@@ -309,7 +426,7 @@ class reting():
                 points = (float(normalized_value * max_points)).__round__(1) # Пропорциональное распределение Балллов
                 return points
 
-        def YoY(yoy_sales, max_points):
+        def YoY(yoy_sales, max_points): # Расчет баллов для отношения год к году
             if yoy_sales < 0:
                 return 0
             if yoy_sales == np.inf:
@@ -322,185 +439,166 @@ class reting():
                 points = (float(normalized_value * max_points)).__round__(1)  # Пропорциональное распределение Балллов
                 return points
 
-        def calculate_points(percent, max_points):
+        def points_turnover(percent, max_points): # Расчет баллов для текучести
             if percent <= 0:
                 return max_points
-            elif percent >= 5:
+            if percent == np.inf:
+                max_points = max_points/2
+                return max_points
+            elif percent >= 30:
                 return 0
             else:
-                normalized_value = (5 - percent) / 5  # Приведение к интервалу [0, 1]
-                points = (float(normalized_value * max_points)).__round__(1)    # Пропорциональное распределение Балллов
+                normalized_value = (30 - percent) / 30  # Приведение к интервалу [0, 1]
+                points = (float(normalized_value * max_points)).__round__(1)  # Пропорциональное распределение Балллов
                 return points
 
-        def Total(d):
-            mask_frs = (df["Канал"] == "ФРС") | (df["Канал"] == "Франшиза инвестиционнная") | (df["Канал"] == "Франшиза в аренду")
-            #mask_frs = df
-            max_points = 25
-            df.loc[mask_frs, "Балл факт(прогноз) выручка"] = df[mask_frs]["прогноз_выручка_2023"].apply(prognoz_sales,                                                                                   args=(max_points,))
-            max_points = 5
-            df.loc[mask_frs, "Балл факт(прогноз) Кол.чеков"] = df[mask_frs]["прогноз_количество_чеков_2023"].apply(
-                prognoz_sales, args=(max_points,))
-            max_points = 10
-            df.loc[mask_frs, "Балл факт(прогноз) Ср.чек"] = df[mask_frs]["прогноз_Средний_чек_2023"].apply(prognoz_sales,
-                                                                                                            args=(
-                                                                                                            max_points,))
-            max_points_yoy = 25
-            df.loc[mask_frs, "Балл изменение к прошлому году выручка"] = df[mask_frs]["YoY_sales"].apply(YoY, args=(max_points_yoy,))
-            max_points_yoy = 5
-            df.loc[mask_frs, "Балл изменение к прошлому году Кол.чеков"] = df[mask_frs]["YoY_check"].apply(YoY, args=(max_points_yoy,))
-            max_points_yoy = 10
-            df.loc[mask_frs, "Балл изменение к прошлому году Ср.чек"] = df[mask_frs]["YoY_aver_check"].apply(YoY, args=(max_points_yoy,))
+        def points_loyalty(percent, max_points): # Расчет баллов для лояльности
+            if percent >= 38:
+                return max_points
+            if percent == np.inf:
+                max_points = max_points/2
+                return max_points
+            elif percent <= 20:
+                return 0
+            else:
+                normalized_value = (percent - 20) / 18  # Приведение к интервалу [0, 1]
+                points = (float(normalized_value * max_points)).__round__(1)  # Пропорциональное распределение Балллов
+                return points
 
-            max_points = 10  # Максимальное значение Балллов
-            df.loc[mask_frs, "Балл_Процент_списания"] = df[mask_frs]["Процент списания_2023"].apply(calculate_points, args=(max_points,))
+        def points_education(yoy_sales, max_points): # Расчет баллов для обученности
+            if yoy_sales < 60:
+                return 0
+            elif yoy_sales >= 100:
+                return max_points
+            else:
+                normalized_value = (yoy_sales - 60) / 40  # Приведение к интервалу [0, 1]
+                points = (float(normalized_value * max_points)).__round__(1) # Пропорциональное распределение Балллов
+                return points
 
-            max_points = 10  # Максимальное значение Балллов
-            df.loc[mask_frs, "Балл_Аудиты"] = df[mask_frs]["Прогресс"].apply(prognoz_sales,args=(max_points,))
-            return df
-
+        # Распределение баллов
         def franshiza(d):
             mask_frs = d["Канал"] == "Франшиза инвестиционнная"
             min_not_sales = 1
 
-            max_points_yoy = 30
+            max_points_yoy = 20 # Изменение к прошлому году, выручка
             d.loc[mask_frs, "Балл изменение к прошлому году выручка"] = d[mask_frs]["YoY_sales"].apply(YoY, args=(max_points_yoy,))
             d["Балл изменение к прошлому году выручка"] = d["Балл изменение к прошлому году выручка"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 10
-            d.loc[mask_frs, "Балл изменение к прошлому году Кол.чеков"] = d[mask_frs]["YoY_check"].apply(YoY, args=(max_points_yoy,))
+            max_points_count_receipt = 10 # Кол.чеков
+            d.loc[mask_frs, "Балл изменение к прошлому году Кол.чеков"] = d[mask_frs]["YoY_check"].apply(YoY, args=(max_points_count_receipt,))
             d["Балл изменение к прошлому году Кол.чеков"] = d["Балл изменение к прошлому году Кол.чеков"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 20
-            d.loc[mask_frs, "Балл изменение к прошлому году Ср.чек"] = d[mask_frs]["YoY_aver_check"].apply(YoY, args=(max_points_yoy,))
+            max_points_average_bill = 10 # Ср.чек
+            d.loc[mask_frs, "Балл изменение к прошлому году Ср.чек"] = d[mask_frs]["YoY_aver_check"].apply(YoY, args=(max_points_average_bill,))
             d["Балл изменение к прошлому году Ср.чек"] = d["Балл изменение к прошлому году Ср.чек"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 40
-            d.loc[mask_frs, "Балл_Аудиты"] = d[mask_frs]["Прогресс"].apply(prognoz_sales, args=(max_points_yoy,))
+            max_points_audit = 20 # Аудиты
+            d.loc[mask_frs, "Балл_Аудиты"] = d[mask_frs]["Прогресс"].apply(prognoz_sales, args=(max_points_audit,))
 
+            max_points_personal = 10 # Укомплектованность
+            d.loc[mask_frs, "Балл_Укомплектованность"] = d[mask_frs]["Укомплектованность %"].apply(prognoz_sales, args=(max_points_personal,))
+
+            max_points_turnover = 10  # Текучесть
+            d.loc[mask_frs, "Балл_Текучесть"] = d[mask_frs]["Текучесть"].apply(points_turnover, args=(max_points_turnover,))
+
+            max_points_loyalty = 10  # Лояльность
+            d.loc[mask_frs, "Балл_Лояльность"] = d[mask_frs]["Лояльность"].apply(points_loyalty, args=(max_points_loyalty,))
+
+            max_points_education = 10  # Обученность
+            d.loc[mask_frs, "Балл_Обученность"] = d[mask_frs]["Обученность"].apply(points_education, args=(max_points_education,))
 
 
             mask_frs = d["Канал"] == "Франшиза в аренду"
             min_not_sales = 1
 
-            max_points_yoy = 30
+            max_points_yoy = 20 # Изменение к прошлому году выручка
             d.loc[mask_frs, "Балл изменение к прошлому году выручка"] = d[mask_frs]["YoY_sales"].apply(YoY, args=(max_points_yoy,))
             d["Балл изменение к прошлому году выручка"] = d["Балл изменение к прошлому году выручка"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 10
-            d.loc[mask_frs, "Балл изменение к прошлому году Кол.чеков"] = d[mask_frs]["YoY_check"].apply(YoY, args=(max_points_yoy,))
+            max_points_count_receipt = 10 # Кол.чеков
+            d.loc[mask_frs, "Балл изменение к прошлому году Кол.чеков"] = d[mask_frs]["YoY_check"].apply(YoY, args=(max_points_count_receipt,))
             d["Балл изменение к прошлому году Кол.чеков"] = d["Балл изменение к прошлому году Кол.чеков"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 20
-            d.loc[mask_frs, "Балл изменение к прошлому году Ср.чек"] = d[mask_frs]["YoY_aver_check"].apply(YoY, args=(max_points_yoy,))
+            max_points_average_bill = 10 # Ср.чек
+            d.loc[mask_frs, "Балл изменение к прошлому году Ср.чек"] = d[mask_frs]["YoY_aver_check"].apply(YoY, args=(max_points_average_bill,))
             d["Балл изменение к прошлому году Ср.чек"] = d["Балл изменение к прошлому году Ср.чек"].replace(np.inf, min_not_sales)
 
-            max_points_yoy = 40
-            d.loc[mask_frs, "Балл_Аудиты"] = d[mask_frs]["Прогресс"].apply(prognoz_sales, args=(max_points_yoy,))
+            max_points_audit = 20 # Аудиты
+            d.loc[mask_frs, "Балл_Аудиты"] = d[mask_frs]["Прогресс"].apply(prognoz_sales, args=(max_points_audit,))
             d = d.loc[d["Канал"] != "ФРС"]
+
+            max_points_personal = 10  # Укомплектованность
+            d.loc[mask_frs, "Балл_Укомплектованность"] = d.loc[mask_frs]["Укомплектованность %"].apply(prognoz_sales, args=(max_points_personal,))
+
+            max_points_turnover = 10  # Текучесть
+            d.loc[mask_frs, "Балл_Текучесть"] = d.loc[mask_frs]["Текучесть"].apply(points_turnover, args=(max_points_turnover,))
+
+            max_points_loyalty = 10  # Лояльность
+            d.loc[mask_frs, "Балл_Лояльность"] = d.loc[mask_frs]["Лояльность"].apply(points_loyalty, args=(max_points_loyalty,))
+
+            max_points_education = 10  # Обученность
+            d.loc[mask_frs, "Балл_Обученность"] = d.loc[mask_frs]["Обученность"].apply(points_education,args=(max_points_education,))
+
             return d
 
-
         def nextd(a, x):
-            if x == "TOTAL":
-                d = Total(a)
-                print("ntotol")
-                d.fillna(0, inplace=True)
-                d['Общий'] = d["Балл факт(прогноз) выручка"] + \
-                             d["Балл факт(прогноз) Кол.чеков"] + \
-                             d["Балл факт(прогноз) Ср.чек"] + \
-                             d["Балл изменение к прошлому году выручка"] + \
-                             d["Балл изменение к прошлому году Кол.чеков"] + \
-                             d["Балл изменение к прошлому году Ср.чек"] + \
-                             d["Балл_Процент_списания"] + \
-                             d["Балл_Аудиты"].fillna(0)
+            df = franshiza(a)
 
-                d = d.rename(columns={"YoY_sales": "2022/2023 выручка",
-                                      "YoY_check": "2022/2023 Кол.чеков", "YoY_aver_check": "2022/2023 Ср.чек",
-                                      "Прогресс": "Аудиты"})
+            df = df.fillna(0)
+            df['Общий'] = (df["Балл изменение к прошлому году выручка"] +
+                            df["Балл изменение к прошлому году Кол.чеков"] +
+                            df["Балл изменение к прошлому году Ср.чек"] +
+                            df["Балл_Аудиты"] +
+                            df["Балл_Укомплектованность"] +
+                            df["Балл_Текучесть"] +
+                            df["Балл_Лояльность"] +
+                            df["Балл_Обученность"].fillna(0))
 
-                d = d[["Менеджер", "магазин", "Канал", "дата",
-                       "прогноз_выручка_2023", "Балл факт(прогноз) выручка",
-                       "прогноз_количество_чеков_2023", "Балл факт(прогноз) Кол.чеков",
-                       "прогноз_Средний_чек_2023", "Балл факт(прогноз) Ср.чек",
-                       "2022/2023 выручка", "Балл изменение к прошлому году выручка", "2022/2023 Кол.чеков",
-                       "Балл изменение к прошлому году Кол.чеков",
-                       "2022/2023 Ср.чек", "Балл изменение к прошлому году Ср.чек", "Процент списания_2023",
-                       "Балл_Процент_списания", "Аудиты", "Балл_Аудиты", 'Общий']]
-
-                df = d.loc[d["дата"] >= "2023-01-01"]
-
-                print(df[:50])
-            else:
-                df = franshiza(a)
-
-                df = df.fillna(0)
-                df['Общий'] =  df[ "Балл изменение к прошлому году выручка"] + \
-                              df["Балл изменение к прошлому году Кол.чеков"] + \
-                              df["Балл изменение к прошлому году Ср.чек"] + \
-                              df["Балл_Аудиты"].fillna(0)
-
-
-
-                df = df.rename(columns={"YoY_sales":"2022/2023 выручка",
+            df = df.rename(columns={"YoY_sales":"2022/2023 выручка",
                                         "YoY_check":"2022/2023 Кол.чеков","YoY_aver_check":"2022/2023 Ср.чек",
                                         "Прогресс":"Аудиты"})
 
-                df = df[["Менеджер","магазин","Канал","дата",
+            df = df[["Менеджер","магазин","Канал","дата",
                          "2022/2023 выручка","Балл изменение к прошлому году выручка","2022/2023 Кол.чеков",
                        "Балл изменение к прошлому году Кол.чеков",
-                         "2022/2023 Ср.чек","Балл изменение к прошлому году Ср.чек","Аудиты","Балл_Аудиты",'Общий']]
+                         "2022/2023 Ср.чек","Балл изменение к прошлому году Ср.чек","Аудиты","Балл_Аудиты",
+                         "Укомплектованность %", "Балл_Укомплектованность", "Текучесть", "Балл_Текучесть",
+                         "Лояльность", "Балл_Лояльность", "Обученность", "Балл_Обученность", 'Общий']]
 
-                df = df.loc[df["дата"]>="2023-01-01"]
-
+            df = df.loc[df["дата"]>="2023-01-01"]
             return df
 
-
-        df_t = df.copy()
         df_f = df.copy()
-        TOTAL = nextd( a = df_t, x="TOTAL")
-
-        TOTAL.to_excel(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\♀Планы\Показатели для расчета рейтинга_2.xlsx",
-                    index=False)
-        # Оставляем статические столбцы
-        static_columns = ["Менеджер", "магазин", "Канал", "дата"]
-        # df = df.drop(columns=['Общий_Балл'])
-        # Метод melt для переворачивания исходной таблицы
-        melted_df = TOTAL.melt(id_vars=static_columns, var_name="Показатель", value_name="Значение")
-        # Замена значений "inf" на 0
-        melted_df["Значение"] = melted_df["Значение"].replace(np.inf, 0)
-        # Вывод результата
-
-        # Создание столбца "Баллловой показатель"
-        melted_df["Балловой показатель"] = melted_df["Показатель"].apply(
-            lambda x: 1 if "Балл" in x else 2 if 'Общий' in x else 0)
-        #print(melted_df[:50])
-        melted_df.to_excel(r"C:\Users\lebedevvv\Desktop\FRS\Dashbord_new\♀Планы\Показатели для расчета рейтинга.xlsx",
-                           index=False)
-
         Franshiza = nextd(a = df_f, x="Franshiza")
         sprav_magaz = pd.read_excel(r"https://docs.google.com/spreadsheets/d/1CdOvV2uPgSRO06KwHRtqc3f0DbXOAy-gxlAZP1F9lqY/export?exportFormat=xlsx", sheet_name="Справочник партнеров")
         Franshiza = Franshiza.merge(sprav_magaz, on=["магазин"], how="left").reset_index(drop=True)
 
-
-
         Franshiza = Franshiza[["Партнер", "магазин", "Канал", "дата",
                "2022/2023 выручка", "Балл изменение к прошлому году выручка", "2022/2023 Кол.чеков",
                "Балл изменение к прошлому году Кол.чеков",
-               "2022/2023 Ср.чек", "Балл изменение к прошлому году Ср.чек", "Аудиты", "Балл_Аудиты", 'Общий']]
+               "2022/2023 Ср.чек", "Балл изменение к прошлому году Ср.чек", "Аудиты", "Балл_Аудиты",
+                "Укомплектованность %", "Балл_Укомплектованность", "Текучесть", "Балл_Текучесть",
+                "Лояльность", "Балл_Лояльность", "Обученность", "Балл_Обученность", 'Общий']]
 
-        #Franshiza["2022/2023 выручка"] = Franshiza["2022/2023 выручка"].apply(reprlib.repr)
-        Franshiza .replace([np.inf, -np.inf], np.nan, inplace=True)
-        Franshiza .fillna('', inplace=True)
+        Franshiza.replace([np.inf, -np.inf], np.nan, inplace=True)
+        Franshiza.fillna('', inplace=True)
         Franshiza["дата"] = Franshiza["дата"].astype(str)
 
-        """g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
-                                 sheet_name="Франшиза_по магазинам")"""
+
+        #Franshiza.to_excel("df_Franshiza.xlsx", index=False)
+
+        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
+                                 sheet_name="Франшиза_по магазинам")
 
         Franshiza =  Franshiza.groupby(["Партнер","Канал","дата"], as_index=False).agg(
             {"Балл изменение к прошлому году выручка": "mean",
              "Балл изменение к прошлому году Кол.чеков": "mean",
              "Балл изменение к прошлому году Ср.чек": "mean",
              "Балл_Аудиты": "mean",
+             "Балл_Укомплектованность": "mean",
+             "Балл_Текучесть": "mean",
+             "Балл_Лояльность": "mean",
+             "Балл_Обученность": "mean",
              'Общий':"mean"}) \
             .reset_index(drop=True)
 
@@ -508,15 +606,17 @@ class reting():
         Franshiza.fillna('', inplace=True)
         Franshiza["дата"] = Franshiza["дата"].astype(str)
 
-        """g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
-                                 sheet_name="Франшиза_по_партнерам")"""
+
+        #Franshiza.to_excel("df_Franshiza_group.xlsx", index=False)
+        g.tbl_bot().svodniy_itog(name_tbl="Франшиза_баллы", df=Franshiza,
+                                 sheet_name="Франшиза_по_партнерам")
         return
 
 def run_reyting():
-    dat = reting()
+    dat = reting_franshiza()
     raschet = dat.run_2()
     return raschet
 
 if __name__ == '__main__':
-    dat = reting()
+    dat = reting_franshiza()
     raschet = dat.run_2()

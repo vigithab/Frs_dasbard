@@ -63,9 +63,10 @@ def plan():
         plan[777] = plan[5]
 
         plan= plan.loc[plan[4].notnull()]
-        print(plan)
+
         # Продажи
-        plan_sales = plan[[5,777, 59,60,61,62,63,64,65,66,67,69,69,70]]
+        plan_sales = plan[[5,777, 59,60,61,62,63,64,65,66,67,68,69,69,70]]
+        print(plan_sales)
         plan_sales= plan_sales.rename(columns=slov_sales)
         plan_sales["Показатель"] = "Выручка"
         plan_sales = plan_sales.melt(
@@ -73,8 +74,11 @@ def plan():
                         var_name="дата",
                         value_name="ПЛАН").reset_index(drop=True)
 
+
+
         # Чеки
         plan_check = plan[[5,777,98,99,100,101,102,103,104,105,106,107,108,109]]
+
         plan_check= plan_check.rename(columns=slov_check)
         plan_check["Показатель"] = "Кол чеков"
         plan_check =plan_check.melt(

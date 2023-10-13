@@ -55,7 +55,7 @@ class bot_mesege:
                 date_str = f.readline().strip()
             format_date_str = '%d.%m.%Y'
             # тестовая дата скрыть ели боевой режим
-            date_str = "2023-08-01 10:00:36.001115"
+            #date_str = "2023-08-01 10:00:36.001115"
             # Дата обновления
             MAX_DATE = datetime.datetime.strptime(date_str[:10], '%Y-%m-%d').date()
 
